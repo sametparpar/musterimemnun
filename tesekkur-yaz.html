@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teşekkür Yaz | Müşteri Memnun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">
+            <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
+        </a>
+    </header>
+
+    <section class="hero" style="padding: 40px 20px;">
+        <h2>Bir Markaya <span class="highlight">Teşekkür Et</span></h2>
+        <p>Deneyimini paylaş, iyi hizmeti ödüllendir.</p>
+
+        <div class="form-container">
+            <div id="successMessage"><i class="fa-solid fa-check-circle"></i> Harika! Teşekkür mesajın alındı ve onay sürecine gönderildi.</div>
+            
+            <form id="tesekkurFormu">
+                <div class="form-group">
+                    <label for="markaAdi">Marka Adı</label>
+                    <input type="text" id="markaAdi" placeholder="Örn: Trendyol, Getir, Arçelik..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="kullaniciAdi">İsminiz (Sitede görünecek)</label>
+                    <input type="text" id="kullaniciAdi" placeholder="Örn: Ayşe Y." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mesaj">Teşekkür Mesajınız</label>
+                    <textarea id="mesaj" placeholder="Nasıl bir hizmet aldınız? Sizi ne mutlu etti?" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="gonderBtn">Gönder ve Alkışla 👏</button>
+            </form>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+            authDomain: "musterimemnun-cb039.firebaseapp.com",
+            projectId: "musterimemnun-cb039",
+            storageBucket: "musterimemnun-cb039.firebasestorage.app",
+            messagingSenderId: "800433057522",
+            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b",
+            measurementId: "G-TTFE4XT3JN"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('tesekkurFormu').addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            
+            const gonderBtn = document.getElementById('gonderBtn');
+            gonderBtn.innerHTML = "Gönderiliyor... <i class='fa-solid fa-spinner fa-spin'></i>";
+            gonderBtn.disabled = true;
+
+            const marka = document.getElementById('markaAdi').value;
+            const isim = document.getElementById('kullaniciAdi').value;
+            const mesajMetni = document.getElementById('mesaj').value;
+
+            try {
+                await addDoc(collection(db, "tesekkurler"), {
+                    marka: marka,
+                    isim: isim,
+                    mesaj: mesajMetni,
+                    durum: "bekliyor",
+                    tarih: serverTimestamp()
+                });
+
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('tesekkurFormu').reset();
+                
+            } catch (e) {
+                console.error("Veri eklenirken hata oluştu: ", e);
+                alert("Bir hata oluştu, lütfen tekrar deneyin.");
+            } finally {
+                gonderBtn.innerHTML = "Gönder ve Alkışla 👏";
+                gonderBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
