@@ -11,7 +11,7 @@
 <body>
 
     <header class="header">
-        <a href="index.html" class="logo">
+        <a href="index.html" class="logo" style="text-decoration: none;">
             <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
         </a>
         <div class="search-bar">
@@ -38,53 +38,101 @@
         </div>
 
         <div class="stats">
-            <div class="stat-item">Toplam Teşekkür: <b>15,450</b></div>
-            <div class="stat-item">Mutlu Müşteri: <b>14,200</b></div>
-            <div class="stat-item">Onaylı Marka: <b>350+</b></div>
+            <div class="stat-item">Toplam Teşekkür: <b id="statToplam">Yükleniyor...</b></div>
+            <div class="stat-item">Mutlu Müşteri: <b id="statMutlu">Yükleniyor...</b></div>
+            <div class="stat-item">Onaylı Marka: <b>Sürekli Artıyor!</b></div>
         </div>
     </section>
 
-    <section class="cards-container">
-        <div class="card">
-            <div class="card-header">
-                <div class="brand-info">
-                    <div class="user-avatar">A</div>
-                    <div>
-                        <h4>Hepsiburada</h4>
-                        <div class="stars">★★★★★</div>
-                    </div>
-                </div>
-                <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
-            </div>
-            <p class="card-text">Müşteri hizmetleri sadece 2 dakikada sorunumu çözdü, iade süreci beklediğimden çok daha hızlı geçti. Teşekkürler!</p>
-            <div class="card-footer">
-                <span><i class="fa-regular fa-thumbs-up"></i> Beğen</span>
-                <span><i class="fa-solid fa-share-nodes"></i> Paylaş</span>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="brand-info">
-                    <div class="user-avatar" style="background-color: #f39c12;">M</div>
-                    <div>
-                        <h4>Getir</h4>
-                        <div class="stars">★★★★★</div>
-                    </div>
-                </div>
-                <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
-            </div>
-            <p class="card-text">Kurye arkadaş çok güler yüzlüydü ve yağmura rağmen siparişimi sıcacık teslim etti. İyi ki varsınız.</p>
-            <div class="card-footer">
-                <span><i class="fa-regular fa-thumbs-up"></i> Beğen</span>
-                <span><i class="fa-solid fa-share-nodes"></i> Paylaş</span>
-            </div>
-        </div>
+    <section class="cards-container" id="kartlarAlani">
+        <p style="text-align: center; width: 100%; color: #718096; font-size: 18px;">
+            Teşekkürler yükleniyor... <i class="fa-solid fa-spinner fa-spin"></i>
+        </p>
     </section>
 
     <footer>
         <p>&copy; 2026 musterimemnun.com - İyiliği Paylaş</p>
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+            authDomain: "musterimemnun-cb039.firebaseapp.com",
+            projectId: "musterimemnun-cb039",
+            storageBucket: "musterimemnun-cb039.firebasestorage.app",
+            messagingSenderId: "800433057522",
+            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function onayliMesajlariGetir() {
+            const kartlarAlani = document.getElementById('kartlarAlani');
+            let mesajSayisi = 0;
+            
+            try {
+                // Sadece durumu "onaylandi" olanları getir
+                const q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    kartlarAlani.innerHTML = '<p style="text-align:center; width:100%; color:#718096;">Henüz onaylanmış bir teşekkür bulunmuyor. İlk yazan sen ol!</p>';
+                    document.getElementById('statToplam').innerText = "0";
+                    document.getElementById('statMutlu').innerText = "0";
+                    return;
+                }
+
+                kartlarAlani.innerHTML = ''; // Yükleniyor yazısını temizle
+
+                querySnapshot.forEach((doc) => {
+                    mesajSayisi++;
+                    const data = doc.data();
+                    
+                    // Avatar için ismin baş harfini al
+                    const basHarf = data.isim ? data.isim.charAt(0).toUpperCase() : "M";
+                    
+                    // Avatarlar için rastgele hoş renkler
+                    const renkler = ['#4A5568', '#f39c12', '#00C897', '#e74c3c', '#9b59b6'];
+                    const rastgeleRenk = renkler[Math.floor(Math.random() * renkler.length)];
+
+                    // Kart HTML iskeleti
+                    const kartHTML = `
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="brand-info">
+                                    <div class="user-avatar" style="background-color: ${rastgeleRenk};">${basHarf}</div>
+                                    <div>
+                                        <h4 style="margin: 0; font-size: 16px; color: #1A202C;">${data.marka}</h4>
+                                        <div class="stars">★★★★★</div>
+                                    </div>
+                                </div>
+                                <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
+                            </div>
+                            <p class="card-text">${data.mesaj}</p>
+                            <div class="card-footer">
+                                <span><i class="fa-regular fa-user"></i> ${data.isim}</span>
+                            </div>
+                        </div>
+                    `;
+                    kartlarAlani.innerHTML += kartHTML;
+                });
+
+                // İstatistikleri canlı sayı ile güncelle
+                document.getElementById('statToplam').innerText = mesajSayisi;
+                document.getElementById('statMutlu').innerText = mesajSayisi;
+
+            } catch (error) {
+                console.error("Mesajlar çekilirken hata:", error);
+                kartlarAlani.innerHTML = '<p style="color:#E53E3E; text-align:center; width:100%;">Mesajlar yüklenirken bir hata oluştu.</p>';
+            }
+        }
+
+        // Sayfa yüklendiğinde fonksiyonu çalıştır
+        onayliMesajlariGetir();
+    </script>
 </body>
 </html>
