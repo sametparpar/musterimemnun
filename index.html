@@ -100,20 +100,35 @@
                     const rastgeleRenk = renkler[Math.floor(Math.random() * renkler.length)];
 
                     // Kart HTML iskeleti
+                    // Eğer veritabanında bu mesaja ait bir markaYaniti varsa o kısmı oluştur, yoksa boş bırak
+                    const markaYanitiKutusu = data.markaYaniti 
+                        ? `<div style="margin-top: 15px; padding: 12px 15px; background-color: #F8FAFC; border-left: 4px solid var(--primary-color); border-radius: 4px; font-size: 13px;">
+                               <strong style="color: var(--text-dark); display:flex; align-items:center; gap:5px; margin-bottom:5px;">
+                                   <i class="fa-solid fa-building-circle-check" style="color: var(--primary-color);"></i> 
+                                   <span style="text-transform: capitalize;">${data.marka}</span> Resmi Yanıtı:
+                               </strong>
+                               <span style="color: #4A5568;">"${data.markaYaniti}"</span>
+                           </div>`
+                        : ''; // Yanıt yoksa hiçbir şey ekleme
+
+                    // Kart HTML iskeleti
                     const kartHTML = `
                         <div class="card">
                             <div class="card-header">
                                 <div class="brand-info">
                                     <div class="user-avatar" style="background-color: ${rastgeleRenk};">${basHarf}</div>
                                     <div>
-                                        <h4 style="margin: 0; font-size: 16px; color: #1A202C;">${data.marka}</h4>
+                                        <h4 style="margin: 0; font-size: 16px; color: #1A202C; text-transform: capitalize;">${data.marka}</h4>
                                         <div class="stars">★★★★★</div>
                                     </div>
                                 </div>
                                 <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
                             </div>
                             <p class="card-text">${data.mesaj}</p>
-                            <div class="card-footer">
+                            
+                            ${markaYanitiKutusu}
+
+                            <div class="card-footer" style="margin-top: 15px;">
                                 <span><i class="fa-regular fa-user"></i> ${data.isim}</span>
                             </div>
                         </div>
