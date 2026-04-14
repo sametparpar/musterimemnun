@@ -1,0 +1,251 @@
+/* Genel Ayarlar ve Renk Paleti */
+:root {
+    --primary-color: #00C897; 
+    --text-dark: #1A202C; 
+    --text-light: #718096;
+    --bg-light: #F8FAFC;
+    --gold: #F6AD55;
+    --white: #FFFFFF;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: var(--white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+    font-size: 24px;
+    color: var(--text-dark);
+    text-decoration: none;
+}
+
+.search-bar {
+    background-color: var(--bg-light);
+    padding: 10px 20px;
+    border-radius: 30px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #E2E8F0;
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    margin-left: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 10px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #00a87d;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(to right, #ffffff, #f0f4f8);
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.highlight {
+    color: var(--gold);
+}
+
+.hero p {
+    color: var(--text-light);
+    font-size: 18px;
+    margin-bottom: 40px;
+}
+
+.brand-strip {
+    background-color: var(--white);
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.brand-strip b {
+    margin: 0 15px;
+    color: var(--text-dark);
+    font-size: 18px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-size: 18px;
+}
+
+/* Cards Section */
+.cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 50px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: var(--white);
+    width: 350px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transform: translateY(-5px);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.brand-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #4A5568;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.stars {
+    color: var(--gold);
+    font-size: 14px;
+}
+
+.badge {
+    background-color: #FEFCBF;
+    color: #B7791F;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.card-text {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.card-footer {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-light);
+}
+
+/* Form Sayfası Ek Tasarımları */
+.form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+.submit-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.submit-btn:hover {
+    background-color: #00a87d;
+}
+#successMessage {
+    display: none;
+    background-color: #D1FAE5;
+    color: #065F46;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
