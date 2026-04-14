@@ -14,9 +14,12 @@
         <a href="index.html" class="logo" style="text-decoration: none;">
             <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
         </a>
-        <div class="search-bar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Hangi markaya teşekkür etmek istersin?">
+        <div class="search-bar" style="position: relative; max-width: 600px; margin: 0 auto;">
+            <input type="text" id="mainSearchInput" placeholder="Marka ara... (Örn: Trendyol)" autocomplete="off">
+            <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            
+            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+            </div>
         </div>
         <a href="tesekkur-yaz.html" class="btn-primary">
             <i class="fa-solid fa-plus"></i> Teşekkür Yaz
