@@ -17,6 +17,25 @@
         .anonim-secenek { display: flex; align-items: center; gap: 10px; margin-top: -10px; margin-bottom: 20px; padding: 10px; background-color: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E0; }
         .anonim-secenek input { width: 18px; height: 18px; cursor: pointer; }
         .anonim-secenek label { margin: 0; font-size: 14px; color: #4A5568; cursor: pointer; font-weight: normal; }
+
+
+
+        .autocomplete-container { position: relative; width: 100%; }
+        .oneri-kutusu {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: white; border: 1px solid #E2E8F0;
+            border-radius: 0 0 8px 8px; z-index: 100;
+            max-height: 200px; overflow-y: auto; display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .oneri-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #EDF2F7; font-size: 14px; color: #4A5568;}
+        .oneri-item:hover { background-color: #F8FAFC; color: #00C897; font-weight: 600; }
+        </style>
+
+
+
+
+        
     </style>
 </head>
 <body>
@@ -49,16 +68,13 @@
                 </div>
 
                 <form id="tesekkurFormu">
-                    <div class="form-group">
-                        <label for="markaSelect">Teşekkür Edilecek Marka</label>
-                        <select id="markaSelect" class="form-control" required>
-                            <option value="" disabled selected>Lütfen bir marka seçin...</option>
-                            <option value="trendyol">Trendyol</option>
-                            <option value="getir">Getir</option>
-                            <option value="hepsiburada">Hepsiburada</option>
-                            <option value="arcelik">Arçelik</option>
-                        </select>
+                <div class="form-group">
+                    <label for="markaAdi">Teşekkür Edilecek Marka</label>
+                    <div class="autocomplete-container">
+                        <input type="text" id="markaAdi" placeholder="Marka adını yazmaya başlayın..." autocomplete="off" required>
+                        <div id="oneriKutusu" class="oneri-kutusu"></div>
                     </div>
+                </div>
 
                     <div class="anonim-secenek">
                         <input type="checkbox" id="anonimYap">
@@ -80,86 +96,156 @@
     </section>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    // getDocs komutunu import listesine ekledik:
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
-            authDomain: "musterimemnun-cb039.firebaseapp.com",
-            projectId: "musterimemnun-cb039",
-            storageBucket: "musterimemnun-cb039.firebasestorage.app",
-            messagingSenderId: "800433057522",
-            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+        authDomain: "musterimemnun-cb039.firebaseapp.com",
+        projectId: "musterimemnun-cb039",
+        storageBucket: "musterimemnun-cb039.firebasestorage.app",
+        messagingSenderId: "800433057522",
+        appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-        const loginGerekiyor = document.getElementById('loginGerekiyor');
-        const tesekkurFormuContainer = document.getElementById('tesekkurFormuContainer');
-        let currentUser = null;
+    const loginGerekiyor = document.getElementById('loginGerekiyor');
+    const tesekkurFormuContainer = document.getElementById('tesekkurFormuContainer');
+    let currentUser = null;
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                loginGerekiyor.style.display = 'none';
-                tesekkurFormuContainer.style.display = 'block';
-                document.getElementById('userNameDisplay').innerText = "Hoş geldin, " + user.displayName;
-                if(user.photoURL) {
-                    document.getElementById('userPhoto').src = user.photoURL;
-                    document.getElementById('userPhoto').style.display = 'block';
-                }
-            } else {
-                currentUser = null;
-                loginGerekiyor.style.display = 'block';
-                tesekkurFormuContainer.style.display = 'none';
-            }
-        });
+    // --- OTOMATİK TAMAMLAMA DEĞİŞKENLERİ ---
+    const markaInput = document.getElementById('markaAdi');
+    const oneriKutusu = document.getElementById('oneriKutusu');
+    let sistemdekiMarkalar = [];
 
-        document.getElementById('googleLoginBtn').onclick = () => signInWithPopup(auth, provider);
-        document.getElementById('logoutBtn').onclick = () => signOut(auth);
-
-        document.getElementById('tesekkurFormu').onsubmit = async (e) => {
-            e.preventDefault();
-            if(!currentUser) return;
-
-            const gonderBtn = document.getElementById('gonderBtn');
-            gonderBtn.disabled = true;
-            gonderBtn.innerText = "Gönderiliyor...";
-
-            // Yeni: İsim Gizleme Mantığı
-            const gercekIsim = currentUser.displayName;
-            let gosterilecekIsim = gercekIsim;
-            const isimiGizle = document.getElementById('anonimYap').checked;
-
-            if (isimiGizle) {
-                // İsmi kelimelere böl (Örn: Samet Parpar), ilk harfini al, sonuna yıldız ekle (S*** P***)
-                gosterilecekIsim = gercekIsim.split(' ').map(kelime => kelime.charAt(0) + '***').join(' ');
-            }
-
-            try {
-                await addDoc(collection(db, "tesekkurler"), {
-                    marka: document.getElementById('markaAdi').value,
-                    isim: gosterilecekIsim, // Sitede görünecek isim (Gizliyse S***, değilse Samet)
-                    gercekIsim: gercekIsim, // Admin panelinde moderasyon için saklanan gerçek isim
-                    anonimMi: isimiGizle,   // Durum bayrağı
-                    uid: currentUser.uid,
-                    mesaj: document.getElementById('mesaj').value,
-                    durum: "bekliyor",
-                    tarih: serverTimestamp()
+    // 1. Veritabanından Markaları Çek (Sayfa yüklenirken arka planda çalışır)
+    async function markalariGetir() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "markalar"));
+            querySnapshot.forEach((doc) => {
+                sistemdekiMarkalar.push({
+                    id: doc.id,         // Örn: 'trendyol'
+                    ad: doc.data().ad   // Örn: 'Trendyol'
                 });
-                document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('tesekkurFormu').reset();
-            } catch (err) {
-                alert("Bir hata oluştu.");
-            } finally {
-                gonderBtn.disabled = false;
-                gonderBtn.innerText = "Gönder ve Alkışla 👏";
+            });
+        } catch (error) {
+            console.error("Markalar yüklenemedi:", error);
+        }
+    }
+    markalariGetir();
+
+    // 2. Kullanıcı Yazdıkça Önerileri Göster
+    markaInput.addEventListener('input', function() {
+        const arananKelime = this.value.toLocaleLowerCase('tr-TR');
+        oneriKutusu.innerHTML = ''; 
+        
+        if (!arananKelime) {
+            oneriKutusu.style.display = 'none';
+            return;
+        }
+
+        const eslesenler = sistemdekiMarkalar.filter(marka => 
+            marka.ad.toLocaleLowerCase('tr-TR').includes(arananKelime)
+        );
+
+        if (eslesenler.length > 0) {
+            eslesenler.forEach(marka => {
+                const div = document.createElement('div');
+                div.className = 'oneri-item';
+                div.innerHTML = `<i class="fa-solid fa-building" style="color:#CBD5E0; margin-right:8px;"></i> ${marka.ad}`;
+                
+                // Kullanıcı listeden seçtiğinde
+                div.onclick = () => {
+                    markaInput.value = marka.ad; 
+                    markaInput.dataset.secilenId = marka.id; // Seçilenin ID'sini arka plana kaydet
+                    oneriKutusu.style.display = 'none'; 
+                };
+                oneriKutusu.appendChild(div);
+            });
+            oneriKutusu.style.display = 'block';
+        } else {
+            oneriKutusu.style.display = 'none';
+        }
+    });
+
+    // Kutunun dışına tıklanınca listeyi kapat
+    document.addEventListener('click', function(e) {
+        if (e.target !== markaInput && oneriKutusu) {
+            oneriKutusu.style.display = 'none';
+        }
+    });
+
+    // --- KULLANICI GİRİŞ DURUMU ---
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            loginGerekiyor.style.display = 'none';
+            tesekkurFormuContainer.style.display = 'block';
+            document.getElementById('userNameDisplay').innerText = "Hoş geldin, " + user.displayName;
+            if(user.photoURL) {
+                document.getElementById('userPhoto').src = user.photoURL;
+                document.getElementById('userPhoto').style.display = 'block';
             }
-        };
-    </script>
+        } else {
+            currentUser = null;
+            loginGerekiyor.style.display = 'block';
+            tesekkurFormuContainer.style.display = 'none';
+        }
+    });
+
+    document.getElementById('googleLoginBtn').onclick = () => signInWithPopup(auth, provider);
+    document.getElementById('logoutBtn').onclick = () => signOut(auth);
+
+    // --- FORMU GÖNDERME İŞLEMİ ---
+    document.getElementById('tesekkurFormu').onsubmit = async (e) => {
+        e.preventDefault();
+        if(!currentUser) return;
+
+        const gonderBtn = document.getElementById('gonderBtn');
+        gonderBtn.disabled = true;
+        gonderBtn.innerText = "Gönderiliyor...";
+
+        // Marka ID'sini Belirle (Listeden seçildiyse ID'yi al, elle yazıldıysa boşlukları silip küçült)
+        const nihaiMarkaId = markaInput.dataset.secilenId || markaInput.value.toLocaleLowerCase('tr-TR').replace(/\s+/g, '');
+
+        // İsim Gizleme Mantığı
+        const gercekIsim = currentUser.displayName;
+        let gosterilecekIsim = gercekIsim;
+        const isimiGizle = document.getElementById('anonimYap').checked;
+
+        if (isimiGizle) {
+            // İsmi kelimelere böl (Örn: Samet Parpar), ilk harfini al, sonuna yıldız ekle (S*** P***)
+            gosterilecekIsim = gercekIsim.split(' ').map(kelime => kelime.charAt(0) + '***').join(' ');
+        }
+
+        try {
+            await addDoc(collection(db, "tesekkurler"), {
+                marka: nihaiMarkaId,    // Artık tam eşleşen veya formatlanmış ID kaydediliyor
+                isim: gosterilecekIsim, 
+                gercekIsim: gercekIsim, 
+                anonimMi: isimiGizle,   
+                uid: currentUser.uid,
+                mesaj: document.getElementById('mesaj').value,
+                durum: "bekliyor",
+                tarih: serverTimestamp()
+            });
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('tesekkurFormu').reset();
+            delete markaInput.dataset.secilenId; // Hafızayı temizle
+        } catch (err) {
+            console.error(err);
+            alert("Bir hata oluştu.");
+        } finally {
+            gonderBtn.disabled = false;
+            gonderBtn.innerText = "Gönder ve Alkışla 👏";
+        }
+    };
+</script>
 </body>
 </html>
