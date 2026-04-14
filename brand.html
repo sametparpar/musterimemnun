@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marka Paneli | Müşteri Memnun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #F7FAFC; }
+        .brand-header-area { 
+            background: white; padding: 40px 20px; text-align: center; 
+            border-bottom: 1px solid #E2E8F0; margin-bottom: 30px;
+        }
+        .brand-logo-img { 
+            width: 120px; height: 120px; object-fit: contain; 
+            margin-bottom: 15px; border-radius: 10px; padding: 10px; border: 1px solid #EDF2F7;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .pending { background: #FEFCBF; color: #B7791F; }
+        .approved { background: #C6F6D5; color: #2F855A; }
+        #loginOverlay { text-align: center; padding: 100px 20px; }
+        #panelIcerik { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <div class="logo" style="font-size: 32px; margin-bottom: 20px;">
+            <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
+        </div>
+        <h3>Marka Temsilcisi Girişi</h3>
+        <p style="color: #718096;">Lütfen yetkili Google hesabınız ile giriş yapın.</p>
+        <button id="brandLoginBtn" class="btn-primary" style="margin-top: 20px; cursor:pointer;">
+            <i class="fa-brands fa-google"></i> Google ile Giriş Yap
+        </button>
+    </div>
+
+    <div id="panelIcerik">
+        <header class="header">
+            <div class="logo">Marka <b>Paneli</b></div>
+            <div id="userInfo" style="font-size: 14px; font-weight: 600;"></div>
+        </header>
+
+        <section class="brand-header-area">
+            <img id="brandLogo" src="https://via.placeholder.com/120?text=Logo" class="brand-logo-img">
+            <h1 id="brandTitle" style="text-transform: capitalize;">Yükleniyor...</h1>
+            <p id="brandTagline">Size gelen tüm teşekkür mesajlarını buradan yönetebilirsiniz.</p>
+        </section>
+
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>📩 Gelen Mesajlar</h3>
+                <button id="logoutBtn" style="background:none; border:none; color:#E53E3E; cursor:pointer; text-decoration:underline;">Çıkış Yap</button>
+            </div>
+            
+            <div id="mesajlarListesi">
+                <p>Veriler senkronize ediliyor...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+            authDomain: "musterimemnun-cb039.firebaseapp.com",
+            projectId: "musterimemnun-cb039",
+            storageBucket: "musterimemnun-cb039.firebasestorage.app",
+            messagingSenderId: "800433057522",
+            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // 1. URL'den Marka Parametresini Al (Örn: brand.html?m=trendyol)
+        const urlParams = new URLSearchParams(window.location.search);
+        const markaId = urlParams.get('m');
+
+        if (!markaId) {
+            document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Hata: Marka belirtilmedi.</h2>";
+        }
+
+        // 2. Yetki Kontrolü ve Veri Çekme
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Admin mi yoksa bu markanın yetkilisi mi?
+                const superAdminMail = "sametparpar@gmail.com";
+                const yetkiDoc = await getDoc(doc(db, "markaYetkileri", markaId));
+                const yetkililer = yetkiDoc.exists() ? yetkiDoc.data().yetkililer : [];
+
+                if (user.email === superAdminMail || yetkililer.includes(user.email)) {
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('panelIcerik').style.display = 'block';
+                    document.getElementById('userInfo').innerText = user.email;
+                    document.getElementById('brandTitle').innerText = markaId;
+                    
+                    mesajlariYukle();
+                } else {
+                    alert("Bu markanın paneline erişim yetkiniz bulunmuyor.");
+                    signOut(auth);
+                }
+            } else {
+                document.getElementById('loginOverlay').style.display = 'block';
+                document.getElementById('panelIcerik').style.display = 'none';
+            }
+        });
+
+        async function mesajlariYukle() {
+            const listeDiv = document.getElementById('mesajlarListesi');
+            const q = query(collection(db, "tesekkurler"), where("marka", "==", markaId));
+            const querySnapshot = await getDocs(q);
+
+            listeDiv.innerHTML = "";
+            if (querySnapshot.empty) {
+                listeDiv.innerHTML = "<p>Henüz bir mesaj bulunmuyor.</p>";
+                return;
+            }
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                listeDiv.innerHTML += `
+                    <div class="card" style="width: 100%; box-sizing: border-box; margin-bottom: 15px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                            <strong>${data.isim}</strong>
+                            <span class="status-badge ${data.durum === 'bekliyor' ? 'pending' : 'approved'}">
+                                ${data.durum === 'bekliyor' ? '⏳ Onay Bekliyor' : '✅ Yayında'}
+                            </span>
+                        </div>
+                        <p style="font-size:14px; color:#4A5568;">"${data.mesaj}"</p>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('brandLoginBtn').onclick = () => signInWithPopup(auth, provider);
+        document.getElementById('logoutBtn').onclick = () => signOut(auth);
+    </script>
+</body>
+</html>
