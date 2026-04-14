@@ -57,100 +57,156 @@
         <p>&copy; 2026 musterimemnun.com - İyiliği Paylaş</p>
     </footer>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
-            authDomain: "musterimemnun-cb039.firebaseapp.com",
-            projectId: "musterimemnun-cb039",
-            storageBucket: "musterimemnun-cb039.firebasestorage.app",
-            messagingSenderId: "800433057522",
-            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+        authDomain: "musterimemnun-cb039.firebaseapp.com",
+        projectId: "musterimemnun-cb039",
+        storageBucket: "musterimemnun-cb039.firebasestorage.app",
+        messagingSenderId: "800433057522",
+        appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        async function onayliMesajlariGetir() {
-            const kartlarAlani = document.getElementById('kartlarAlani');
-            let mesajSayisi = 0;
-            
-            try {
-                // Sadece durumu "onaylandi" olanları getir
-                const q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
-                const querySnapshot = await getDocs(q);
+    // --- ARAMA VE OTOMATİK TAMAMLAMA DEĞİŞKENLERİ ---
+    const mainSearchInput = document.getElementById('mainSearchInput');
+    const mainOneriKutusu = document.getElementById('mainOneriKutusu');
+    let tumMarkalar = [];
 
-                if (querySnapshot.empty) {
-                    kartlarAlani.innerHTML = '<p style="text-align:center; width:100%; color:#718096;">Henüz onaylanmış bir teşekkür bulunmuyor. İlk yazan sen ol!</p>';
+    // 1. Veritabanındaki tüm markaları sayfa açılışında belleğe yükle
+    async function sistemdekiMarkalariYukle() {
+        const querySnapshot = await getDocs(collection(db, "markalar"));
+        querySnapshot.forEach((doc) => {
+            tumMarkalar.push({ id: doc.id, ad: doc.data().ad });
+        });
+    }
+    sistemdekiMarkalariYukle();
+
+    // 2. ANA FONKSİYON: Onaylı Mesajları Getir (Opsiyonel markaId parametresi ile)
+    async function onayliMesajlariGetir(markaId = null) {
+        const kartlarAlani = document.getElementById('kartlarAlani');
+        let mesajSayisi = 0;
+        
+        try {
+            let q;
+            if (markaId) {
+                // Sadece seçilen markaya ait onaylıları getir
+                q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"), where("marka", "==", markaId));
+            } else {
+                // Hepsinin onaylı olanlarını getir
+                q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
+            }
+
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                kartlarAlani.innerHTML = `<p style="text-align:center; width:100%; color:#718096; padding:50px;">${markaId ? 'Bu markaya ait' : 'Henüz'} onaylanmış bir teşekkür bulunmuyor. İlk yazan sen ol!</p>`;
+                if(!markaId) {
                     document.getElementById('statToplam').innerText = "0";
                     document.getElementById('statMutlu').innerText = "0";
-                    return;
                 }
+                return;
+            }
 
-                kartlarAlani.innerHTML = ''; // Yükleniyor yazısını temizle
+            kartlarAlani.innerHTML = ''; // Temizlik
 
-                querySnapshot.forEach((doc) => {
-                    mesajSayisi++;
-                    const data = doc.data();
-                    
-                    // Avatar için ismin baş harfini al
-                    const basHarf = data.isim ? data.isim.charAt(0).toUpperCase() : "M";
-                    
-                    // Avatarlar için rastgele hoş renkler
-                    const renkler = ['#4A5568', '#f39c12', '#00C897', '#e74c3c', '#9b59b6'];
-                    const rastgeleRenk = renkler[Math.floor(Math.random() * renkler.length)];
+            querySnapshot.forEach((doc) => {
+                mesajSayisi++;
+                const data = doc.data();
+                
+                const basHarf = data.isim ? data.isim.charAt(0).toUpperCase() : "M";
+                const renkler = ['#4A5568', '#f39c12', '#00C897', '#e74c3c', '#9b59b6'];
+                const rastgeleRenk = renkler[Math.floor(Math.random() * renkler.length)];
 
-                    // Kart HTML iskeleti
-                    // Eğer veritabanında bu mesaja ait bir markaYaniti varsa o kısmı oluştur, yoksa boş bırak
-                    const markaYanitiKutusu = data.markaYaniti 
-                        ? `<div style="margin-top: 15px; padding: 12px 15px; background-color: #F8FAFC; border-left: 4px solid var(--primary-color); border-radius: 4px; font-size: 13px;">
-                               <strong style="color: var(--text-dark); display:flex; align-items:center; gap:5px; margin-bottom:5px;">
-                                   <i class="fa-solid fa-building-circle-check" style="color: var(--primary-color);"></i> 
-                                   <span style="text-transform: capitalize;">${data.marka}</span> Resmi Yanıtı:
-                               </strong>
-                               <span style="color: #4A5568;">"${data.markaYaniti}"</span>
-                           </div>`
-                        : ''; // Yanıt yoksa hiçbir şey ekleme
+                const markaYanitiKutusu = data.markaYaniti 
+                    ? `<div style="margin-top: 15px; padding: 12px 15px; background-color: #F8FAFC; border-left: 4px solid var(--primary-color); border-radius: 4px; font-size: 13px;">
+                           <strong style="color: var(--text-dark); display:flex; align-items:center; gap:5px; margin-bottom:5px;">
+                               <i class="fa-solid fa-building-circle-check" style="color: var(--primary-color);"></i> 
+                               <span style="text-transform: capitalize;">${data.marka}</span> Resmi Yanıtı:
+                           </strong>
+                           <span style="color: #4A5568;">"${data.markaYaniti}"</span>
+                       </div>`
+                    : '';
 
-                    // Kart HTML iskeleti
-                    const kartHTML = `
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="brand-info">
-                                    <div class="user-avatar" style="background-color: ${rastgeleRenk};">${basHarf}</div>
-                                    <div>
-                                        <h4 style="margin: 0; font-size: 16px; color: #1A202C; text-transform: capitalize;">${data.marka}</h4>
-                                        <div class="stars">★★★★★</div>
-                                    </div>
+                const kartHTML = `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="brand-info">
+                                <div class="user-avatar" style="background-color: ${rastgeleRenk};">${basHarf}</div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 16px; color: #1A202C; text-transform: capitalize;">${data.marka}</h4>
+                                    <div class="stars">★★★★★</div>
                                 </div>
-                                <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
                             </div>
-                            <p class="card-text">${data.mesaj}</p>
-                            
-                            ${markaYanitiKutusu}
-
-                            <div class="card-footer" style="margin-top: 15px;">
-                                <span><i class="fa-regular fa-user"></i> ${data.isim}</span>
-                            </div>
+                            <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
                         </div>
-                    `;
-                    kartlarAlani.innerHTML += kartHTML;
-                });
+                        <p class="card-text">${data.mesaj}</p>
+                        ${markaYanitiKutusu}
+                        <div class="card-footer" style="margin-top: 15px;">
+                            <span><i class="fa-regular fa-user"></i> ${data.isim}</span>
+                        </div>
+                    </div>
+                `;
+                kartlarAlani.innerHTML += kartHTML;
+            });
 
-                // İstatistikleri canlı sayı ile güncelle
+            // Sadece genel aramada istatistikleri güncelle
+            if(!markaId) {
                 document.getElementById('statToplam').innerText = mesajSayisi;
                 document.getElementById('statMutlu').innerText = mesajSayisi;
-
-            } catch (error) {
-                console.error("Mesajlar çekilirken hata:", error);
-                kartlarAlani.innerHTML = '<p style="color:#E53E3E; text-align:center; width:100%;">Mesajlar yüklenirken bir hata oluştu.</p>';
             }
+
+        } catch (error) {
+            console.error("Hata:", error);
+            kartlarAlani.innerHTML = '<p style="color:#E53E3E; text-align:center; width:100%;">Yüklenirken bir hata oluştu.</p>';
+        }
+    }
+
+    // 3. ARAMA İNPUT DİNLEYİCİSİ
+    mainSearchInput.addEventListener('input', function() {
+        const kelime = this.value.toLocaleLowerCase('tr-TR');
+        mainOneriKutusu.innerHTML = '';
+        
+        if (!kelime) {
+            mainOneriKutusu.style.display = 'none';
+            onayliMesajlariGetir(); // Boşsa her şeyi getir
+            return;
         }
 
-        // Sayfa yüklendiğinde fonksiyonu çalıştır
-        onayliMesajlariGetir();
-    </script>
+        const eslesenler = tumMarkalar.filter(m => m.ad.toLocaleLowerCase('tr-TR').includes(kelime));
+
+        if (eslesenler.length > 0) {
+            eslesenler.forEach(marka => {
+                const div = document.createElement('div');
+                div.className = 'oneri-item';
+                div.style.padding = '12px';
+                div.style.cursor = 'pointer';
+                div.innerHTML = `<i class="fa-solid fa-building"></i> ${marka.ad}`;
+                div.onclick = () => {
+                    mainSearchInput.value = marka.ad;
+                    mainOneriKutusu.style.display = 'none';
+                    onayliMesajlariGetir(marka.id); // Sadece bu markayı filtrele
+                };
+                mainOneriKutusu.appendChild(div);
+            });
+            mainOneriKutusu.style.display = 'block';
+        } else {
+            mainOneriKutusu.style.display = 'none';
+        }
+    });
+
+    // Dışarıya tıklayınca önerileri kapat
+    document.addEventListener('click', (e) => {
+        if (e.target !== mainSearchInput) mainOneriKutusu.style.display = 'none';
+    });
+
+    // Başlangıçta hepsini getir
+    onayliMesajlariGetir();
+</script>
 </body>
 </html>
