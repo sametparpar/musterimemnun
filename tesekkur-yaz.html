@@ -7,46 +7,65 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        #loginGerekiyor { text-align: center; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 25px; border-radius: 30px; font-size: 16px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; text-decoration: none; }
+        #tesekkurFormuContainer { display: none; } /* Giriş yapana kadar gizli */
+        .user-chip { display: flex; align-items: center; gap: 10px; background: #EDF2F7; padding: 5px 15px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; width: fit-content; }
+    </style>
 </head>
 <body>
 
     <header class="header">
-        <a href="index.html" class="logo">
+        <a href="index.html" class="logo" style="text-decoration: none;">
             <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
         </a>
     </header>
 
     <section class="hero" style="padding: 40px 20px;">
         <h2>Bir Markaya <span class="highlight">Teşekkür Et</span></h2>
-        <p>Deneyimini paylaş, iyi hizmeti ödüllendir.</p>
+        <p>İyi hizmeti ödüllendirmek için önce giriş yapmalısın.</p>
 
         <div class="form-container">
-            <div id="successMessage"><i class="fa-solid fa-check-circle"></i> Harika! Teşekkür mesajın alındı ve onay sürecine gönderildi.</div>
             
-            <form id="tesekkurFormu">
-                <div class="form-group">
-                    <label for="markaAdi">Marka Adı</label>
-                    <input type="text" id="markaAdi" placeholder="Örn: Trendyol, Getir, Arçelik..." required>
-                </div>
+            <div id="loginGerekiyor">
+                <i class="fa-solid fa-user-lock" style="font-size: 40px; color: #718096;"></i>
+                <p style="margin-top: 15px; color: #4A5568;">Teşekkür mesajı yazabilmek için Google hesabınla giriş yapman gerekiyor.</p>
+                <button id="googleLoginBtn" class="btn-google">
+                    <i class="fa-brands fa-google"></i> Google ile Giriş Yap
+                </button>
+            </div>
+
+            <div id="tesekkurFormuContainer">
+                <div id="successMessage"><i class="fa-solid fa-check-circle"></i> Harika! Teşekkürün alındı ve onay sürecine gönderildi.</div>
                 
-                <div class="form-group">
-                    <label for="kullaniciAdi">İsminiz (Sitede görünecek)</label>
-                    <input type="text" id="kullaniciAdi" placeholder="Örn: Ayşe Y." required>
+                <div class="user-chip">
+                    <img id="userPhoto" src="" style="width: 25px; height: 25px; border-radius: 50%; display: none;">
+                    <span id="userNameDisplay"></span>
                 </div>
 
-                <div class="form-group">
-                    <label for="mesaj">Teşekkür Mesajınız</label>
-                    <textarea id="mesaj" placeholder="Nasıl bir hizmet aldınız? Sizi ne mutlu etti?" required></textarea>
-                </div>
+                <form id="tesekkurFormu">
+                    <div class="form-group">
+                        <label for="markaAdi">Marka Adı</label>
+                        <input type="text" id="markaAdi" placeholder="Örn: Trendyol, Getir, Arçelik..." required>
+                    </div>
 
-                <button type="submit" class="submit-btn" id="gonderBtn">Gönder ve Alkışla 👏</button>
-            </form>
+                    <div class="form-group">
+                        <label for="mesaj">Teşekkür Mesajınız</label>
+                        <textarea id="mesaj" placeholder="Deneyiminizi anlatın..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="gonderBtn">Gönder ve Alkışla 👏</button>
+                </form>
+                <button id="logoutBtn" style="background:none; border:none; color:#E53E3E; cursor:pointer; font-size:12px; margin-top:20px; text-decoration:underline;">Çıkış Yap</button>
+            </div>
         </div>
     </section>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
@@ -54,44 +73,67 @@
             projectId: "musterimemnun-cb039",
             storageBucket: "musterimemnun-cb039.firebasestorage.app",
             messagingSenderId: "800433057522",
-            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b",
-            measurementId: "G-TTFE4XT3JN"
+            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        document.getElementById('tesekkurFormu').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            
+        const loginGerekiyor = document.getElementById('loginGerekiyor');
+        const tesekkurFormuContainer = document.getElementById('tesekkurFormuContainer');
+        let currentUser = null;
+
+        // Giriş/Çıkış Takibi
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loginGerekiyor.style.display = 'none';
+                tesekkurFormuContainer.style.display = 'block';
+                document.getElementById('userNameDisplay').innerText = "Hoş geldin, " + user.displayName;
+                if(user.photoURL) {
+                    document.getElementById('userPhoto').src = user.photoURL;
+                    document.getElementById('userPhoto').style.display = 'block';
+                }
+            } else {
+                currentUser = null;
+                loginGerekiyor.style.display = 'block';
+                tesekkurFormuContainer.style.display = 'none';
+            }
+        });
+
+        // Buton Dinleyiciler
+        document.getElementById('googleLoginBtn').onclick = () => signInWithPopup(auth, provider);
+        document.getElementById('logoutBtn').onclick = () => signOut(auth);
+
+        // Form Gönderme
+        document.getElementById('tesekkurFormu').onsubmit = async (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+
             const gonderBtn = document.getElementById('gonderBtn');
-            gonderBtn.innerHTML = "Gönderiliyor... <i class='fa-solid fa-spinner fa-spin'></i>";
             gonderBtn.disabled = true;
-
-            const marka = document.getElementById('markaAdi').value;
-            const isim = document.getElementById('kullaniciAdi').value;
-            const mesajMetni = document.getElementById('mesaj').value;
+            gonderBtn.innerText = "Gönderiliyor...";
 
             try {
                 await addDoc(collection(db, "tesekkurler"), {
-                    marka: marka,
-                    isim: isim,
-                    mesaj: mesajMetni,
+                    marka: document.getElementById('markaAdi').value,
+                    isim: currentUser.displayName,
+                    uid: currentUser.uid, // Güvenlik kuralı için önemli
+                    mesaj: document.getElementById('mesaj').value,
                     durum: "bekliyor",
                     tarih: serverTimestamp()
                 });
-
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('tesekkurFormu').reset();
-                
-            } catch (e) {
-                console.error("Veri eklenirken hata oluştu: ", e);
-                alert("Bir hata oluştu, lütfen tekrar deneyin.");
+            } catch (err) {
+                alert("Bir hata oluştu.");
             } finally {
-                gonderBtn.innerHTML = "Gönder ve Alkışla 👏";
                 gonderBtn.disabled = false;
+                gonderBtn.innerText = "Gönder ve Alkışla 👏";
             }
-        });
+        };
     </script>
 </body>
 </html>
