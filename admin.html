@@ -3,59 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yönetici Paneli | Müşteri Memnun</title>
+    <title>Süper Admin Paneli | Müşteri Memnun</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background-color: #EDF2F7; }
-        .admin-container {
-            max-width: 800px; margin: 50px auto; background: white;
-            padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .mesaj-karti { border: 1px solid #E2E8F0; padding: 20px; border-radius: 10px; margin-bottom: 15px; background-color: #F8FAFC; }
-        .btn-onay { background-color: #00C897; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-sil { background-color: #E53E3E; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        :root { --admin-bg: #f0f2f5; }
+        body { background-color: var(--admin-bg); min-height: 100vh; font-family: 'Poppins', sans-serif; }
         
-        /* Giriş Ekranı Tasarımı */
-        #loginEkrani { text-align: center; padding: 50px 20px; }
-        .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-google:hover { background-color: #357ABD; }
-        #adminIcerik { display: none; } /* İçerik başlangıçta gizli */
+        /* Navbar ve Sekmeler */
+        .admin-nav { background: white; border-bottom: 1px solid #ddd; padding: 0 20px; display: flex; gap: 30px; justify-content: center; }
+        .nav-link { cursor: pointer; padding: 15px 5px; font-weight: 600; color: #64748b; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .nav-link.active { color: #00C897; border-bottom: 3px solid #00C897; }
+
+        .content-section { display: none; padding: 20px; max-width: 1100px; margin: 0 auto; }
+        .content-section.active { display: block; }
+
+        /* Filtreleme Barı */
+        .filter-bar { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap; }
+        .filter-bar input, .filter-bar select { padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
+
+        /* Tablo ve Kartlar */
+        .admin-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .admin-table th, .admin-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .admin-table th { background: #f8fafc; color: #64748b; font-weight: 600; }
+        
+        .action-btns { display: flex; gap: 8px; }
+        .btn-s { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; color: white; display: flex; align-items: center; gap: 5px; }
+        .btn-onay { background: #00C897; }
+        .btn-sil { background: #ef4444; }
+        .btn-ban { background: #1e293b; }
+
+        /* Form Alanı */
+        .admin-form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 768px) { .grid-form { grid-template-columns: 1fr; } }
+
+        /* Giriş Ekranı */
+        #loginOverlay { text-align: center; padding: 100px 20px; background: white; min-height: 100vh; }
+        .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo">
-            <i class="fa-solid fa-lock" style="color: #E53E3E;"></i> Yönetici <b>Paneli</b>
+    <div id="loginOverlay">
+        <div class="logo" style="font-size: 30px; margin-bottom: 20px;">
+            <i class="fa-solid fa-lock" style="color: #ef4444;"></i> Süper <b>Admin</b>
         </div>
-        <div id="kullaniciBilgisi" style="font-weight: 600; font-size: 14px;"></div>
-    </header>
+        <p style="color: #64748b; margin-bottom: 30px;">Lütfen yetkili e-posta adresinizle giriş yapın.</p>
+        <button id="googleLoginBtn" class="btn-google">
+            <i class="fa-brands fa-google"></i> Google ile Giriş Yap
+        </button>
+    </div>
 
-    <div class="admin-container">
-        
-        <div id="loginEkrani">
-            <h2>Yönetici Girişi</h2>
-            <p style="color: #718096; margin-bottom: 30px;">Bu sayfaya sadece yetkili yöneticiler erişebilir.</p>
-            <button id="googleLoginBtn" class="btn-google">
-                <i class="fa-brands fa-google"></i> Google ile Giriş Yap
-            </button>
-        </div>
+    <div id="adminPanel" style="display: none;">
+        <header class="header">
+            <div class="logo"><i class="fa-solid fa-screwdriver-wrench"></i> Yönetici <b>Paneli</b></div>
+            <div id="kullaniciBilgisi" style="font-weight: 600; font-size: 14px;"></div>
+        </header>
 
-        <div id="adminIcerik">
-            <h2>⏳ Bekleyen Teşekkürler</h2>
-            <p>Aşağıdaki mesajlar henüz sitede görünmüyor. Onayladıkların ana sayfaya düşecek.</p>
-            <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 20px;">
-            <div id="mesajListesi"><p>Yükleniyor...</p></div>
-            <button id="cikisBtn" style="margin-top: 30px; background: transparent; border: none; color: #E53E3E; cursor: pointer; text-decoration: underline;">Sistemden Çıkış Yap</button>
-        </div>
+        <nav class="admin-nav">
+            <div class="nav-link active" onclick="showSection('mesajlarSec')"><i class="fa-solid fa-comment-dots"></i> Mesajlar</div>
+            <div class="nav-link" onclick="showSection('markalarSec')"><i class="fa-solid fa-building"></i> Markalar</div>
+            <div class="nav-link" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış</div>
+        </nav>
 
+        <section id="mesajlarSec" class="content-section active">
+            <div class="filter-bar">
+                <input type="text" id="filtreMarka" placeholder="Marka adıyla ara..." oninput="mesajlariGetir()">
+                <select id="filtreDurum" onchange="mesajlariGetir()">
+                    <option value="bekliyor">⏳ Bekleyen Mesajlar</option>
+                    <option value="onaylandi">✅ Onaylanmış (Eskiler)</option>
+                </select>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Marka</th>
+                        <th>Kullanıcı</th>
+                        <th>Mesaj</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="mesajTbody"></tbody>
+            </table>
+        </section>
+
+        <section id="markalarSec" class="content-section">
+            <div class="admin-form-card">
+                <h3 style="margin-top:0;"><i class="fa-solid fa-plus-circle"></i> Yeni Marka Ekle / Düzenle</h3>
+                <form id="markaForm" class="grid-form">
+                    <input type="text" id="m_id" placeholder="Marka ID (örn: trendyol)" required>
+                    <input type="text" id="m_ad" placeholder="Görünen Ad (örn: Trendyol)" required>
+                    <input type="text" id="m_kategori" placeholder="Kategori (örn: E-Ticaret)">
+                    <input type="text" id="m_yetkililer" placeholder="Yetkili E-postalar (virgül ile ayır)">
+                    <button type="submit" class="submit-btn" style="grid-column: span 2;">Markayı Kaydet</button>
+                </form>
+            </div>
+            
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ad</th>
+                        <th>Kategori</th>
+                        <th>Yetkililer</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="markaTbody"></tbody>
+            </table>
+        </section>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        // Kimlik doğrulama kütüphanelerini ekledik
+        import { getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -72,97 +135,129 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // 🚨 BURAYA GİRİŞ İZNİ VERDİĞİN E-POSTALARI YAZ 🚨
-        const yetkiliEpostalar = [
-            "sametparpar@gmail.com", 
-            "varsa.ortaginin.adresi@gmail.com"
-        ];
+        const yetkiliEpostalar = ["sametparpar@gmail.com"];
 
-        const loginEkrani = document.getElementById('loginEkrani');
-        const adminIcerik = document.getElementById('adminIcerik');
-        const kullaniciBilgisi = document.getElementById('kullaniciBilgisi');
-
-        // Giriş Yap Butonu
-        document.getElementById('googleLoginBtn').addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch(error => console.error(error));
-        });
-
-        // Çıkış Yap Butonu
-        document.getElementById('cikisBtn').addEventListener('click', () => {
-            signOut(auth);
-        });
-
-        // Kullanıcı Durumunu Dinle (Giriş yaptı mı? Çıktı mı?)
+        // OTURUM KONTROLÜ
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Giriş yapıldı, peki yetkili listede mi?
-                if (yetkiliEpostalar.includes(user.email)) {
-                    // Evet, yetkili! Paneli aç.
-                    loginEkrani.style.display = 'none';
-                    adminIcerik.style.display = 'block';
-                    kullaniciBilgisi.innerHTML = `<i class="fa-solid fa-user-check"></i> ${user.email}`;
-                    bekleyenleriGetir(); // Mesajları çekmeye başla
-                } else {
-                    // Hayır, yetkisi yok. Dışarı at.
-                    alert("Bu e-posta adresi için yönetici yetkisi bulunmuyor: " + user.email);
-                    signOut(auth);
-                }
+            if (user && yetkiliEpostalar.includes(user.email)) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('kullaniciBilgisi').innerHTML = `<i class="fa-solid fa-user-shield"></i> ${user.email}`;
+                mesajlariGetir();
+                markalariGetir();
             } else {
-                // Giriş yapılmamış
-                loginEkrani.style.display = 'block';
-                adminIcerik.style.display = 'none';
-                kullaniciBilgisi.innerHTML = '';
+                document.getElementById('loginOverlay').style.display = 'block';
+                document.getElementById('adminPanel').style.display = 'none';
             }
         });
 
-        // --- Eski Bekleyenleri Getir ve Onayla Kodları (Aynı) ---
-        async function bekleyenleriGetir() {
-            const listeDiv = document.getElementById('mesajListesi');
-            listeDiv.innerHTML = ''; 
-            const q = query(collection(db, "tesekkurler"), where("durum", "==", "bekliyor"));
-            const querySnapshot = await getDocs(q);
+        // SEKME GEÇİŞİ
+        window.showSection = (id) => {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
 
-            if (querySnapshot.empty) {
-                listeDiv.innerHTML = '<p style="color: #718096; font-style: italic;">Şu an bekleyen yeni mesaj yok.</p>';
-                return;
-            }
+        // --- MESAJ YÖNETİMİ ---
+        window.mesajlariGetir = async () => {
+            const tbody = document.getElementById('mesajTbody');
+            const markaFiltre = document.getElementById('filtreMarka').value.toLowerCase();
+            const durumFiltre = document.getElementById('filtreDurum').value;
+            
+            tbody.innerHTML = '<tr><td colspan="4">Yükleniyor...</td></tr>';
+            const q = query(collection(db, "tesekkurler"), where("durum", "==", durumFiltre));
+            const snap = await getDocs(q);
+            tbody.innerHTML = "";
 
-            querySnapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                listeDiv.innerHTML += `
-                    <div class="mesaj-karti" id="kart-${id}">
-                        <div style="margin-bottom: 10px;">
-                            <strong>Marka:</strong> <span style="color: #00C897;">${data.marka}</span> <br>
-                            <strong>Kullanıcı:</strong> ${data.isim} 
-                            ${data.anonimMi ? `<span style="font-size:12px; color:#E53E3E;">(Gerçek Adı: ${data.gercekIsim})</span>` : ''} 
-                            <br>
-                        </div>
-                        <p style="background: white; padding: 10px; border-radius: 5px; border: 1px solid #E2E8F0;">"${data.mesaj}"</p>
-                        <div style="margin-top: 15px; display: flex; gap: 10px;">
-                            <button class="btn-onay" onclick="mesajOnayla('${id}')">✅ Onayla</button>
-                            <button class="btn-sil" onclick="mesajSil('${id}')">🗑️ Sil</button>
-                        </div>
-                    </div>
-                `;
+            snap.forEach(d => {
+                const data = d.data();
+                if(data.marka.toLowerCase().includes(markaFiltre)) {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${data.marka}</strong></td>
+                            <td>${data.isim} ${data.anonimMi ? `<br><small style="color:red">(${data.gercekIsim})</small>` : ''}</td>
+                            <td>${data.mesaj}</td>
+                            <td class="action-btns">
+                                ${durumFiltre === 'bekliyor' ? `<button class="btn-s btn-onay" onclick="mesajOnayla('${d.id}')">Onayla</button>` : ''}
+                                <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
+                                <button class="btn-s btn-ban" onclick="kullaniciBanla('${data.uid}', '${data.gercekIsim}')">Banla</button>
+                            </td>
+                        </tr>
+                    `;
+                }
             });
-        }
-
-        window.mesajOnayla = async function(id) {
-            const kart = document.getElementById(`kart-${id}`);
-            kart.style.opacity = "0.5";
-            await updateDoc(doc(db, "tesekkurler", id), { durum: "onaylandi" });
-            bekleyenleriGetir(); 
         };
 
-        window.mesajSil = async function(id) {
+        window.mesajOnayla = async (id) => {
+            await updateDoc(doc(db, "tesekkurler", id), { durum: "onaylandi" });
+            mesajlariGetir();
+        };
+
+        window.mesajSil = async (id) => {
             if(confirm("Bu mesajı kalıcı olarak silmek istediğinize emin misiniz?")) {
-                const kart = document.getElementById(`kart-${id}`);
-                kart.style.opacity = "0.5";
                 await deleteDoc(doc(db, "tesekkurler", id));
-                bekleyenleriGetir(); 
+                mesajlariGetir();
             }
         };
+
+        // --- MARKA YÖNETİMİ ---
+        window.markalariGetir = async () => {
+            const tbody = document.getElementById('markaTbody');
+            tbody.innerHTML = "";
+            const snap = await getDocs(collection(db, "markalar"));
+            
+            for (const d of snap.docs) {
+                const data = d.data();
+                const yetkiSnap = await getDoc(doc(db, "markaYetkileri", d.id));
+                const yetkililer = yetkiSnap.exists() ? yetkiSnap.data().yetkililer.join(', ') : "-";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><code>${d.id}</code></td>
+                        <td>${data.ad}</td>
+                        <td>${data.kategori || '-'}</td>
+                        <td><small>${yetkililer}</small></td>
+                        <td><button class="btn-s btn-ban" onclick="markaDuzenle('${d.id}','${data.ad}','${data.kategori || ''}','${yetkililer}')">Düzenle</button></td>
+                    </tr>
+                `;
+            }
+        };
+
+        document.getElementById('markaForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('m_id').value.toLowerCase().trim();
+            const ad = document.getElementById('m_ad').value;
+            const kat = document.getElementById('m_kategori').value;
+            const mailler = document.getElementById('m_yetkililer').value.split(',').map(m => m.trim());
+
+            await setDoc(doc(db, "markalar", id), { ad: ad, kategori: kat });
+            await setDoc(doc(db, "markaYetkileri", id), { yetkililer: mailler });
+
+            alert("Marka güncellendi!");
+            markalariGetir();
+            e.target.reset();
+        };
+
+        window.markaDuzenle = (id, ad, kat, mailler) => {
+            document.getElementById('m_id').value = id;
+            document.getElementById('m_ad').value = ad;
+            document.getElementById('m_kategori').value = kat;
+            document.getElementById('m_yetkililer').value = mailler;
+            showSection('markalarSec');
+        };
+
+        // --- BAN VE DİĞER ---
+        window.kullaniciBanla = async (uid, isim) => {
+            if(!uid) return;
+            if(confirm(`${isim} kişisini banlamak istiyor musunuz?`)) {
+                await setDoc(doc(db, "yasakliKullanicilar", uid), { isim: isim, tarih: new Date() });
+                alert("Kullanıcı banlandı.");
+            }
+        };
+
+        window.logoutAdmin = () => signOut(auth);
+        document.getElementById('googleLoginBtn').onclick = () => signInWithPopup(auth, provider);
     </script>
 </body>
 </html>
