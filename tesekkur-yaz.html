@@ -50,8 +50,14 @@
 
                 <form id="tesekkurFormu">
                     <div class="form-group">
-                        <label for="markaAdi">Marka Adı</label>
-                        <input type="text" id="markaAdi" placeholder="Örn: Trendyol, Getir, Arçelik..." required>
+                        <label for="markaSelect">Teşekkür Edilecek Marka</label>
+                        <select id="markaSelect" class="form-control" required>
+                            <option value="" disabled selected>Lütfen bir marka seçin...</option>
+                            <option value="trendyol">Trendyol</option>
+                            <option value="getir">Getir</option>
+                            <option value="hepsiburada">Hepsiburada</option>
+                            <option value="arcelik">Arçelik</option>
+                        </select>
                     </div>
 
                     <div class="anonim-secenek">
