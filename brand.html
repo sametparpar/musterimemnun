@@ -64,7 +64,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -81,7 +81,6 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // 1. URL'den Marka Parametresini Al (Örn: brand.html?m=trendyol)
         const urlParams = new URLSearchParams(window.location.search);
         const markaId = urlParams.get('m');
 
@@ -89,10 +88,8 @@
             document.body.innerHTML = "<h2 style='text-align:center; margin-top:50px;'>Hata: Marka belirtilmedi.</h2>";
         }
 
-        // 2. Yetki Kontrolü ve Veri Çekme
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Admin mi yoksa bu markanın yetkilisi mi?
                 const superAdminMail = "sametparpar@gmail.com";
                 const yetkiDoc = await getDoc(doc(db, "markaYetkileri", markaId));
                 const yetkililer = yetkiDoc.exists() ? yetkiDoc.data().yetkililer : [];
@@ -114,6 +111,7 @@
             }
         });
 
+        // MESAJLARI YÜKLEME VE YANIT ALANI
         async function mesajlariYukle() {
             const listeDiv = document.getElementById('mesajlarListesi');
             const q = query(collection(db, "tesekkurler"), where("marka", "==", markaId));
@@ -125,21 +123,56 @@
                 return;
             }
 
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
+            querySnapshot.forEach((documentSnap) => {
+                const data = documentSnap.data();
+                const docId = documentSnap.id;
+                
+                // Eğer marka zaten yanıt vermişse yanıtı göster, vermediyse yanıt yazma kutusunu göster
+                const yanitAlaniHTML = data.markaYaniti 
+                    ? `<div style="margin-top:15px; padding:15px; background-color:#EDF2F7; border-left:4px solid #00C897; border-radius:4px;">
+                         <strong style="font-size:12px; color:#4A5568;">Resmi Yanıtınız:</strong><br>
+                         <span style="font-size:14px; color:#1A202C;">${data.markaYaniti}</span>
+                       </div>`
+                    : `<div style="margin-top:15px;" id="yanitKutusu-${docId}">
+                         <textarea id="yanitText-${docId}" placeholder="Müşteriye resmi teşekkür yanıtınızı yazın..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #CBD5E0; font-family:'Poppins', sans-serif; resize:vertical; min-height:60px; box-sizing:border-box;"></textarea>
+                         <button onclick="yanitGonder('${docId}')" class="btn-primary" style="padding:8px 15px; font-size:14px; margin-top:10px; border:none;">Yanıtı Gönder</button>
+                       </div>`;
+
                 listeDiv.innerHTML += `
-                    <div class="card" style="width: 100%; box-sizing: border-box; margin-bottom: 15px;">
+                    <div class="card" style="width: 100%; box-sizing: border-box; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                            <strong>${data.isim}</strong>
+                            <strong><i class="fa-regular fa-user"></i> ${data.isim}</strong>
                             <span class="status-badge ${data.durum === 'bekliyor' ? 'pending' : 'approved'}">
                                 ${data.durum === 'bekliyor' ? '⏳ Onay Bekliyor' : '✅ Yayında'}
                             </span>
                         </div>
-                        <p style="font-size:14px; color:#4A5568;">"${data.mesaj}"</p>
+                        <p style="font-size:15px; color:#2D3748; line-height:1.6;">"${data.mesaj}"</p>
+                        ${yanitAlaniHTML}
                     </div>
                 `;
             });
         }
+
+        // YANIT GÖNDERME İŞLEMİ (Global scope'a ekliyoruz)
+        window.yanitGonder = async function(docId) {
+            const metin = document.getElementById(`yanitText-${docId}`).value;
+            if(!metin.trim()) {
+                alert("Lütfen bir yanıt yazın.");
+                return;
+            }
+            
+            try {
+                // Veritabanındaki mesaja 'markaYaniti' alanını ekleyerek güncelliyoruz
+                await updateDoc(doc(db, "tesekkurler", docId), {
+                    markaYaniti: metin
+                });
+                alert("Yanıtınız başarıyla kaydedildi ve ana sayfada yayınlandı!");
+                mesajlariYukle(); // Sayfayı yenileyip yanıtı ekranda göster
+            } catch (error) {
+                console.error(error);
+                alert("Bir hata oluştu. Yetkiniz olduğundan emin olun.");
+            }
+        };
 
         document.getElementById('brandLoginBtn').onclick = () => signInWithPopup(auth, provider);
         document.getElementById('logoutBtn').onclick = () => signOut(auth);
