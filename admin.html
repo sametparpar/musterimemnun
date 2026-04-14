@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici Paneli | Müşteri Memnun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #EDF2F7; }
+        .admin-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .mesaj-karti {
+            border: 1px solid #E2E8F0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background-color: #F8FAFC;
+        }
+        .btn-onay {
+            background-color: #00C897;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-sil {
+            background-color: #E53E3E;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <i class="fa-solid fa-lock" style="color: #E53E3E;"></i> Yönetici <b>Paneli</b>
+        </div>
+        <a href="index.html" class="btn-primary" style="background-color: #4A5568;">Siteye Dön</a>
+    </header>
+
+    <div class="admin-container">
+        <h2>⏳ Bekleyen Teşekkürler</h2>
+        <p>Aşağıdaki mesajlar henüz sitede görünmüyor. Onayladıkların ana sayfaya düşecek.</p>
+        <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 20px;">
+        
+        <div id="mesajListesi">
+            <p>Yükleniyor...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Senin Firebase Anahtarların
+        const firebaseConfig = {
+            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+            authDomain: "musterimemnun-cb039.firebaseapp.com",
+            projectId: "musterimemnun-cb039",
+            storageBucket: "musterimemnun-cb039.firebasestorage.app",
+            messagingSenderId: "800433057522",
+            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Bekleyen mesajları veritabanından çekme fonksiyonu
+        async function bekleyenleriGetir() {
+            const listeDiv = document.getElementById('mesajListesi');
+            listeDiv.innerHTML = ''; 
+
+            const q = query(collection(db, "tesekkurler"), where("durum", "==", "bekliyor"));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                listeDiv.innerHTML = '<p style="color: #718096; font-style: italic;">Şu an bekleyen yeni mesaj yok.</p>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                
+                listeDiv.innerHTML += `
+                    <div class="mesaj-karti" id="kart-${id}">
+                        <div style="margin-bottom: 10px;">
+                            <strong>Marka:</strong> <span style="color: #00C897;">${data.marka}</span> <br>
+                            <strong>Kullanıcı:</strong> ${data.isim} <br>
+                        </div>
+                        <p style="background: white; padding: 10px; border-radius: 5px; border: 1px solid #E2E8F0;">"${data.mesaj}"</p>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn-onay" onclick="mesajOnayla('${id}')">✅ Onayla</button>
+                            <button class="btn-sil" onclick="mesajSil('${id}')">🗑️ Sil</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Onaylama İşlemi (Global scope'a ekliyoruz ki butonlar bulabilsin)
+        window.mesajOnayla = async function(id) {
+            const kart = document.getElementById(`kart-${id}`);
+            kart.style.opacity = "0.5";
+            await updateDoc(doc(db, "tesekkurler", id), { durum: "onaylandi" });
+            bekleyenleriGetir(); // Listeyi yenile
+        };
+
+        // Silme İşlemi
+        window.mesajSil = async function(id) {
+            if(confirm("Bu mesajı kalıcı olarak silmek istediğinize emin misiniz?")) {
+                const kart = document.getElementById(`kart-${id}`);
+                kart.style.opacity = "0.5";
+                await deleteDoc(doc(db, "tesekkurler", id));
+                bekleyenleriGetir(); // Listeyi yenile
+            }
+        };
+
+        // Sayfa açıldığında mesajları getir
+        bekleyenleriGetir();
+    </script>
+</body>
+</html>
