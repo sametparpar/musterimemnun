@@ -134,7 +134,9 @@
                     <div class="mesaj-karti" id="kart-${id}">
                         <div style="margin-bottom: 10px;">
                             <strong>Marka:</strong> <span style="color: #00C897;">${data.marka}</span> <br>
-                            <strong>Kullanıcı:</strong> ${data.isim} <br>
+                            <strong>Kullanıcı:</strong> ${data.isim} 
+                            ${data.anonimMi ? `<span style="font-size:12px; color:#E53E3E;">(Gerçek Adı: ${data.gercekIsim})</span>` : ''} 
+                            <br>
                         </div>
                         <p style="background: white; padding: 10px; border-radius: 5px; border: 1px solid #E2E8F0;">"${data.mesaj}"</p>
                         <div style="margin-top: 15px; display: flex; gap: 10px;">
