@@ -9,38 +9,18 @@
     <style>
         body { background-color: #EDF2F7; }
         .admin-container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 800px; margin: 50px auto; background: white;
+            padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .mesaj-karti {
-            border: 1px solid #E2E8F0;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            background-color: #F8FAFC;
-        }
-        .btn-onay {
-            background-color: #00C897;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-sil {
-            background-color: #E53E3E;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .mesaj-karti { border: 1px solid #E2E8F0; padding: 20px; border-radius: 10px; margin-bottom: 15px; background-color: #F8FAFC; }
+        .btn-onay { background-color: #00C897; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-sil { background-color: #E53E3E; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* Giriş Ekranı Tasarımı */
+        #loginEkrani { text-align: center; padding: 50px 20px; }
+        .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-google:hover { background-color: #357ABD; }
+        #adminIcerik { display: none; } /* İçerik başlangıçta gizli */
     </style>
 </head>
 <body>
@@ -49,24 +29,35 @@
         <div class="logo">
             <i class="fa-solid fa-lock" style="color: #E53E3E;"></i> Yönetici <b>Paneli</b>
         </div>
-        <a href="index.html" class="btn-primary" style="background-color: #4A5568;">Siteye Dön</a>
+        <div id="kullaniciBilgisi" style="font-weight: 600; font-size: 14px;"></div>
     </header>
 
     <div class="admin-container">
-        <h2>⏳ Bekleyen Teşekkürler</h2>
-        <p>Aşağıdaki mesajlar henüz sitede görünmüyor. Onayladıkların ana sayfaya düşecek.</p>
-        <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 20px;">
         
-        <div id="mesajListesi">
-            <p>Yükleniyor...</p>
+        <div id="loginEkrani">
+            <h2>Yönetici Girişi</h2>
+            <p style="color: #718096; margin-bottom: 30px;">Bu sayfaya sadece yetkili yöneticiler erişebilir.</p>
+            <button id="googleLoginBtn" class="btn-google">
+                <i class="fa-brands fa-google"></i> Google ile Giriş Yap
+            </button>
         </div>
+
+        <div id="adminIcerik">
+            <h2>⏳ Bekleyen Teşekkürler</h2>
+            <p>Aşağıdaki mesajlar henüz sitede görünmüyor. Onayladıkların ana sayfaya düşecek.</p>
+            <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 20px;">
+            <div id="mesajListesi"><p>Yükleniyor...</p></div>
+            <button id="cikisBtn" style="margin-top: 30px; background: transparent; border: none; color: #E53E3E; cursor: pointer; text-decoration: underline;">Sistemden Çıkış Yap</button>
+        </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // Kimlik doğrulama kütüphanelerini ekledik
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // Senin Firebase Anahtarların
         const firebaseConfig = {
             apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
             authDomain: "musterimemnun-cb039.firebaseapp.com",
@@ -78,12 +69,56 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        // Bekleyen mesajları veritabanından çekme fonksiyonu
+        // 🚨 BURAYA GİRİŞ İZNİ VERDİĞİN E-POSTALARI YAZ 🚨
+        const yetkiliEpostalar = [
+            "sametparpar@gmail.com", 
+            "varsa.ortaginin.adresi@gmail.com"
+        ];
+
+        const loginEkrani = document.getElementById('loginEkrani');
+        const adminIcerik = document.getElementById('adminIcerik');
+        const kullaniciBilgisi = document.getElementById('kullaniciBilgisi');
+
+        // Giriş Yap Butonu
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(error => console.error(error));
+        });
+
+        // Çıkış Yap Butonu
+        document.getElementById('cikisBtn').addEventListener('click', () => {
+            signOut(auth);
+        });
+
+        // Kullanıcı Durumunu Dinle (Giriş yaptı mı? Çıktı mı?)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Giriş yapıldı, peki yetkili listede mi?
+                if (yetkiliEpostalar.includes(user.email)) {
+                    // Evet, yetkili! Paneli aç.
+                    loginEkrani.style.display = 'none';
+                    adminIcerik.style.display = 'block';
+                    kullaniciBilgisi.innerHTML = `<i class="fa-solid fa-user-check"></i> ${user.email}`;
+                    bekleyenleriGetir(); // Mesajları çekmeye başla
+                } else {
+                    // Hayır, yetkisi yok. Dışarı at.
+                    alert("Bu e-posta adresi için yönetici yetkisi bulunmuyor: " + user.email);
+                    signOut(auth);
+                }
+            } else {
+                // Giriş yapılmamış
+                loginEkrani.style.display = 'block';
+                adminIcerik.style.display = 'none';
+                kullaniciBilgisi.innerHTML = '';
+            }
+        });
+
+        // --- Eski Bekleyenleri Getir ve Onayla Kodları (Aynı) ---
         async function bekleyenleriGetir() {
             const listeDiv = document.getElementById('mesajListesi');
             listeDiv.innerHTML = ''; 
-
             const q = query(collection(db, "tesekkurler"), where("durum", "==", "bekliyor"));
             const querySnapshot = await getDocs(q);
 
@@ -95,7 +130,6 @@
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
                 const id = docSnap.id;
-                
                 listeDiv.innerHTML += `
                     <div class="mesaj-karti" id="kart-${id}">
                         <div style="margin-bottom: 10px;">
@@ -112,26 +146,21 @@
             });
         }
 
-        // Onaylama İşlemi (Global scope'a ekliyoruz ki butonlar bulabilsin)
         window.mesajOnayla = async function(id) {
             const kart = document.getElementById(`kart-${id}`);
             kart.style.opacity = "0.5";
             await updateDoc(doc(db, "tesekkurler", id), { durum: "onaylandi" });
-            bekleyenleriGetir(); // Listeyi yenile
+            bekleyenleriGetir(); 
         };
 
-        // Silme İşlemi
         window.mesajSil = async function(id) {
             if(confirm("Bu mesajı kalıcı olarak silmek istediğinize emin misiniz?")) {
                 const kart = document.getElementById(`kart-${id}`);
                 kart.style.opacity = "0.5";
                 await deleteDoc(doc(db, "tesekkurler", id));
-                bekleyenleriGetir(); // Listeyi yenile
+                bekleyenleriGetir(); 
             }
         };
-
-        // Sayfa açıldığında mesajları getir
-        bekleyenleriGetir();
     </script>
 </body>
 </html>
