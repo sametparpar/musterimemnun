@@ -34,7 +34,9 @@
         .btn-onay { background: #00C897; }
         .btn-sil { background: #ef4444; }
         .btn-ban { background: #1e293b; }
-        .btn-vitrin { background: #F6E05E; color: #1A202C; } /* YENİ: Vitrin Butonu Rengi */
+        .btn-vitrin { background: #F6E05E; color: #1A202C; } 
+        /* YENİ: Jest Butonu Stili */
+        .btn-jest { background: #8B5CF6; color: white; } 
 
         /* Form Alanı */
         .admin-form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -82,7 +84,9 @@
                 <thead>
                     <tr>
                         <th>Marka</th>
-                        <th>Kullanıcı Bilgisi</th> <th>Mesaj & Analitik</th> <th>İşlem</th>
+                        <th>Kullanıcı Bilgisi</th> 
+                        <th>Mesaj & Analitik</th> 
+                        <th>İşlem</th>
                     </tr>
                 </thead>
                 <tbody id="mesajTbody"></tbody>
@@ -174,7 +178,6 @@
                 const data = d.data();
                 if(data.marka.toLowerCase().includes(markaFiltre)) {
                     
-                    // YENİ: Şehir ve Etiketleri Admin İçin Formatlama
                     const sehirBilgisi = data.sehir ? `<br><small style="color:#64748b; margin-top:5px; display:block;"><i class="fa-solid fa-location-dot"></i> ${data.sehir}</small>` : '';
                     let etiketlerHTML = '';
                     if (data.etiketler && data.etiketler.length > 0) {
@@ -185,18 +188,25 @@
                         etiketlerHTML += '</div>';
                     }
 
+                    // YENİ: Varsa eklenmiş jesti ekranda göster
+                    const jestBilgisi = data.jest ? `<div style="margin-top:8px; font-size:11px; color:#8B5CF6; background:#F3F0FF; padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-gift"></i> Jest: ${data.jest}</div>` : '';
+
                     tbody.innerHTML += `
                         <tr>
-                            <td><strong>${data.marka}</strong></td>
+                            <td><strong style="text-transform: capitalize;">${data.marka}</strong></td>
                             <td>
                                 ${data.isim} ${data.anonimMi ? `<br><small style="color:red">(${data.gercekIsim})</small>` : ''}
-                                ${sehirBilgisi} </td>
+                                ${sehirBilgisi} 
+                            </td>
                             <td>
                                 <div>${data.mesaj}</div>
-                                ${etiketlerHTML} </td>
+                                ${etiketlerHTML} 
+                                ${jestBilgisi}
+                            </td>
                             <td class="action-btns">
                                 ${durumFiltre === 'bekliyor' ? `<button class="btn-s btn-onay" onclick="mesajOnayla('${d.id}')">Onayla</button>` : ''}
-                                ${durumFiltre === 'onaylandi' ? `<button class="btn-s btn-vitrin" onclick="vitrineTasi('${d.id}')"><i class="fa-solid fa-star"></i> Vitrine Taşı</button>` : ''} <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
+                                ${durumFiltre === 'onaylandi' ? `<button class="btn-s btn-vitrin" onclick="vitrineTasi('${d.id}')"><i class="fa-solid fa-star"></i> Vitrine Taşı</button>` : ''} 
+                                ${durumFiltre === 'onaylandi' ? `<button class="btn-s btn-jest" onclick="jestEkle('${d.id}', '${data.marka}')"><i class="fa-solid fa-gift"></i> Jest Yap</button>` : ''} <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
                                 <button class="btn-s btn-ban" onclick="kullaniciBanla('${data.uid}', '${data.gercekIsim}')">Banla</button>
                             </td>
                         </tr>
@@ -217,7 +227,6 @@
             }
         };
 
-        // YENİ: VİTRİNE TAŞIMA İŞLEMİ
         window.vitrineTasi = async (id) => {
             if(confirm("Bu harika hikayeyi ana sayfadaki 'İyilik Vitrini'ne taşımak istiyor musunuz?")) {
                 try {
@@ -225,6 +234,21 @@
                     alert("✅ Harika! Mesaj vitrin için işaretlendi.");
                 } catch(error) {
                     alert("Bir hata oluştu.");
+                }
+            }
+        };
+
+        // YENİ: JEST YAPMA FONKSİYONU
+        window.jestEkle = async (id, markaAdi) => {
+            const jestMetni = prompt(`${markaAdi} markası bu müşteriye ne hediye etti? \n(Örn: 1 Fincan Kahve, %15 İndirim Kuponu, Sürpriz Kutu)`);
+            
+            if (jestMetni && jestMetni.trim() !== "") {
+                try {
+                    await updateDoc(doc(db, "tesekkurler", id), { jest: jestMetni });
+                    alert("🎁 Jest başarıyla eklendi! Artık ana sayfada görünecek.");
+                    mesajlariGetir(); // Tabloyu anında yenile
+                } catch (error) {
+                    alert("Hata oluştu.");
                 }
             }
         };
