@@ -166,35 +166,38 @@
     const mainOneriKutusu = document.getElementById('mainOneriKutusu');
     let tumMarkalar = [];
 
-    // --- 1. DİNAMİK VİTRİNİ GETİR ---
-    // --- 1. DİNAMİK VİTRİNİ GETİR (GÜNCELLENMİŞ VE GÜVENLİ) ---
-    // --- 1. DİNAMİK VİTRİNİ GETİR (AJAN MODU) ---
+// --- 1. DİNAMİK VİTRİNİ GETİR (İZİN SORUNU ÇÖZÜLMÜŞ VERSİYON) ---
     async function vitrinMesajiniGetir() {
         const vitrinAlani = document.getElementById('dinamikVitrinAlani');
-        // Test 1: HTML gerçekten çalışıyor mu? (Ekranda turuncu yazı görmelisin)
-        vitrinAlani.innerHTML = '<p style="text-align:center; color:orange; margin-bottom:20px;">Vitrin aranıyor...</p>';
-
+        
         try {
-            console.log("Adım 1: Vitrin sorgusu başlıyor...");
-            const q = query(collection(db, "tesekkurler"), where("vitrin", "==", true));
+            // ÇÖZÜM: Firebase'den sadece izin verilenleri (onaylandi) çekiyoruz
+            const q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
             const snap = await getDocs(q);
 
-            console.log("Adım 2: Gelen belge sayısı:", snap.size);
+            let vitrinMesajlari = [];
+            
+            // Gelen onaylı mesajların içinden sadece vitrin=true olanları JS ile ayıklıyoruz
+            snap.forEach(doc => {
+                const data = doc.data();
+                if (data.vitrin === true) {
+                    vitrinMesajlari.push({ id: doc.id, ...data });
+                }
+            });
 
-            if (snap.empty) {
-                console.log("HATA: vitrin=true olan belge bulunamadı!");
-                vitrinAlani.innerHTML = '<p style="text-align:center; color:red;">Vitrin etiketi olan mesaj bulunamadı.</p>'; 
+            // Eğer hiç vitrin mesajı yoksa alanı boş bırak
+            if (vitrinMesajlari.length === 0) {
+                vitrinAlani.innerHTML = ''; 
                 return;
             }
 
-            let vitrinMesajlari = [];
-            snap.forEach(doc => {
-                vitrinMesajlari.push({ id: doc.id, ...doc.data() });
+            // GÜVENLİ SIRALAMA: En yeniyi bul
+            vitrinMesajlari.sort((a, b) => {
+                let zamanA = (a.tarih && typeof a.tarih.toMillis === 'function') ? a.tarih.toMillis() : 0;
+                let zamanB = (b.tarih && typeof b.tarih.toMillis === 'function') ? b.tarih.toMillis() : 0;
+                return zamanB - zamanA;
             });
-
-            console.log("Adım 3: Diziye alınan veriler:", vitrinMesajlari);
-
-            // Şimdilik sıralama ile uğraşmadan direkt bulduğu ilk vitrini ekrana bassın
+            
             const vitrinData = vitrinMesajlari[0]; 
 
             let etiketlerHTML = '';
@@ -241,11 +244,9 @@
                     </div>
                 </section>
             `;
-            console.log("Adım 4: Vitrin başarıyla ekrana basıldı!");
 
         } catch (error) {
-            console.error("Vitrin Çöktü! Hata detayı:", error);
-            vitrinAlani.innerHTML = `<p style="color:red; text-align:center;">Hata oluştu: ${error.message}</p>`;
+            console.error("Vitrin yüklenirken bir hata oluştu:", error);
         }
     }
 
