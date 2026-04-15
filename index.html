@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* YENİ: İYİLİK VİTRİNİ TASARIMI */
+        /* İYİLİK VİTRİNİ TASARIMI */
         .showcase-container {
             max-width: 800px;
             margin: -30px auto 40px auto;
@@ -36,60 +36,18 @@
             margin-bottom: 15px;
             letter-spacing: 0.5px;
         }
-        .showcase-badge i { margin-right: 5px; }
-        .showcase-title {
-            font-size: 20px;
-            color: #2D3748;
-            margin-bottom: 15px;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-        .showcase-text {
-            font-size: 15px;
-            color: #4A5568;
-            line-height: 1.7;
-            font-style: italic;
-            position: relative;
-            z-index: 2;
-        }
-        .showcase-quote-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 80px;
-            color: rgba(0, 200, 151, 0.05);
-            z-index: 1;
-        }
-        .showcase-footer {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-        }
-        .gerceklik-kaniti {
-            font-size: 11px;
-            color: #A0AEC0;
-            max-width: 60%;
-        }
-        .showcase-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #1A202C;
-        }
-        .showcase-brand-logo {
-            width: 35px;
-            height: 35px;
-            background: #EDF2F7;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00C897;
-            font-size: 18px;
+        .showcase-title { font-size: 20px; color: #2D3748; margin-bottom: 15px; font-weight: 700; line-height: 1.4; }
+        .showcase-text { font-size: 15px; color: #4A5568; line-height: 1.7; font-style: italic; position: relative; z-index: 2; }
+        .showcase-quote-icon { position: absolute; top: 20px; right: 20px; font-size: 80px; color: rgba(0, 200, 151, 0.05); z-index: 1; }
+        .showcase-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+        .gerceklik-kaniti { font-size: 11px; color: #A0AEC0; max-width: 60%; }
+        .showcase-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1A202C; }
+        .showcase-brand-logo { width: 35px; height: 35px; background: #EDF2F7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00C897; font-size: 18px; }
+        
+        @media (max-width: 768px) {
+            .showcase-footer { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .gerceklik-kaniti { max-width: 100%; }
+            .showcase-brand { width: 100%; justify-content: flex-end; }
         }
     </style>
 </head>
@@ -102,9 +60,7 @@
         <div class="search-bar" style="position: relative; max-width: 600px; margin: 0 auto;">
             <input type="text" id="mainSearchInput" placeholder="Marka ara... (Örn: Trendyol)" autocomplete="off">
             <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            
-            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-            </div>
+            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);"></div>
         </div>
         <a href="tesekkur-yaz.html" class="btn-primary">
             <i class="fa-solid fa-plus"></i> Teşekkür Yaz
@@ -132,42 +88,8 @@
         </div>
     </section>
 
-    <section class="showcase-container">
-        <div class="showcase-card">
-            <i class="fa-solid fa-quote-right showcase-quote-icon"></i>
-            <div class="showcase-badge">
-                <i class="fa-solid fa-crown"></i> Marka Tarafından Öne Çıkarıldı
-            </div>
-            
-            <h3 class="showcase-title">"Yağmurlu havada mağduriyetimi sadece 15 dakikada çözen kurye arkadaşa minnettarım..."</h3>
-            
-            <p class="showcase-text">
-                Dün akşam yoğun yağmurda yolda kaldım ve siparişimdeki bir eksiklik yüzünden çok gergindim. Müşteri hizmetlerini aradığımda karşıma çıkan temsilci o kadar anlayışlıydı ki, sadece özür dilemekle kalmadı, bölgedeki en yakın kurye arkadaşı yönlendirerek eksik ürünümü 15 dakika içinde sıcak bir şekilde kapıma kadar getirdi. Sadece bir sipariş değil, günümü kurtardınız.
-            </p>
+    <div id="dinamikVitrinAlani"></div>
 
-            <div style="margin-top: 15px; display: flex; gap: 8px;">
-                <span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">⚡ Hız</span>
-                <span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">🛠️ Çözüm Odaklılık</span>
-            </div>
-
-            <div class="showcase-footer">
-                <div class="gerceklik-kaniti">
-                    <i class="fa-solid fa-shield-halved" style="color:#A0AEC0;"></i> 
-                    Bu teşekkür, platformumuzdaki bir kullanıcı tarafından organik olarak yapılmış; diğer müşterilere ilham vermesi amacıyla <b>Getir</b> desteğiyle şeffaf bir şekilde öne çıkarılmıştır.
-                </div>
-                
-                <div class="showcase-brand">
-                    <div style="text-align: right; line-height: 1.2;">
-                        <span style="font-size: 14px;">Merve K. <span style="color:#A0AEC0; font-weight:400; font-size:12px;">- İstanbul</span></span><br>
-                        <span style="font-size: 12px; color: #00C897;">Getir Ekibine</span>
-                    </div>
-                    <div class="showcase-brand-logo">
-                        <i class="fa-solid fa-motorcycle"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <h3 style="text-align: center; color: #4A5568; margin-bottom: 20px; font-weight: 600;">En Son Teşekkürler</h3>
     
     <section class="cards-container" id="kartlarAlani">
@@ -200,13 +122,93 @@
     const mainOneriKutusu = document.getElementById('mainOneriKutusu');
     let tumMarkalar = [];
 
+    // --- 1. DİNAMİK VİTRİNİ GETİR ---
+    async function vitrinMesajiniGetir() {
+        const vitrinAlani = document.getElementById('dinamikVitrinAlani');
+        try {
+            // Sadece 'vitrin' değeri true olanları çekiyoruz
+            const q = query(collection(db, "tesekkurler"), where("vitrin", "==", true));
+            const snap = await getDocs(q);
+
+            if (snap.empty) {
+                vitrinAlani.innerHTML = ''; // Vitrin mesajı yoksa boş kalsın
+                return;
+            }
+
+            // Gelen mesajları tarihe göre sıralayıp EN YENİSİNİ alacağız
+            let vitrinMesajlari = [];
+            snap.forEach(doc => {
+                const data = doc.data();
+                if(data.tarih) { // Tarih alanı varsa listeye ekle
+                    vitrinMesajlari.push({ id: doc.id, ...data });
+                }
+            });
+
+            // Yeniden eskiye sırala (Milisaniye hesabı)
+            vitrinMesajlari.sort((a, b) => b.tarih.toMillis() - a.tarih.toMillis());
+            
+            // En güncel vitrin mesajını seç
+            const vitrinData = vitrinMesajlari[0]; 
+
+            // Etiketleri hazırla
+            let etiketlerHTML = '';
+            if (vitrinData.etiketler && vitrinData.etiketler.length > 0) {
+                etiketlerHTML = '<div style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap;">';
+                vitrinData.etiketler.forEach(etiket => {
+                    etiketlerHTML += `<span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">${etiket}</span>`;
+                });
+                etiketlerHTML += '</div>';
+            }
+
+            const sehirMetni = vitrinData.sehir ? `<span style="color:#A0AEC0; font-weight:400; font-size:12px;">- ${vitrinData.sehir}</span>` : '';
+
+            // Vitrin HTML'ini verilerle doldur
+            vitrinAlani.innerHTML = `
+                <section class="showcase-container">
+                    <div class="showcase-card">
+                        <i class="fa-solid fa-quote-right showcase-quote-icon"></i>
+                        <div class="showcase-badge">
+                            <i class="fa-solid fa-crown"></i> Marka Tarafından Öne Çıkarıldı
+                        </div>
+                        
+                        <h3 class="showcase-title" style="text-transform: capitalize;">${vitrinData.marka} için harika bir deneyim!</h3>
+                        
+                        <p class="showcase-text">${vitrinData.mesaj}</p>
+
+                        ${etiketlerHTML}
+
+                        <div class="showcase-footer">
+                            <div class="gerceklik-kaniti">
+                                <i class="fa-solid fa-shield-halved" style="color:#A0AEC0;"></i> 
+                                Bu teşekkür, platformumuzdaki bir kullanıcı tarafından organik olarak yapılmış; diğer müşterilere ilham vermesi amacıyla <b style="text-transform: capitalize;">${vitrinData.marka}</b> desteğiyle şeffaf bir şekilde öne çıkarılmıştır.
+                            </div>
+                            
+                            <div class="showcase-brand">
+                                <div style="text-align: right; line-height: 1.2;">
+                                    <span style="font-size: 14px;">${vitrinData.isim} ${sehirMetni}</span><br>
+                                    <span style="font-size: 12px; color: #00C897; text-transform: capitalize;">${vitrinData.marka} Ekibine</span>
+                                </div>
+                                <div class="showcase-brand-logo">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+
+        } catch (error) {
+            console.error("Vitrin yüklenirken hata oluştu:", error);
+        }
+    }
+
+    // --- 2. DİĞER FONKSİYONLAR ---
     async function sistemdekiMarkalariYukle() {
         const querySnapshot = await getDocs(collection(db, "markalar"));
         querySnapshot.forEach((doc) => {
             tumMarkalar.push({ id: doc.id, ad: doc.data().ad });
         });
     }
-    sistemdekiMarkalariYukle();
 
     async function onayliMesajlariGetir(markaId = null) {
         const kartlarAlani = document.getElementById('kartlarAlani');
@@ -303,6 +305,7 @@
         }
     }
 
+    // --- 3. EVENT LİSTENER'LAR VE BAŞLATMA ---
     mainSearchInput.addEventListener('input', function() {
         const kelime = this.value.toLocaleLowerCase('tr-TR');
         mainOneriKutusu.innerHTML = '';
@@ -339,7 +342,10 @@
         if (e.target !== mainSearchInput) mainOneriKutusu.style.display = 'none';
     });
 
-    onayliMesajlariGetir();
+    // Sayfa açıldığında çalışacak fonksiyonlar
+    sistemdekiMarkalariYukle();
+    vitrinMesajiniGetir(); // Önce vitrini getir
+    onayliMesajlariGetir(); // Sonra alt listeyi getir
 </script>
 </body>
 </html>
