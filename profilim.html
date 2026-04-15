@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim | Müşteri Memnun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-header { text-align: center; padding: 40px 20px; background: white; border-radius: 15px; margin-bottom: 30px; }
+        .user-big-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #00C897; margin-bottom: 15px; }
+        .my-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #CBD5E0; }
+        .status-badge { font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
+        .status-bekliyor { background: #FEFCBF; color: #975A16; }
+        .status-onaylandi { background: #C6F6D5; color: #22543D; }
+        .brand-reply { margin-top: 15px; padding: 10px; background: #F7FAFC; border-radius: 8px; font-size: 13px; border: 1px dashed #CBD5E0; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo" style="text-decoration: none;">
+            <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
+        </a>
+        <a href="index.html" class="btn-primary" style="background: #718096;"><i class="fa-solid fa-house"></i> Ana Sayfa</a>
+    </header>
+
+    <div class="container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+        <div class="profile-header">
+            <img id="p_foto" src="" class="user-big-avatar" style="display:none;">
+            <h2 id="p_isim" style="margin:0;">Yükleniyor...</h2>
+            <p id="p_email" style="color: #718096; font-size: 14px;"></p>
+        </div>
+
+        <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-clapping-hands" style="color:#00C897;"></i> Teşekkürlerim</h3>
+        <div id="tesekkurListesi">
+            <p style="text-align: center; color: #a0aec0;">Yükleniyor...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+            authDomain: "musterimemnun-cb039.firebaseapp.com",
+            projectId: "musterimemnun-cb039",
+            storageBucket: "musterimemnun-cb039.firebasestorage.app",
+            messagingSenderId: "800433057522",
+            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById('p_isim').innerText = user.displayName;
+                document.getElementById('p_email').innerText = user.email;
+                if(user.photoURL) {
+                    document.getElementById('p_foto').src = user.photoURL;
+                    document.getElementById('p_foto').style.display = 'inline-block';
+                }
+                
+                // Kullanıcının mesajlarını getir
+                const q = query(collection(db, "tesekkurler"), where("uid", "==", user.uid));
+                const snap = await getDocs(q);
+                const liste = document.getElementById('tesekkurListesi');
+                liste.innerHTML = "";
+
+                if(snap.empty) {
+                    liste.innerHTML = "<p>Henüz bir teşekkür yazmamışsın. İlk teşekkürünü yazmaya ne dersin?</p>";
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const durumClass = data.durum === 'onaylandi' ? 'status-onaylandi' : 'status-bekliyor';
+                    const durumMetni = data.durum === 'onaylandi' ? 'YAYINDA' : 'ONAY BEKLİYOR';
+                    
+                    const yanitHTML = data.markaYaniti ? `
+                        <div class="brand-reply">
+                            <strong>Marka Yanıtı:</strong> "${data.markaYaniti}"
+                        </div>
+                    ` : '';
+
+                    liste.innerHTML += `
+                        <div class="my-card" style="border-left-color: ${data.durum === 'onaylandi' ? '#00C897' : '#ECC94B'}">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <strong style="text-transform: capitalize;">${data.marka}</strong>
+                                <span class="status-badge ${durumClass}">${durumMetni}</span>
+                            </div>
+                            <p style="font-size: 14px; color: #4A5568; margin:0;">${data.mesaj}</p>
+                            ${yanitHTML}
+                        </div>
+                    `;
+                });
+            } else {
+                window.location.href = "tesekkur-yaz.html";
+            }
+        });
+    </script>
+</body>
+</html>
