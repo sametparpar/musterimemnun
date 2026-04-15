@@ -8,88 +8,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* İYİLİK VİTRİNİ TASARIMI */
-        .showcase-container {
-            max-width: 800px;
-            margin: -30px auto 40px auto;
-            position: relative;
-            z-index: 10;
-            padding: 0 20px;
-        }
-        .showcase-card {
-            background: linear-gradient(145deg, #ffffff, #f0fdf4);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 200, 151, 0.15);
-            border: 1px solid #d1fae5;
-            position: relative;
-            overflow: hidden;
-        }
-        .showcase-badge {
-            display: inline-block;
-            background-color: #1A202C;
-            color: #F6E05E;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
+        .showcase-container { max-width: 800px; margin: -30px auto 40px auto; position: relative; z-index: 10; padding: 0 20px; }
+        .showcase-card { background: linear-gradient(145deg, #ffffff, #f0fdf4); border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 200, 151, 0.15); border: 1px solid #d1fae5; position: relative; overflow: hidden; }
+        .showcase-badge { display: inline-block; background-color: #1A202C; color: #F6E05E; padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 15px; letter-spacing: 0.5px; }
         .showcase-badge i { margin-right: 5px; }
-        .showcase-title {
-            font-size: 20px;
-            color: #2D3748;
-            margin-bottom: 15px;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-        .showcase-text {
-            font-size: 15px;
-            color: #4A5568;
-            line-height: 1.7;
-            font-style: italic;
-            position: relative;
-            z-index: 2;
-        }
-        .showcase-quote-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 80px;
-            color: rgba(0, 200, 151, 0.05);
-            z-index: 1;
-        }
-        .showcase-footer {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-        }
-        .gerceklik-kaniti {
-            font-size: 11px;
-            color: #A0AEC0;
-            max-width: 60%;
-        }
-        .showcase-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #1A202C;
-        }
-        .showcase-brand-logo {
-            width: 35px;
-            height: 35px;
-            background: #EDF2F7;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00C897;
-            font-size: 18px;
+        .showcase-title { font-size: 20px; color: #2D3748; margin-bottom: 15px; font-weight: 700; line-height: 1.4; }
+        .showcase-text { font-size: 15px; color: #4A5568; line-height: 1.7; font-style: italic; position: relative; z-index: 2; }
+        .showcase-quote-icon { position: absolute; top: 20px; right: 20px; font-size: 80px; color: rgba(0, 200, 151, 0.05); z-index: 1; }
+        .showcase-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+        .gerceklik-kaniti { font-size: 11px; color: #A0AEC0; max-width: 60%; }
+        .showcase-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1A202C; }
+        .showcase-brand-logo { width: 35px; height: 35px; background: #EDF2F7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00C897; font-size: 18px; }
+        
+        /* YENİ: Jest Kutusu Tasarımı */
+        .jest-kutusu {
+            margin-top: 15px; padding: 12px 15px; background: linear-gradient(to right, #FAF5FF, #ffffff);
+            border-left: 4px solid #8B5CF6; border-radius: 6px; font-size: 13px; color: #553C9A; border-right: 1px solid #E9D8FD; border-top: 1px solid #E9D8FD; border-bottom: 1px solid #E9D8FD;
         }
     </style>
 </head>
@@ -102,9 +36,7 @@
         <div class="search-bar" style="position: relative; max-width: 600px; margin: 0 auto;">
             <input type="text" id="mainSearchInput" placeholder="Marka ara... (Örn: Trendyol)" autocomplete="off">
             <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            
-            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-            </div>
+            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);"></div>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
             <a href="profilim.html" style="background: white; border: 1px solid #E2E8F0; color: #4A5568; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: 0.3s; font-size: 14px;">
@@ -171,18 +103,15 @@
     const mainOneriKutusu = document.getElementById('mainOneriKutusu');
     let tumMarkalar = [];
 
-// --- 1. DİNAMİK VİTRİNİ GETİR (İZİN SORUNU ÇÖZÜLMÜŞ VERSİYON) ---
+    // --- 1. DİNAMİK VİTRİNİ GETİR ---
     async function vitrinMesajiniGetir() {
         const vitrinAlani = document.getElementById('dinamikVitrinAlani');
         
         try {
-            // ÇÖZÜM: Firebase'den sadece izin verilenleri (onaylandi) çekiyoruz
             const q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
             const snap = await getDocs(q);
 
             let vitrinMesajlari = [];
-            
-            // Gelen onaylı mesajların içinden sadece vitrin=true olanları JS ile ayıklıyoruz
             snap.forEach(doc => {
                 const data = doc.data();
                 if (data.vitrin === true) {
@@ -190,13 +119,11 @@
                 }
             });
 
-            // Eğer hiç vitrin mesajı yoksa alanı boş bırak
             if (vitrinMesajlari.length === 0) {
                 vitrinAlani.innerHTML = ''; 
                 return;
             }
 
-            // GÜVENLİ SIRALAMA: En yeniyi bul
             vitrinMesajlari.sort((a, b) => {
                 let zamanA = (a.tarih && typeof a.tarih.toMillis === 'function') ? a.tarih.toMillis() : 0;
                 let zamanB = (b.tarih && typeof b.tarih.toMillis === 'function') ? b.tarih.toMillis() : 0;
@@ -216,6 +143,14 @@
 
             const sehirMetni = vitrinData.sehir ? `<span style="color:#A0AEC0; font-weight:400; font-size:12px;">- ${vitrinData.sehir}</span>` : '';
 
+            // YENİ: VİTRİN JEST KUTUSU
+            const jestKutusu = vitrinData.jest 
+                ? `<div class="jest-kutusu">
+                       <i class="fa-solid fa-gift" style="font-size: 16px; margin-right: 5px; vertical-align: text-bottom;"></i>
+                       <strong style="text-transform: capitalize;">${vitrinData.marka}</strong>, bu güzel mesaja karşılık müşterimize <b>${vitrinData.jest}</b> hediye etti!
+                   </div>`
+                : '';
+
             vitrinAlani.innerHTML = `
                 <section class="showcase-container">
                     <div class="showcase-card">
@@ -229,6 +164,7 @@
                         <p class="showcase-text">"${vitrinData.mesaj}"</p>
 
                         ${etiketlerHTML}
+                        ${jestKutusu}
 
                         <div class="showcase-footer">
                             <div class="gerceklik-kaniti">
@@ -295,13 +231,11 @@
                 const renkler = ['#4A5568', '#f39c12', '#00C897', '#e74c3c', '#9b59b6'];
                 const rastgeleRenk = renkler[Math.floor(Math.random() * renkler.length)];
 
-                const markaYanitiKutusu = data.markaYaniti 
-                    ? `<div style="margin-top: 15px; padding: 12px 15px; background-color: #F8FAFC; border-left: 4px solid var(--primary-color); border-radius: 4px; font-size: 13px;">
-                           <strong style="color: var(--text-dark); display:flex; align-items:center; gap:5px; margin-bottom:5px;">
-                               <i class="fa-solid fa-building-circle-check" style="color: var(--primary-color);"></i> 
-                               <span style="text-transform: capitalize;">${data.marka}</span> Resmi Yanıtı:
-                           </strong>
-                           <span style="color: #4A5568;">"${data.markaYaniti}"</span>
+                // YENİ: NORMAL KART JEST KUTUSU (Yanıt Kutusunun Yerini Aldı)
+                const jestKutusu = data.jest 
+                    ? `<div class="jest-kutusu">
+                           <i class="fa-solid fa-gift" style="font-size: 16px; margin-right: 5px; vertical-align: text-bottom;"></i>
+                           <strong style="text-transform: capitalize;">${data.marka}</strong>, bu güzel mesaja karşılık müşterimize <b>${data.jest}</b> hediye etti!
                        </div>`
                     : '';
 
@@ -333,7 +267,7 @@
                         <p class="card-text" style="margin-bottom: 5px;">${data.mesaj}</p>
                         
                         ${etiketlerHTML}
-                        ${markaYanitiKutusu}
+                        ${jestKutusu}
                         
                         <div class="card-footer" style="margin-top: 15px;">
                             <span>
@@ -393,10 +327,9 @@
         if (e.target !== mainSearchInput) mainOneriKutusu.style.display = 'none';
     });
 
-    // Sayfa açıldığında çalışacak fonksiyonlar
     sistemdekiMarkalariYukle();
-    vitrinMesajiniGetir(); // Önce vitrini getir
-    onayliMesajlariGetir(); // Sonra alt listeyi getir
+    vitrinMesajiniGetir(); 
+    onayliMesajlariGetir(); 
 </script>
 </body>
 </html>
