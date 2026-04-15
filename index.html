@@ -168,16 +168,22 @@
 
     // --- 1. DİNAMİK VİTRİNİ GETİR ---
     // --- 1. DİNAMİK VİTRİNİ GETİR (GÜNCELLENMİŞ VE GÜVENLİ) ---
+    // --- 1. DİNAMİK VİTRİNİ GETİR (AJAN MODU) ---
     async function vitrinMesajiniGetir() {
         const vitrinAlani = document.getElementById('dinamikVitrinAlani');
+        // Test 1: HTML gerçekten çalışıyor mu? (Ekranda turuncu yazı görmelisin)
+        vitrinAlani.innerHTML = '<p style="text-align:center; color:orange; margin-bottom:20px;">Vitrin aranıyor...</p>';
+
         try {
-            console.log("Vitrin mesajları aranıyor..."); // F12 Konsolu için test
+            console.log("Adım 1: Vitrin sorgusu başlıyor...");
             const q = query(collection(db, "tesekkurler"), where("vitrin", "==", true));
             const snap = await getDocs(q);
 
+            console.log("Adım 2: Gelen belge sayısı:", snap.size);
+
             if (snap.empty) {
-                console.log("Vitrine taşınmış mesaj bulunamadı.");
-                vitrinAlani.innerHTML = ''; 
+                console.log("HATA: vitrin=true olan belge bulunamadı!");
+                vitrinAlani.innerHTML = '<p style="text-align:center; color:red;">Vitrin etiketi olan mesaj bulunamadı.</p>'; 
                 return;
             }
 
@@ -186,15 +192,10 @@
                 vitrinMesajlari.push({ id: doc.id, ...doc.data() });
             });
 
-            // GÜVENLİ SIRALAMA: Tarih verisi hatalı/farklı formatta gelse bile sistem çökmez
-            vitrinMesajlari.sort((a, b) => {
-                let zamanA = (a.tarih && typeof a.tarih.toMillis === 'function') ? a.tarih.toMillis() : 0;
-                let zamanB = (b.tarih && typeof b.tarih.toMillis === 'function') ? b.tarih.toMillis() : 0;
-                return zamanB - zamanA;
-            });
-            
+            console.log("Adım 3: Diziye alınan veriler:", vitrinMesajlari);
+
+            // Şimdilik sıralama ile uğraşmadan direkt bulduğu ilk vitrini ekrana bassın
             const vitrinData = vitrinMesajlari[0]; 
-            console.log("Vitrin için seçilen data:", vitrinData); // Hata ayıklama için
 
             let etiketlerHTML = '';
             if (vitrinData.etiketler && vitrinData.etiketler.length > 0) {
@@ -240,9 +241,11 @@
                     </div>
                 </section>
             `;
+            console.log("Adım 4: Vitrin başarıyla ekrana basıldı!");
 
         } catch (error) {
-            console.error("Vitrin yüklenirken bir hata oluştu:", error);
+            console.error("Vitrin Çöktü! Hata detayı:", error);
+            vitrinAlani.innerHTML = `<p style="color:red; text-align:center;">Hata oluştu: ${error.message}</p>`;
         }
     }
 
