@@ -120,7 +120,7 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -244,28 +244,63 @@
     document.getElementById('googleLoginBtn').onclick = () => signInWithPopup(auth, provider);
     document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-    // --- FORMU GÖNDERME İŞLEMİ ---
+// --- FORMU GÖNDERME İŞLEMİ (BİRLEŞTİRİLMİŞ VE GÜVENLİ) ---
     document.getElementById('tesekkurFormu').onsubmit = async (e) => {
         e.preventDefault();
         if(!currentUser) return;
 
         const gonderBtn = document.getElementById('gonderBtn');
-        gonderBtn.disabled = true;
-        gonderBtn.innerText = "Gönderiliyor...";
-
+        const markaInput = document.getElementById('markaAdi');
         const nihaiMarkaId = markaInput.dataset.secilenId || markaInput.value.toLocaleLowerCase('tr-TR').replace(/\s+/g, '');
-        const gercekIsim = currentUser.displayName;
-        let gosterilecekIsim = gercekIsim;
-        const isimiGizle = document.getElementById('anonimYap').checked;
 
-        if (isimiGizle) {
-            gosterilecekIsim = gercekIsim.split(' ').map(kelime => kelime.charAt(0) + '***').join(' ');
-        }
-
-        // YENİ: Seçili etiketleri bir diziye(array) çevir
-        const secilenEtiketler = Array.from(document.querySelectorAll('.etiket.active')).map(el => el.dataset.val);
+        // 1. AŞAMA: LİMİT KONTROLÜ
+        gonderBtn.disabled = true;
+        gonderBtn.innerText = "Kontrol ediliyor...";
 
         try {
+            const otuzGunOnce = new Date();
+            otuzGunOnce.setDate(otuzGunOnce.getDate() - 30);
+
+            const q = query(
+                collection(db, "tesekkurler"), 
+                where("uid", "==", currentUser.uid),
+                where("marka", "==", nihaiMarkaId)
+            );
+            
+            const sorguSonucu = await getDocs(q);
+            let zatenYazmis = false;
+
+            sorguSonucu.forEach(doc => {
+                const data = doc.data();
+                // Tarih verisi varsa kontrol et
+                if (data.tarih) {
+                    const mesajTarihi = data.tarih.toDate();
+                    if (mesajTarihi > otuzGunOnce) {
+                        zatenYazmis = true;
+                    }
+                }
+            });
+
+            if (zatenYazmis) {
+                alert("Bu markaya son 30 gün içinde zaten bir teşekkür iletmişsiniz. İlginiz için teşekkürler, ancak sistem kalitesini korumak için ayda sadece 1 kez teşekkür edebilirsiniz.");
+                gonderBtn.disabled = false;
+                gonderBtn.innerText = "Gönder ve Alkışla 👏";
+                return; // Kontrole takıldı, işlemi durdur.
+            }
+
+            // 2. AŞAMA: KONTROL GEÇİLDİ -> VERİTABANINA KAYIT (Eski kodların tamamı burada)
+            gonderBtn.innerText = "Gönderiliyor...";
+
+            const gercekIsim = currentUser.displayName;
+            let gosterilecekIsim = gercekIsim;
+            const isimiGizle = document.getElementById('anonimYap').checked;
+
+            if (isimiGizle) {
+                gosterilecekIsim = gercekIsim.split(' ').map(kelime => kelime.charAt(0) + '***').join(' ');
+            }
+
+            const secilenEtiketler = Array.from(document.querySelectorAll('.etiket.active')).map(el => el.dataset.val);
+
             await addDoc(collection(db, "tesekkurler"), {
                 marka: nihaiMarkaId,
                 isim: gosterilecekIsim, 
@@ -273,8 +308,8 @@
                 anonimMi: isimiGizle,   
                 uid: currentUser.uid,
                 mesaj: document.getElementById('mesaj').value,
-                sehir: document.getElementById('sehir').value,  // YENİ Veri
-                etiketler: secilenEtiketler,                    // YENİ Veri
+                sehir: document.getElementById('sehir').value,
+                etiketler: secilenEtiketler,
                 durum: "bekliyor",
                 tarih: serverTimestamp()
             });
@@ -283,7 +318,6 @@
             document.getElementById('tesekkurFormu').reset();
             delete markaInput.dataset.secilenId; 
             
-            // YENİ: Form gönderildikten sonra aktif etiketlerin rengini sıfırla
             document.querySelectorAll('.etiket.active').forEach(el => el.classList.remove('active'));
 
         } catch (err) {
