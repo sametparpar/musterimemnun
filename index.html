@@ -167,37 +167,35 @@
     let tumMarkalar = [];
 
     // --- 1. DİNAMİK VİTRİNİ GETİR ---
+    // --- 1. DİNAMİK VİTRİNİ GETİR (GÜNCELLENMİŞ VE GÜVENLİ) ---
     async function vitrinMesajiniGetir() {
         const vitrinAlani = document.getElementById('dinamikVitrinAlani');
         try {
-            // Sadece 'vitrin' değeri true olanları çekiyoruz
+            console.log("Vitrin mesajları aranıyor..."); // F12 Konsolu için test
             const q = query(collection(db, "tesekkurler"), where("vitrin", "==", true));
             const snap = await getDocs(q);
 
             if (snap.empty) {
-                vitrinAlani.innerHTML = ''; // Vitrin mesajı yoksa boş kalsın
+                console.log("Vitrine taşınmış mesaj bulunamadı.");
+                vitrinAlani.innerHTML = ''; 
                 return;
             }
 
-            // Gelen mesajları tarihe göre sıralayıp EN YENİSİNİ alacağız
             let vitrinMesajlari = [];
             snap.forEach(doc => {
-                const data = doc.data();
-                if(data.tarih) { // Tarih alanı varsa listeye ekle
-                    vitrinMesajlari.push({ id: doc.id, ...data });
-                }
+                vitrinMesajlari.push({ id: doc.id, ...doc.data() });
             });
 
-            // Hiç tarihli mesaj yoksa işlem yapma
-            if (vitrinMesajlari.length === 0) return;
-
-            // Yeniden eskiye sırala (Milisaniye hesabı)
-            vitrinMesajlari.sort((a, b) => b.tarih.toMillis() - a.tarih.toMillis());
+            // GÜVENLİ SIRALAMA: Tarih verisi hatalı/farklı formatta gelse bile sistem çökmez
+            vitrinMesajlari.sort((a, b) => {
+                let zamanA = (a.tarih && typeof a.tarih.toMillis === 'function') ? a.tarih.toMillis() : 0;
+                let zamanB = (b.tarih && typeof b.tarih.toMillis === 'function') ? b.tarih.toMillis() : 0;
+                return zamanB - zamanA;
+            });
             
-            // En güncel vitrin mesajını seç
             const vitrinData = vitrinMesajlari[0]; 
+            console.log("Vitrin için seçilen data:", vitrinData); // Hata ayıklama için
 
-            // Etiketleri hazırla
             let etiketlerHTML = '';
             if (vitrinData.etiketler && vitrinData.etiketler.length > 0) {
                 etiketlerHTML = '<div style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap;">';
@@ -209,7 +207,6 @@
 
             const sehirMetni = vitrinData.sehir ? `<span style="color:#A0AEC0; font-weight:400; font-size:12px;">- ${vitrinData.sehir}</span>` : '';
 
-            // Vitrin HTML'ini verilerle doldur
             vitrinAlani.innerHTML = `
                 <section class="showcase-container">
                     <div class="showcase-card">
@@ -245,7 +242,7 @@
             `;
 
         } catch (error) {
-            console.error("Vitrin yüklenirken hata oluştu:", error);
+            console.error("Vitrin yüklenirken bir hata oluştu:", error);
         }
     }
 
