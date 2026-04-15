@@ -7,6 +7,91 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* YENİ: İYİLİK VİTRİNİ TASARIMI */
+        .showcase-container {
+            max-width: 800px;
+            margin: -30px auto 40px auto;
+            position: relative;
+            z-index: 10;
+            padding: 0 20px;
+        }
+        .showcase-card {
+            background: linear-gradient(145deg, #ffffff, #f0fdf4);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 200, 151, 0.15);
+            border: 1px solid #d1fae5;
+            position: relative;
+            overflow: hidden;
+        }
+        .showcase-badge {
+            display: inline-block;
+            background-color: #1A202C;
+            color: #F6E05E;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+        .showcase-badge i { margin-right: 5px; }
+        .showcase-title {
+            font-size: 20px;
+            color: #2D3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+        .showcase-text {
+            font-size: 15px;
+            color: #4A5568;
+            line-height: 1.7;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+        }
+        .showcase-quote-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 80px;
+            color: rgba(0, 200, 151, 0.05);
+            z-index: 1;
+        }
+        .showcase-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        .gerceklik-kaniti {
+            font-size: 11px;
+            color: #A0AEC0;
+            max-width: 60%;
+        }
+        .showcase-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #1A202C;
+        }
+        .showcase-brand-logo {
+            width: 35px;
+            height: 35px;
+            background: #EDF2F7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00C897;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
 
@@ -26,7 +111,7 @@
         </a>
     </header>
 
-    <section class="hero">
+    <section class="hero" style="padding-bottom: 60px;">
         <div class="hero-content">
             <h1>Mükemmel Hizmeti <br><span class="highlight">Alkışlıyoruz.</span></h1>
             <p>Türkiye'nin en prestijli müşteri memnuniyet platformu. İyiliği paylaş, markana değer kat.</p>
@@ -47,6 +132,44 @@
         </div>
     </section>
 
+    <section class="showcase-container">
+        <div class="showcase-card">
+            <i class="fa-solid fa-quote-right showcase-quote-icon"></i>
+            <div class="showcase-badge">
+                <i class="fa-solid fa-crown"></i> Marka Tarafından Öne Çıkarıldı
+            </div>
+            
+            <h3 class="showcase-title">"Yağmurlu havada mağduriyetimi sadece 15 dakikada çözen kurye arkadaşa minnettarım..."</h3>
+            
+            <p class="showcase-text">
+                Dün akşam yoğun yağmurda yolda kaldım ve siparişimdeki bir eksiklik yüzünden çok gergindim. Müşteri hizmetlerini aradığımda karşıma çıkan temsilci o kadar anlayışlıydı ki, sadece özür dilemekle kalmadı, bölgedeki en yakın kurye arkadaşı yönlendirerek eksik ürünümü 15 dakika içinde sıcak bir şekilde kapıma kadar getirdi. Sadece bir sipariş değil, günümü kurtardınız.
+            </p>
+
+            <div style="margin-top: 15px; display: flex; gap: 8px;">
+                <span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">⚡ Hız</span>
+                <span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">🛠️ Çözüm Odaklılık</span>
+            </div>
+
+            <div class="showcase-footer">
+                <div class="gerceklik-kaniti">
+                    <i class="fa-solid fa-shield-halved" style="color:#A0AEC0;"></i> 
+                    Bu teşekkür, platformumuzdaki bir kullanıcı tarafından organik olarak yapılmış; diğer müşterilere ilham vermesi amacıyla <b>Getir</b> desteğiyle şeffaf bir şekilde öne çıkarılmıştır.
+                </div>
+                
+                <div class="showcase-brand">
+                    <div style="text-align: right; line-height: 1.2;">
+                        <span style="font-size: 14px;">Merve K. <span style="color:#A0AEC0; font-weight:400; font-size:12px;">- İstanbul</span></span><br>
+                        <span style="font-size: 12px; color: #00C897;">Getir Ekibine</span>
+                    </div>
+                    <div class="showcase-brand-logo">
+                        <i class="fa-solid fa-motorcycle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <h3 style="text-align: center; color: #4A5568; margin-bottom: 20px; font-weight: 600;">En Son Teşekkürler</h3>
+    
     <section class="cards-container" id="kartlarAlani">
         <p style="text-align: center; width: 100%; color: #718096; font-size: 18px;">
             Teşekkürler yükleniyor... <i class="fa-solid fa-spinner fa-spin"></i>
@@ -73,12 +196,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- ARAMA VE OTOMATİK TAMAMLAMA DEĞİŞKENLERİ ---
     const mainSearchInput = document.getElementById('mainSearchInput');
     const mainOneriKutusu = document.getElementById('mainOneriKutusu');
     let tumMarkalar = [];
 
-    // 1. Veritabanındaki tüm markaları sayfa açılışında belleğe yükle
     async function sistemdekiMarkalariYukle() {
         const querySnapshot = await getDocs(collection(db, "markalar"));
         querySnapshot.forEach((doc) => {
@@ -87,7 +208,6 @@
     }
     sistemdekiMarkalariYukle();
 
-    // 2. ANA FONKSİYON: Onaylı Mesajları Getir (Opsiyonel markaId parametresi ile)
     async function onayliMesajlariGetir(markaId = null) {
         const kartlarAlani = document.getElementById('kartlarAlani');
         let mesajSayisi = 0;
@@ -95,10 +215,8 @@
         try {
             let q;
             if (markaId) {
-                // Sadece seçilen markaya ait onaylıları getir
                 q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"), where("marka", "==", markaId));
             } else {
-                // Hepsinin onaylı olanlarını getir
                 q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
             }
 
@@ -113,7 +231,7 @@
                 return;
             }
 
-            kartlarAlani.innerHTML = ''; // Temizlik
+            kartlarAlani.innerHTML = ''; 
 
             querySnapshot.forEach((doc) => {
                 mesajSayisi++;
@@ -133,12 +251,10 @@
                        </div>`
                     : '';
 
-                // YENİ: Şehir bilgisini HTML olarak hazırla
                 const sehirHTML = data.sehir 
                     ? `<span style="font-size: 12px; color: #A0AEC0; margin-left: 10px;"><i class="fa-solid fa-location-dot"></i> ${data.sehir}</span>` 
                     : '';
 
-                // YENİ: Etiketleri yan yana küçük çipler (badge) halinde hazırla
                 let etiketlerHTML = '';
                 if (data.etiketler && data.etiketler.length > 0) {
                     etiketlerHTML = '<div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap;">';
@@ -148,7 +264,6 @@
                     etiketlerHTML += '</div>';
                 }
 
-                // Kart İskeletine Şehir ve Etiketleri dahil ettik
                 const kartHTML = `
                     <div class="card">
                         <div class="card-header">
@@ -164,20 +279,19 @@
                         <p class="card-text" style="margin-bottom: 5px;">${data.mesaj}</p>
                         
                         ${etiketlerHTML}
-
                         ${markaYanitiKutusu}
                         
                         <div class="card-footer" style="margin-top: 15px;">
                             <span>
                                 <i class="fa-regular fa-user"></i> ${data.isim}
-                                ${sehirHTML} </span>
+                                ${sehirHTML} 
+                            </span>
                         </div>
                     </div>
                 `;
                 kartlarAlani.innerHTML += kartHTML;
             });
 
-            // Sadece genel aramada istatistikleri güncelle
             if(!markaId) {
                 document.getElementById('statToplam').innerText = mesajSayisi;
                 document.getElementById('statMutlu').innerText = mesajSayisi;
@@ -189,14 +303,13 @@
         }
     }
 
-    // 3. ARAMA İNPUT DİNLEYİCİSİ
     mainSearchInput.addEventListener('input', function() {
         const kelime = this.value.toLocaleLowerCase('tr-TR');
         mainOneriKutusu.innerHTML = '';
         
         if (!kelime) {
             mainOneriKutusu.style.display = 'none';
-            onayliMesajlariGetir(); // Boşsa her şeyi getir
+            onayliMesajlariGetir(); 
             return;
         }
 
@@ -212,7 +325,7 @@
                 div.onclick = () => {
                     mainSearchInput.value = marka.ad;
                     mainOneriKutusu.style.display = 'none';
-                    onayliMesajlariGetir(marka.id); // Sadece bu markayı filtrele
+                    onayliMesajlariGetir(marka.id); 
                 };
                 mainOneriKutusu.appendChild(div);
             });
@@ -222,12 +335,10 @@
         }
     });
 
-    // Dışarıya tıklayınca önerileri kapat
     document.addEventListener('click', (e) => {
         if (e.target !== mainSearchInput) mainOneriKutusu.style.display = 'none';
     });
 
-    // Başlangıçta hepsini getir
     onayliMesajlariGetir();
 </script>
 </body>
