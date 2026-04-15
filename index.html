@@ -8,22 +8,90 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
+        /* --- GÖRSEL GÜNCELLEME 1: MODERN HERO ARKAPLAN --- */
+        .hero {
+            position: relative;
+            background: #ffffff;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 200, 151, 0.08) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0, transparent 50%);
+            padding-bottom: 80px;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* --- GÖRSEL GÜNCELLEME 2: KART DERİNLİĞİ VE FİLİGRAN --- */
+        .card {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f5f9;
+            background: white;
+            z-index: 1;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            border-color: #00C897;
+        }
+        /* Kartın sağ altına silik bir ikon (Filigran) */
+        .card::after {
+            content: "\f164"; /* FontAwesome Thumbs Up */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 60px;
+            color: rgba(0, 0, 0, 0.02);
+            z-index: -1;
+            transition: 0.3s;
+        }
+        .card:hover::after {
+            color: rgba(0, 200, 151, 0.05);
+            transform: scale(1.1);
+        }
+
+        /* Vitrin kartı için özel filigran */
+        .showcase-card::after {
+            content: "\f521"; /* Crown Icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            font-size: 120px;
+            color: rgba(0, 200, 151, 0.03);
+            z-index: 0;
+        }
+
+        /* --- GÖRSEL GÜNCELLEME 3: MARKA LOGOLARI --- */
+        .brand-logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: white;
+            border: 1px solid #edf2f7;
+            padding: 4px;
+        }
+
         .showcase-container { max-width: 800px; margin: -30px auto 40px auto; position: relative; z-index: 10; padding: 0 20px; }
-        .showcase-card { background: linear-gradient(145deg, #ffffff, #f0fdf4); border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 200, 151, 0.15); border: 1px solid #d1fae5; position: relative; overflow: hidden; }
-        .showcase-badge { display: inline-block; background-color: #1A202C; color: #F6E05E; padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 15px; letter-spacing: 0.5px; }
-        .showcase-badge i { margin-right: 5px; }
-        .showcase-title { font-size: 20px; color: #2D3748; margin-bottom: 15px; font-weight: 700; line-height: 1.4; }
-        .showcase-text { font-size: 15px; color: #4A5568; line-height: 1.7; font-style: italic; position: relative; z-index: 2; }
-        .showcase-quote-icon { position: absolute; top: 20px; right: 20px; font-size: 80px; color: rgba(0, 200, 151, 0.05); z-index: 1; }
-        .showcase-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-        .gerceklik-kaniti { font-size: 11px; color: #A0AEC0; max-width: 60%; }
-        .showcase-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1A202C; }
-        .showcase-brand-logo { width: 35px; height: 35px; background: #EDF2F7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00C897; font-size: 18px; }
-        
-        /* YENİ: Jest Kutusu Tasarımı */
+        .showcase-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; position: relative; overflow: hidden; }
+        .showcase-badge { display: inline-block; background: #1A202C; color: #F6E05E; padding: 6px 16px; border-radius: 50px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+        .showcase-title { font-size: 24px; color: #1A202C; margin-bottom: 20px; font-weight: 800; line-height: 1.3; }
+        .showcase-text { font-size: 17px; color: #4A5568; line-height: 1.8; font-style: italic; margin-bottom: 25px; }
+        .showcase-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px; }
         .jest-kutusu {
-            margin-top: 15px; padding: 12px 15px; background: linear-gradient(to right, #FAF5FF, #ffffff);
-            border-left: 4px solid #8B5CF6; border-radius: 6px; font-size: 13px; color: #553C9A; border-right: 1px solid #E9D8FD; border-top: 1px solid #E9D8FD; border-bottom: 1px solid #E9D8FD;
+            margin: 20px 0; padding: 15px 20px; background: linear-gradient(135deg, #FAF5FF 0%, #ffffff 100%);
+            border-left: 5px solid #8B5CF6; border-radius: 12px; font-size: 14px; color: #553C9A; border: 1px solid #E9D8FD;
+            box-shadow: 0 4px 6px rgba(139, 92, 246, 0.05);
         }
     </style>
 </head>
@@ -48,39 +116,38 @@
         </div>
     </header>
 
-    <section class="hero" style="padding-bottom: 60px;">
+    <section class="hero">
         <div class="hero-content">
-            <h1>Mükemmel Hizmeti <br><span class="highlight">Alkışlıyoruz.</span></h1>
-            <p>Türkiye'nin en prestijli müşteri memnuniyet platformu. İyiliği paylaş, markana değer kat.</p>
+            <h1 style="font-weight: 800; font-size: 48px; letter-spacing: -1px;">Mükemmel Hizmeti <br><span class="highlight">Alkışlıyoruz.</span></h1>
+            <p style="font-size: 18px; color: #64748b; max-width: 600px; margin: 20px auto;">Türkiye'nin en prestijli müşteri memnuniyet platformu. İyiliği paylaş, markana değer kat.</p>
         </div>
         
         <div class="brand-strip">
-            <span>En Çok Teşekkür Alan Markalar:</span>
-            <b>trendyol</b>
-            <b>getir</b>
-            <b>hepsiburada</b>
-            <b>arçelik</b>
+            <span>Popüler:</span>
+            <b style="cursor:pointer" onclick="onayliMesajlariGetir('trendyol')">trendyol</b>
+            <b style="cursor:pointer" onclick="onayliMesajlariGetir('getir')">getir</b>
+            <b style="cursor:pointer" onclick="onayliMesajlariGetir('hepsiburada')">hepsiburada</b>
         </div>
 
         <div class="stats">
-            <div class="stat-item">Toplam Teşekkür: <b id="statToplam">Yükleniyor...</b></div>
-            <div class="stat-item">Mutlu Müşteri: <b id="statMutlu">Yükleniyor...</b></div>
-            <div class="stat-item">Onaylı Marka: <b>Sürekli Artıyor!</b></div>
+            <div class="stat-item">Toplam Teşekkür: <b id="statToplam">...</b></div>
+            <div class="stat-item">Mutlu Müşteri: <b id="statMutlu">...</b></div>
+            <div class="stat-item">Onaylı Marka: <b style="color:#00C897">Aktif</b></div>
         </div>
     </section>
 
     <div id="dinamikVitrinAlani"></div>
 
-    <h3 style="text-align: center; color: #4A5568; margin-bottom: 20px; font-weight: 600;">En Son Teşekkürler</h3>
-    
-    <section class="cards-container" id="kartlarAlani">
-        <p style="text-align: center; width: 100%; color: #718096; font-size: 18px;">
-            Teşekkürler yükleniyor... <i class="fa-solid fa-spinner fa-spin"></i>
-        </p>
-    </section>
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <h3 style="text-align: left; color: #1A202C; margin-bottom: 25px; font-weight: 700; font-size: 24px;">
+            <i class="fa-solid fa-bolt" style="color: #F6E05E;"></i> En Son Teşekkürler
+        </h3>
+        <section class="cards-container" id="kartlarAlani" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px;">
+            </section>
+    </div>
 
-    <footer>
-        <p>&copy; 2026 musterimemnun.com - İyiliği Paylaş</p>
+    <footer style="margin-top: 80px; padding: 40px; border-top: 1px solid #f1f5f9; text-align: center;">
+        <p style="color: #94a3b8;">&copy; 2026 musterimemnun.com - İyiliği Paylaş</p>
     </footer>
 
 <script type="module">
@@ -103,233 +170,106 @@
     const mainOneriKutusu = document.getElementById('mainOneriKutusu');
     let tumMarkalar = [];
 
-    // --- 1. DİNAMİK VİTRİNİ GETİR ---
+    // Logo yardımcı fonksiyonu
+    const getLogoUrl = (marka) => `https://logo.clearbit.com/${marka.toLowerCase()}.com`;
+
     async function vitrinMesajiniGetir() {
         const vitrinAlani = document.getElementById('dinamikVitrinAlani');
-        
         try {
             const q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
             const snap = await getDocs(q);
-
             let vitrinMesajlari = [];
-            snap.forEach(doc => {
-                const data = doc.data();
-                if (data.vitrin === true) {
-                    vitrinMesajlari.push({ id: doc.id, ...data });
-                }
-            });
+            snap.forEach(doc => { if (doc.data().vitrin === true) vitrinMesajlari.push({ id: doc.id, ...doc.data() }); });
 
-            if (vitrinMesajlari.length === 0) {
-                vitrinAlani.innerHTML = ''; 
-                return;
-            }
+            if (vitrinMesajlari.length === 0) return;
 
-            vitrinMesajlari.sort((a, b) => {
-                let zamanA = (a.tarih && typeof a.tarih.toMillis === 'function') ? a.tarih.toMillis() : 0;
-                let zamanB = (b.tarih && typeof b.tarih.toMillis === 'function') ? b.tarih.toMillis() : 0;
-                return zamanB - zamanA;
-            });
-            
+            vitrinMesajlari.sort((a, b) => (b.tarih?.toMillis() || 0) - (a.tarih?.toMillis() || 0));
             const vitrinData = vitrinMesajlari[0]; 
 
-            let etiketlerHTML = '';
-            if (vitrinData.etiketler && vitrinData.etiketler.length > 0) {
-                etiketlerHTML = '<div style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap;">';
-                vitrinData.etiketler.forEach(etiket => {
-                    etiketlerHTML += `<span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">${etiket}</span>`;
-                });
-                etiketlerHTML += '</div>';
-            }
-
-            const sehirMetni = vitrinData.sehir ? `<span style="color:#A0AEC0; font-weight:400; font-size:12px;">- ${vitrinData.sehir}</span>` : '';
-
-            // YENİ: VİTRİN JEST KUTUSU
-            const jestKutusu = vitrinData.jest 
-                ? `<div class="jest-kutusu">
-                       <i class="fa-solid fa-gift" style="font-size: 16px; margin-right: 5px; vertical-align: text-bottom;"></i>
-                       <strong style="text-transform: capitalize;">${vitrinData.marka}</strong>, bu güzel mesaja karşılık <b>${vitrinData.jest}</b> hediye etti!
-                   </div>`
-                : '';
+            const jestHTML = vitrinData.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> <b>${vitrinData.marka}</b> bu güzel deneyim için müşterimize <b>${vitrinData.jest}</b> tanımladı!</div>` : '';
 
             vitrinAlani.innerHTML = `
                 <section class="showcase-container">
                     <div class="showcase-card">
-                        <i class="fa-solid fa-quote-right showcase-quote-icon"></i>
-                        <div class="showcase-badge">
-                            <i class="fa-solid fa-crown"></i> Marka Tarafından Öne Çıkarıldı
-                        </div>
-                        
-                        <h3 class="showcase-title" style="text-transform: capitalize;">${vitrinData.marka} için harika bir deneyim!</h3>
-                        
+                        <div class="showcase-badge"><i class="fa-solid fa-crown"></i> HAFTANIN TEŞEKKÜRÜ</div>
+                        <h3 class="showcase-title">${vitrinData.marka} ekibine kalpten bir teşekkür!</h3>
                         <p class="showcase-text">"${vitrinData.mesaj}"</p>
-
-                        ${etiketlerHTML}
-                        ${jestKutusu}
-
+                        ${jestHTML}
                         <div class="showcase-footer">
-                            <div class="gerceklik-kaniti">
-                                <i class="fa-solid fa-shield-halved" style="color:#A0AEC0;"></i> 
-                                Bu teşekkür, platformumuzdaki bir kullanıcı tarafından organik olarak yapılmış; diğer müşterilere ilham vermesi amacıyla <b style="text-transform: capitalize;">${vitrinData.marka}</b> desteğiyle şeffaf bir şekilde öne çıkarılmıştır.
-                            </div>
-                            
+                            <div class="gerceklik-kaniti"><i class="fa-solid fa-shield-halved"></i> Bu içerik şeffaflık ilkelerimiz gereği doğrulanmış bir müşteri deneyimidir.</div>
                             <div class="showcase-brand">
-                                <div style="text-align: right; line-height: 1.2;">
-                                    <span style="font-size: 14px;">${vitrinData.isim} ${sehirMetni}</span><br>
-                                    <span style="font-size: 12px; color: #00C897; text-transform: capitalize;">${vitrinData.marka} Ekibine</span>
-                                </div>
-                                <div class="showcase-brand-logo">
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
+                                <img src="${getLogoUrl(vitrinData.marka)}" class="brand-logo-img" onerror="this.src='https://ui-avatars.com/api/?name=${vitrinData.marka}&background=random'">
+                                <span>${vitrinData.isim}</span>
                             </div>
                         </div>
                     </div>
                 </section>
             `;
-
-        } catch (error) {
-            console.error("Vitrin yüklenirken bir hata oluştu:", error);
-        }
-    }
-
-    async function sistemdekiMarkalariYukle() {
-        const querySnapshot = await getDocs(collection(db, "markalar"));
-        querySnapshot.forEach((doc) => {
-            tumMarkalar.push({ id: doc.id, ad: doc.data().ad });
-        });
+        } catch (e) { console.error(e); }
     }
 
     async function onayliMesajlariGetir(markaId = null) {
         const kartlarAlani = document.getElementById('kartlarAlani');
-        let mesajSayisi = 0;
+        const q = markaId ? query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"), where("marka", "==", markaId)) 
+                           : query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
         
-        try {
-            let q;
-            if (markaId) {
-                q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"), where("marka", "==", markaId));
-            } else {
-                q = query(collection(db, "tesekkurler"), where("durum", "==", "onaylandi"));
-            }
+        const snap = await getDocs(q);
+        kartlarAlani.innerHTML = '';
+        let sayac = 0;
 
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                kartlarAlani.innerHTML = `<p style="text-align:center; width:100%; color:#718096; padding:50px;">${markaId ? 'Bu markaya ait' : 'Henüz'} onaylanmış bir teşekkür bulunmuyor. İlk yazan sen ol!</p>`;
-                if(!markaId) {
-                    document.getElementById('statToplam').innerText = "0";
-                    document.getElementById('statMutlu').innerText = "0";
-                }
-                return;
-            }
-
-            kartlarAlani.innerHTML = ''; 
-
-            querySnapshot.forEach((doc) => {
-                mesajSayisi++;
-                const data = doc.data();
-                
-                const basHarf = data.isim ? data.isim.charAt(0).toUpperCase() : "M";
-                const renkler = ['#4A5568', '#f39c12', '#00C897', '#e74c3c', '#9b59b6'];
-                const rastgeleRenk = renkler[Math.floor(Math.random() * renkler.length)];
-
-                // YENİ: NORMAL KART JEST KUTUSU (Yanıt Kutusunun Yerini Aldı)
-                const jestKutusu = data.jest 
-                    ? `<div class="jest-kutusu">
-                           <i class="fa-solid fa-gift" style="font-size: 16px; margin-right: 5px; vertical-align: text-bottom;"></i>
-                           <strong style="text-transform: capitalize;">${data.marka}</strong>, bu güzel mesaja karşılık müşterimize <b>${data.jest}</b> hediye etti!
-                       </div>`
-                    : '';
-
-                const sehirHTML = data.sehir 
-                    ? `<span style="font-size: 12px; color: #A0AEC0; margin-left: 10px;"><i class="fa-solid fa-location-dot"></i> ${data.sehir}</span>` 
-                    : '';
-
-                let etiketlerHTML = '';
-                if (data.etiketler && data.etiketler.length > 0) {
-                    etiketlerHTML = '<div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap;">';
-                    data.etiketler.forEach(etiket => {
-                        etiketlerHTML += `<span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">${etiket}</span>`;
-                    });
-                    etiketlerHTML += '</div>';
-                }
-
-                const kartHTML = `
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="brand-info">
-                                <div class="user-avatar" style="background-color: ${rastgeleRenk};">${basHarf}</div>
-                                <div>
-                                    <h4 style="margin: 0; font-size: 16px; color: #1A202C; text-transform: capitalize;">${data.marka}</h4>
-                                    <div class="stars">★★★★★</div>
-                                </div>
+        snap.forEach(doc => {
+            sayac++;
+            const data = doc.data();
+            const jestHTML = data.jest ? `<div style="margin-top:12px; padding:10px; background:#F3F0FF; border-radius:8px; color:#6B46C1; font-size:12px; border:1px solid #E9D8FD;"><i class="fa-solid fa-gift"></i> <b>Jest:</b> ${data.jest}</div>` : '';
+            
+            kartlarAlani.innerHTML += `
+                <div class="card" style="padding:25px; border-radius:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <img src="${getLogoUrl(data.marka)}" class="brand-logo-img" onerror="this.src='https://ui-avatars.com/api/?name=${data.marka}&background=random'">
+                            <div>
+                                <h4 style="margin:0; text-transform:capitalize; font-size:16px;">${data.marka}</h4>
+                                <div style="color:#F6E05E; font-size:10px;">★★★★★</div>
                             </div>
-                            <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
                         </div>
-                        <p class="card-text" style="margin-bottom: 5px;">${data.mesaj}</p>
-                        
-                        ${etiketlerHTML}
-                        ${jestKutusu}
-                        
-                        <div class="card-footer" style="margin-top: 15px;">
-                            <span>
-                                <i class="fa-regular fa-user"></i> ${data.isim}
-                                ${sehirHTML} 
-                            </span>
-                        </div>
+                        <div style="font-size:11px; color:#00C897; font-weight:700; background:#E6FFFA; padding:4px 8px; border-radius:6px;">ONAYLI</div>
                     </div>
-                `;
-                kartlarAlani.innerHTML += kartHTML;
-            });
+                    <p style="font-size:14px; color:#4A5568; line-height:1.6;">${data.mesaj}</p>
+                    ${jestHTML}
+                    <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; font-weight:600; color:#1A202C;"><i class="fa-regular fa-user" style="margin-right:5px;"></i> ${data.isim}</span>
+                        <span style="font-size:11px; color:#A0AEC0;">${data.sehir || ''}</span>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('statToplam').innerText = sayac;
+        document.getElementById('statMutlu').innerText = sayac;
+    }
 
-            if(!markaId) {
-                document.getElementById('statToplam').innerText = mesajSayisi;
-                document.getElementById('statMutlu').innerText = mesajSayisi;
-            }
-
-        } catch (error) {
-            console.error("Hata:", error);
-            kartlarAlani.innerHTML = '<p style="color:#E53E3E; text-align:center; width:100%;">Yüklenirken bir hata oluştu.</p>';
-        }
+    async function sistemdekiMarkalariYukle() {
+        const snap = await getDocs(collection(db, "markalar"));
+        snap.forEach(doc => tumMarkalar.push({ id: doc.id, ad: doc.data().ad }));
     }
 
     mainSearchInput.addEventListener('input', function() {
         const kelime = this.value.toLocaleLowerCase('tr-TR');
         mainOneriKutusu.innerHTML = '';
-        
-        if (!kelime) {
-            mainOneriKutusu.style.display = 'none';
-            onayliMesajlariGetir(); 
-            return;
-        }
-
+        if (!kelime) { mainOneriKutusu.style.display = 'none'; onayliMesajlariGetir(); return; }
         const eslesenler = tumMarkalar.filter(m => m.ad.toLocaleLowerCase('tr-TR').includes(kelime));
-
         if (eslesenler.length > 0) {
             eslesenler.forEach(marka => {
                 const div = document.createElement('div');
                 div.className = 'oneri-item';
-                div.style.padding = '12px';
-                div.style.cursor = 'pointer';
-                div.innerHTML = `<i class="fa-solid fa-building"></i> ${marka.ad}`;
-                div.onclick = () => {
-                    mainSearchInput.value = marka.ad;
-                    mainOneriKutusu.style.display = 'none';
-                    onayliMesajlariGetir(marka.id); 
-                };
+                div.innerHTML = `<img src="${getLogoUrl(marka.id)}" style="width:20px; margin-right:10px; vertical-align:middle;" onerror="this.style.display='none'"> ${marka.ad}`;
+                div.onclick = () => { mainSearchInput.value = marka.ad; mainOneriKutusu.style.display = 'none'; onayliMesajlariGetir(marka.id); };
                 mainOneriKutusu.appendChild(div);
             });
             mainOneriKutusu.style.display = 'block';
-        } else {
-            mainOneriKutusu.style.display = 'none';
         }
     });
 
-    document.addEventListener('click', (e) => {
-        if (e.target !== mainSearchInput) mainOneriKutusu.style.display = 'none';
-    });
-
-    sistemdekiMarkalariYukle();
-    vitrinMesajiniGetir(); 
-    onayliMesajlariGetir(); 
+    sistemdekiMarkalariYukle(); vitrinMesajiniGetir(); onayliMesajlariGetir();
 </script>
 </body>
 </html>
