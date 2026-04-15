@@ -13,13 +13,12 @@
         #tesekkurFormuContainer { display: none; }
         .user-chip { display: flex; align-items: center; gap: 10px; background: #EDF2F7; padding: 5px 15px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; width: fit-content; }
         
-        /* Yeni: Anonim Seçeneği Tasarımı */
+        /* Anonim Seçeneği Tasarımı */
         .anonim-secenek { display: flex; align-items: center; gap: 10px; margin-top: -10px; margin-bottom: 20px; padding: 10px; background-color: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E0; }
         .anonim-secenek input { width: 18px; height: 18px; cursor: pointer; }
         .anonim-secenek label { margin: 0; font-size: 14px; color: #4A5568; cursor: pointer; font-weight: normal; }
 
-
-
+        /* Otomatik Tamamlama Tasarımı */
         .autocomplete-container { position: relative; width: 100%; }
         .oneri-kutusu {
             position: absolute; top: 100%; left: 0; right: 0;
@@ -30,12 +29,17 @@
         }
         .oneri-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #EDF2F7; font-size: 14px; color: #4A5568;}
         .oneri-item:hover { background-color: #F8FAFC; color: #00C897; font-weight: 600; }
-        </style>
 
-
-
-
-        
+        /* YENİ: Etiket ve Şehir Seçimi Tasarımı */
+        select { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-family: 'Poppins', sans-serif; outline: none; }
+        .etiket-secici { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .etiket {
+            padding: 8px 15px; border: 1px solid #E2E8F0; border-radius: 20px;
+            cursor: pointer; font-size: 13px; transition: 0.3s; background: white; color: #4A5568;
+            user-select: none; /* Metnin yanlışlıkla seçilmesini engeller */
+        }
+        .etiket:hover { background-color: #F8FAFC; }
+        .etiket.active { background-color: #00C897; color: white; border-color: #00C897; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -68,19 +72,38 @@
                 </div>
 
                 <form id="tesekkurFormu">
-                <div class="form-group">
-                    <label for="markaAdi">Teşekkür Edilecek Marka</label>
-                    <div class="autocomplete-container">
-                        <input type="text" id="markaAdi" placeholder="Marka adını yazmaya başlayın..." autocomplete="off" required>
-                        <div id="oneriKutusu" class="oneri-kutusu"></div>
+                    <div class="form-group">
+                        <label for="markaAdi">Teşekkür Edilecek Marka</label>
+                        <div class="autocomplete-container">
+                            <input type="text" id="markaAdi" placeholder="Marka adını yazmaya başlayın..." autocomplete="off" required>
+                            <div id="oneriKutusu" class="oneri-kutusu"></div>
+                        </div>
                     </div>
-                </div>
 
                     <div class="anonim-secenek">
                         <input type="checkbox" id="anonimYap">
                         <label for="anonimYap">
                             <i class="fa-solid fa-user-secret" style="color: #718096;"></i> İsmimi gizle (Sitede sadece baş harflerim görünsün)
                         </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sehir">Hizmet Alınan Şehir</label>
+                        <select id="sehir" required>
+                            <option value="">Lütfen Bir Şehir Seçin</option>
+                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sizi en çok ne mutlu etti? (Birden fazla seçebilirsiniz)</label>
+                        <div class="etiket-secici" id="duyguEtiketleri">
+                            <span class="etiket" data-val="Güleryüz">😊 Güleryüz</span>
+                            <span class="etiket" data-val="Hız">⚡ Hız</span>
+                            <span class="etiket" data-val="Dürüstlük">🛡️ Dürüstlük</span>
+                            <span class="etiket" data-val="Çözüm Odaklılık">🛠️ Çözüm Odaklılık</span>
+                            <span class="etiket" data-val="Fiyat/Performans">💰 İyi Fiyat</span>
+                            <span class="etiket" data-val="İlgi ve Alaka">🤝 İlgi ve Alaka</span>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -97,7 +120,6 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    // getDocs komutunu import listesine ekledik:
     import { getFirestore, collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
@@ -119,19 +141,40 @@
     const tesekkurFormuContainer = document.getElementById('tesekkurFormuContainer');
     let currentUser = null;
 
+    // --- YENİ: ŞEHİRLERİ DOLDURMA MANTIĞI ---
+    const sehirler = [
+        "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
+    ];
+    
+    const sehirSelect = document.getElementById('sehir');
+    // Türkçe karakterlere uygun alfabetik sıralama
+    sehirler.sort((a, b) => a.localeCompare(b, 'tr')).forEach(sehir => {
+        let option = document.createElement('option');
+        option.value = sehir;
+        option.textContent = sehir;
+        sehirSelect.appendChild(option);
+    });
+
+    // --- YENİ: ETİKET SEÇME MANTIĞI ---
+    document.querySelectorAll('.etiket').forEach(el => {
+        el.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+    });
+
     // --- OTOMATİK TAMAMLAMA DEĞİŞKENLERİ ---
     const markaInput = document.getElementById('markaAdi');
     const oneriKutusu = document.getElementById('oneriKutusu');
     let sistemdekiMarkalar = [];
 
-    // 1. Veritabanından Markaları Çek (Sayfa yüklenirken arka planda çalışır)
+    // 1. Veritabanından Markaları Çek
     async function markalariGetir() {
         try {
             const querySnapshot = await getDocs(collection(db, "markalar"));
             querySnapshot.forEach((doc) => {
                 sistemdekiMarkalar.push({
-                    id: doc.id,         // Örn: 'trendyol'
-                    ad: doc.data().ad   // Örn: 'Trendyol'
+                    id: doc.id,
+                    ad: doc.data().ad
                 });
             });
         } catch (error) {
@@ -160,10 +203,9 @@
                 div.className = 'oneri-item';
                 div.innerHTML = `<i class="fa-solid fa-building" style="color:#CBD5E0; margin-right:8px;"></i> ${marka.ad}`;
                 
-                // Kullanıcı listeden seçtiğinde
                 div.onclick = () => {
                     markaInput.value = marka.ad; 
-                    markaInput.dataset.secilenId = marka.id; // Seçilenin ID'sini arka plana kaydet
+                    markaInput.dataset.secilenId = marka.id; 
                     oneriKutusu.style.display = 'none'; 
                 };
                 oneriKutusu.appendChild(div);
@@ -211,33 +253,39 @@
         gonderBtn.disabled = true;
         gonderBtn.innerText = "Gönderiliyor...";
 
-        // Marka ID'sini Belirle (Listeden seçildiyse ID'yi al, elle yazıldıysa boşlukları silip küçült)
         const nihaiMarkaId = markaInput.dataset.secilenId || markaInput.value.toLocaleLowerCase('tr-TR').replace(/\s+/g, '');
-
-        // İsim Gizleme Mantığı
         const gercekIsim = currentUser.displayName;
         let gosterilecekIsim = gercekIsim;
         const isimiGizle = document.getElementById('anonimYap').checked;
 
         if (isimiGizle) {
-            // İsmi kelimelere böl (Örn: Samet Parpar), ilk harfini al, sonuna yıldız ekle (S*** P***)
             gosterilecekIsim = gercekIsim.split(' ').map(kelime => kelime.charAt(0) + '***').join(' ');
         }
 
+        // YENİ: Seçili etiketleri bir diziye(array) çevir
+        const secilenEtiketler = Array.from(document.querySelectorAll('.etiket.active')).map(el => el.dataset.val);
+
         try {
             await addDoc(collection(db, "tesekkurler"), {
-                marka: nihaiMarkaId,    // Artık tam eşleşen veya formatlanmış ID kaydediliyor
+                marka: nihaiMarkaId,
                 isim: gosterilecekIsim, 
                 gercekIsim: gercekIsim, 
                 anonimMi: isimiGizle,   
                 uid: currentUser.uid,
                 mesaj: document.getElementById('mesaj').value,
+                sehir: document.getElementById('sehir').value,  // YENİ Veri
+                etiketler: secilenEtiketler,                    // YENİ Veri
                 durum: "bekliyor",
                 tarih: serverTimestamp()
             });
+            
             document.getElementById('successMessage').style.display = 'block';
             document.getElementById('tesekkurFormu').reset();
-            delete markaInput.dataset.secilenId; // Hafızayı temizle
+            delete markaInput.dataset.secilenId; 
+            
+            // YENİ: Form gönderildikten sonra aktif etiketlerin rengini sıfırla
+            document.querySelectorAll('.etiket.active').forEach(el => el.classList.remove('active'));
+
         } catch (err) {
             console.error(err);
             alert("Bir hata oluştu.");
@@ -246,6 +294,6 @@
             gonderBtn.innerText = "Gönder ve Alkışla 👏";
         }
     };
-</script>
+    </script>
 </body>
 </html>
