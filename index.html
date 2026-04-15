@@ -36,18 +36,60 @@
             margin-bottom: 15px;
             letter-spacing: 0.5px;
         }
-        .showcase-title { font-size: 20px; color: #2D3748; margin-bottom: 15px; font-weight: 700; line-height: 1.4; }
-        .showcase-text { font-size: 15px; color: #4A5568; line-height: 1.7; font-style: italic; position: relative; z-index: 2; }
-        .showcase-quote-icon { position: absolute; top: 20px; right: 20px; font-size: 80px; color: rgba(0, 200, 151, 0.05); z-index: 1; }
-        .showcase-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }
-        .gerceklik-kaniti { font-size: 11px; color: #A0AEC0; max-width: 60%; }
-        .showcase-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1A202C; }
-        .showcase-brand-logo { width: 35px; height: 35px; background: #EDF2F7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00C897; font-size: 18px; }
-        
-        @media (max-width: 768px) {
-            .showcase-footer { flex-direction: column; gap: 15px; align-items: flex-start; }
-            .gerceklik-kaniti { max-width: 100%; }
-            .showcase-brand { width: 100%; justify-content: flex-end; }
+        .showcase-badge i { margin-right: 5px; }
+        .showcase-title {
+            font-size: 20px;
+            color: #2D3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+        .showcase-text {
+            font-size: 15px;
+            color: #4A5568;
+            line-height: 1.7;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+        }
+        .showcase-quote-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 80px;
+            color: rgba(0, 200, 151, 0.05);
+            z-index: 1;
+        }
+        .showcase-footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        .gerceklik-kaniti {
+            font-size: 11px;
+            color: #A0AEC0;
+            max-width: 60%;
+        }
+        .showcase-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #1A202C;
+        }
+        .showcase-brand-logo {
+            width: 35px;
+            height: 35px;
+            background: #EDF2F7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00C897;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -60,7 +102,9 @@
         <div class="search-bar" style="position: relative; max-width: 600px; margin: 0 auto;">
             <input type="text" id="mainSearchInput" placeholder="Marka ara... (Örn: Trendyol)" autocomplete="off">
             <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);"></div>
+            
+            <div id="mainOneriKutusu" class="oneri-kutusu" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #E2E8F0; border-radius: 0 0 8px 8px; z-index: 1000; display: none; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+            </div>
         </div>
         <a href="tesekkur-yaz.html" class="btn-primary">
             <i class="fa-solid fa-plus"></i> Teşekkür Yaz
@@ -144,6 +188,9 @@
                 }
             });
 
+            // Hiç tarihli mesaj yoksa işlem yapma
+            if (vitrinMesajlari.length === 0) return;
+
             // Yeniden eskiye sırala (Milisaniye hesabı)
             vitrinMesajlari.sort((a, b) => b.tarih.toMillis() - a.tarih.toMillis());
             
@@ -173,7 +220,7 @@
                         
                         <h3 class="showcase-title" style="text-transform: capitalize;">${vitrinData.marka} için harika bir deneyim!</h3>
                         
-                        <p class="showcase-text">${vitrinData.mesaj}</p>
+                        <p class="showcase-text">"${vitrinData.mesaj}"</p>
 
                         ${etiketlerHTML}
 
@@ -202,7 +249,6 @@
         }
     }
 
-    // --- 2. DİĞER FONKSİYONLAR ---
     async function sistemdekiMarkalariYukle() {
         const querySnapshot = await getDocs(collection(db, "markalar"));
         querySnapshot.forEach((doc) => {
@@ -305,7 +351,6 @@
         }
     }
 
-    // --- 3. EVENT LİSTENER'LAR VE BAŞLATMA ---
     mainSearchInput.addEventListener('input', function() {
         const kelime = this.value.toLocaleLowerCase('tr-TR');
         mainOneriKutusu.innerHTML = '';
