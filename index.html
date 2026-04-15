@@ -133,6 +133,22 @@
                        </div>`
                     : '';
 
+                // YENİ: Şehir bilgisini HTML olarak hazırla
+                const sehirHTML = data.sehir 
+                    ? `<span style="font-size: 12px; color: #A0AEC0; margin-left: 10px;"><i class="fa-solid fa-location-dot"></i> ${data.sehir}</span>` 
+                    : '';
+
+                // YENİ: Etiketleri yan yana küçük çipler (badge) halinde hazırla
+                let etiketlerHTML = '';
+                if (data.etiketler && data.etiketler.length > 0) {
+                    etiketlerHTML = '<div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap;">';
+                    data.etiketler.forEach(etiket => {
+                        etiketlerHTML += `<span style="background-color: #E6FFFA; color: #00C897; border: 1px solid #B2F5EA; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">${etiket}</span>`;
+                    });
+                    etiketlerHTML += '</div>';
+                }
+
+                // Kart İskeletine Şehir ve Etiketleri dahil ettik
                 const kartHTML = `
                     <div class="card">
                         <div class="card-header">
@@ -145,10 +161,16 @@
                             </div>
                             <div class="badge"><i class="fa-solid fa-check"></i> Onaylanmış</div>
                         </div>
-                        <p class="card-text">${data.mesaj}</p>
+                        <p class="card-text" style="margin-bottom: 5px;">${data.mesaj}</p>
+                        
+                        ${etiketlerHTML}
+
                         ${markaYanitiKutusu}
+                        
                         <div class="card-footer" style="margin-top: 15px;">
-                            <span><i class="fa-regular fa-user"></i> ${data.isim}</span>
+                            <span>
+                                <i class="fa-regular fa-user"></i> ${data.isim}
+                                ${sehirHTML} </span>
                         </div>
                     </div>
                 `;
