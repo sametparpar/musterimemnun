@@ -25,14 +25,16 @@
 
         /* Tablo ve Kartlar */
         .admin-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .admin-table th, .admin-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .admin-table th, .admin-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 14px; vertical-align: top;}
         .admin-table th { background: #f8fafc; color: #64748b; font-weight: 600; }
         
-        .action-btns { display: flex; gap: 8px; }
-        .btn-s { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; color: white; display: flex; align-items: center; gap: 5px; }
+        .action-btns { display: flex; gap: 8px; flex-wrap: wrap;}
+        .btn-s { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; color: white; display: flex; align-items: center; gap: 5px; transition: 0.2s;}
+        .btn-s:hover { opacity: 0.8; }
         .btn-onay { background: #00C897; }
         .btn-sil { background: #ef4444; }
         .btn-ban { background: #1e293b; }
+        .btn-vitrin { background: #F6E05E; color: #1A202C; } /* YENİ: Vitrin Butonu Rengi */
 
         /* Form Alanı */
         .admin-form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -80,9 +82,7 @@
                 <thead>
                     <tr>
                         <th>Marka</th>
-                        <th>Kullanıcı</th>
-                        <th>Mesaj</th>
-                        <th>İşlem</th>
+                        <th>Kullanıcı Bilgisi</th> <th>Mesaj & Analitik</th> <th>İşlem</th>
                     </tr>
                 </thead>
                 <tbody id="mesajTbody"></tbody>
@@ -173,14 +173,30 @@
             snap.forEach(d => {
                 const data = d.data();
                 if(data.marka.toLowerCase().includes(markaFiltre)) {
+                    
+                    // YENİ: Şehir ve Etiketleri Admin İçin Formatlama
+                    const sehirBilgisi = data.sehir ? `<br><small style="color:#64748b; margin-top:5px; display:block;"><i class="fa-solid fa-location-dot"></i> ${data.sehir}</small>` : '';
+                    let etiketlerHTML = '';
+                    if (data.etiketler && data.etiketler.length > 0) {
+                        etiketlerHTML = '<div style="margin-top: 10px; display: flex; gap: 4px; flex-wrap: wrap;">';
+                        data.etiketler.forEach(etiket => {
+                            etiketlerHTML += `<span style="background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 10px; font-size: 11px;">${etiket}</span>`;
+                        });
+                        etiketlerHTML += '</div>';
+                    }
+
                     tbody.innerHTML += `
                         <tr>
                             <td><strong>${data.marka}</strong></td>
-                            <td>${data.isim} ${data.anonimMi ? `<br><small style="color:red">(${data.gercekIsim})</small>` : ''}</td>
-                            <td>${data.mesaj}</td>
+                            <td>
+                                ${data.isim} ${data.anonimMi ? `<br><small style="color:red">(${data.gercekIsim})</small>` : ''}
+                                ${sehirBilgisi} </td>
+                            <td>
+                                <div>${data.mesaj}</div>
+                                ${etiketlerHTML} </td>
                             <td class="action-btns">
                                 ${durumFiltre === 'bekliyor' ? `<button class="btn-s btn-onay" onclick="mesajOnayla('${d.id}')">Onayla</button>` : ''}
-                                <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
+                                ${durumFiltre === 'onaylandi' ? `<button class="btn-s btn-vitrin" onclick="vitrineTasi('${d.id}')"><i class="fa-solid fa-star"></i> Vitrine Taşı</button>` : ''} <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
                                 <button class="btn-s btn-ban" onclick="kullaniciBanla('${data.uid}', '${data.gercekIsim}')">Banla</button>
                             </td>
                         </tr>
@@ -198,6 +214,18 @@
             if(confirm("Bu mesajı kalıcı olarak silmek istediğinize emin misiniz?")) {
                 await deleteDoc(doc(db, "tesekkurler", id));
                 mesajlariGetir();
+            }
+        };
+
+        // YENİ: VİTRİNE TAŞIMA İŞLEMİ
+        window.vitrineTasi = async (id) => {
+            if(confirm("Bu harika hikayeyi ana sayfadaki 'İyilik Vitrini'ne taşımak istiyor musunuz?")) {
+                try {
+                    await updateDoc(doc(db, "tesekkurler", id), { vitrin: true });
+                    alert("✅ Harika! Mesaj vitrin için işaretlendi.");
+                } catch(error) {
+                    alert("Bir hata oluştu.");
+                }
             }
         };
 
