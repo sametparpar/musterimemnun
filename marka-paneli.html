@@ -145,6 +145,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
@@ -157,8 +158,10 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-    // GİRİŞ SİMÜLASYONU MANTIĞI
+    // GİRİŞ SİMÜLASYONU VE YETKİLENDİRME
     let aktifMarka = sessionStorage.getItem('aktifMarkaB2B');
 
     if (aktifMarka) {
@@ -166,12 +169,24 @@
         paneliBaslat(aktifMarka);
     }
 
-    document.getElementById('brandLoginBtn').addEventListener('click', () => {
+    document.getElementById('brandLoginBtn').addEventListener('click', async () => {
         const inputVal = document.getElementById('brandLoginInput').value.trim().toLocaleLowerCase('tr-TR');
-        if (inputVal) {
+        if (!inputVal) {
+            alert("Lütfen bir marka adı girin."); 
+            return; 
+        }
+
+        try {
+            // Firebase veritabanına yazabilmek için önce Google ile yetki alıyoruz
+            await signInWithPopup(auth, provider);
+            
+            // Giriş başarılıysa markayı hafızaya al ve paneli aç
             sessionStorage.setItem('aktifMarkaB2B', inputVal);
             document.getElementById('loginOverlay').style.display = 'none';
             paneliBaslat(inputVal);
+        } catch (error) {
+            console.error("Yetkilendirme Hatası:", error);
+            alert("Giriş yapılamadığı için panele erişilemiyor.");
         }
     });
 
@@ -187,7 +202,6 @@
         const tableBody = document.getElementById('tableBody');
 
         try {
-            // Sadece bu markaya yazılmış ve ONAYLANMIŞ mesajları getir.
             const q = query(collection(db, "tesekkurler"), where("marka", "==", markaId), where("durum", "==", "onaylandi"));
             const snap = await getDocs(q);
 
@@ -211,7 +225,6 @@
             document.getElementById('statTotal').innerText = mesajlar.length;
             document.getElementById('statJest').innerText = jestSayisi;
 
-            // Tarihe göre sırala (en yeni üstte)
             mesajlar.sort((a, b) => (b.tarih?.toMillis() || 0) - (a.tarih?.toMillis() || 0));
 
             mesajlar.forEach(data => {
@@ -273,18 +286,18 @@
 
         try {
             const mesajRef = doc(db, "tesekkurler", docId);
+            // Artık yetkimiz olduğu için Firebase bu işleme izin verecek!
             await updateDoc(mesajRef, { jest: jestMetni });
             
             jestModal.style.display = 'none';
             btn.innerText = "Jesti Gönder";
             btn.disabled = false;
             
-            // Paneli yenile
             paneliBaslat(sessionStorage.getItem('aktifMarkaB2B'));
             
         } catch (error) {
             console.error(error);
-            alert("Hata oluştu!");
+            alert("Hata oluştu! Lütfen konsolu kontrol edin.");
             btn.innerText = "Jesti Gönder";
             btn.disabled = false;
         }
