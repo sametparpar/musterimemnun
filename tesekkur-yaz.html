@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* YENİ: KONTRAST HEADER TASARIMI */
+        .dark-header { background-color: #1A202C; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2D3748; }
+        .dark-header .logo { color: white; text-decoration: none; font-size: 20px; display: flex; align-items: center; gap: 8px; }
+        .dark-header .logo b { color: white; }
+        .dark-header .btn-profil { background: transparent; border: 1px solid #4A5568; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .dark-header .btn-profil:hover { background: #2D3748; border-color: #A0AEC0; }
+        @media (max-width: 768px) { .dark-header { padding: 15px 20px; flex-direction: column; gap: 15px; } }
+
         .form-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 700px; margin: 40px auto; }
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #2d3748; }
@@ -61,19 +69,19 @@
         @media (max-width: 768px) { .seviye-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body>
+<body style="background-color: #f8fafc; margin: 0;">
 
-    <header class="header">
-        <a href="index.html" class="logo" style="text-decoration: none;">
+    <header class="dark-header">
+        <a href="index.html" class="logo">
             <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
         </a>
-        <a href="profilim.html" style="background: white; border: 1px solid #E2E8F0; color: #4A5568; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
+        <a href="profilim.html" class="btn-profil">
             <i class="fa-solid fa-user"></i> Profilim
         </a>
     </header>
 
     <div class="form-container">
-        <h2 style="text-align: center; margin-bottom: 10px; font-size: 28px;">İyiliği Paylaş ✨</h2>
+        <h2 style="text-align: center; margin-bottom: 10px; font-size: 28px; color: #1A202C;">İyiliği Paylaş ✨</h2>
         <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Hangi marka bugün yüzünü güldürdü?</p>
 
         <form id="tesekkurFormu">
@@ -99,13 +107,13 @@
                     <label class="seviye-kart">
                         <input type="radio" name="duyguSeviyesi" value="standart" required>
                         <i class="fa-solid fa-thumbs-up" style="color: #a0aec0;"></i>
-                        <span>Standart</span>
+                        <span>Teşekkürler</span>
                         <small>Görevini eksiksiz yaptı.</small>
                     </label>
                     <label class="seviye-kart">
                         <input type="radio" name="duyguSeviyesi" value="mutlu">
                         <i class="fa-solid fa-face-smile" style="color: #a0aec0;"></i>
-                        <span>Mutlu</span>
+                        <span>Mutlu Oldum</span>
                         <small>Süreci güzelleştirdi.</small>
                     </label>
                     <label class="seviye-kart">
@@ -186,27 +194,21 @@
         let currentUser = null;
         let tumMarkalar = [];
 
-        // Oturum Kontrolü
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-        });
+        onAuthStateChanged(auth, (user) => { currentUser = user; });
 
-        // --- DÜZELTİLDİ: Şehir Listesini Doldurma ---
+        // Şehir Listesi
         const sehirler = [
             "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
         ];
         const sehirSelect = document.getElementById('sehir');
         sehirler.sort((a, b) => a.localeCompare(b, 'tr')).forEach(sehir => {
             let option = document.createElement('option');
-            option.value = sehir;
-            option.textContent = sehir;
+            option.value = sehir; option.textContent = sehir;
             sehirSelect.appendChild(option);
         });
 
-        // --- Marka Otomatik Tamamlama ---
         const markaInput = document.getElementById('markaAdi');
         const oneriKutusu = document.getElementById('oneriKutusu');
-        
         const getLogoUrl = (marka) => `https://logo.clearbit.com/${marka.toLowerCase()}.com`;
 
         async function markalariYukle() {
@@ -218,105 +220,66 @@
         markaInput.addEventListener('input', function() {
             const kelime = this.value.toLocaleLowerCase('tr-TR');
             oneriKutusu.innerHTML = '';
-            
             if (!kelime) { oneriKutusu.style.display = 'none'; return; }
-
             const eslesenler = tumMarkalar.filter(m => m.ad.toLocaleLowerCase('tr-TR').includes(kelime));
             if (eslesenler.length > 0) {
                 eslesenler.forEach(marka => {
-                    const div = document.createElement('div');
-                    div.className = 'oneri-item';
+                    const div = document.createElement('div'); div.className = 'oneri-item';
                     div.innerHTML = `<img src="${getLogoUrl(marka.id)}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'"> ${marka.ad}`;
-                    div.onclick = () => {
-                        markaInput.value = marka.ad;
-                        markaInput.dataset.secilenId = marka.id;
-                        oneriKutusu.style.display = 'none';
-                    };
+                    div.onclick = () => { markaInput.value = marka.ad; markaInput.dataset.secilenId = marka.id; oneriKutusu.style.display = 'none'; };
                     oneriKutusu.appendChild(div);
                 });
                 oneriKutusu.style.display = 'block';
-            } else {
-                oneriKutusu.style.display = 'none';
-            }
+            } else { oneriKutusu.style.display = 'none'; }
         });
+        document.addEventListener('click', (e) => { if (e.target !== markaInput) oneriKutusu.style.display = 'none'; });
 
-        document.addEventListener('click', (e) => {
-            if (e.target !== markaInput) oneriKutusu.style.display = 'none';
-        });
+        document.querySelectorAll('.etiket').forEach(etiket => { etiket.addEventListener('click', function() { this.classList.toggle('active'); }); });
 
-        // Etiket Seçimi
-        document.querySelectorAll('.etiket').forEach(etiket => {
-            etiket.addEventListener('click', function() { this.classList.toggle('active'); });
-        });
-
-        // Modal İptal
         document.getElementById('iptalBtn').onclick = () => {
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('gonderBtn').disabled = false;
             document.getElementById('gonderBtn').innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
         };
 
-        // --- FORMU GÖNDERME İŞLEMİ ---
         document.getElementById('tesekkurFormu').onsubmit = async (e) => {
             e.preventDefault();
-            
             const gonderBtn = document.getElementById('gonderBtn');
-            gonderBtn.disabled = true;
-            gonderBtn.innerText = "İşleminiz Başlıyor...";
+            gonderBtn.disabled = true; gonderBtn.innerText = "İşleminiz Başlıyor...";
 
             let islemYapanKullanici = currentUser;
-            
             if (!islemYapanKullanici) {
                 document.getElementById('loginModal').style.display = 'flex';
-                
                 try {
                     const result = await new Promise((resolve, reject) => {
                         document.getElementById('googleLoginBtn').onclick = async () => {
-                            try {
-                                const cred = await signInWithPopup(auth, provider);
-                                resolve(cred.user);
-                            } catch (error) { reject(error); }
+                            try { const cred = await signInWithPopup(auth, provider); resolve(cred.user); } catch (error) { reject(error); }
                         };
                     });
-                    islemYapanKullanici = result;
-                    document.getElementById('loginModal').style.display = 'none';
+                    islemYapanKullanici = result; document.getElementById('loginModal').style.display = 'none';
                 } catch (error) {
-                    console.error("Giriş başarısız/iptal edildi:", error);
-                    gonderBtn.disabled = false;
-                    gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
-                    return; 
+                    gonderBtn.disabled = false; gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`; return; 
                 }
             }
 
             gonderBtn.innerText = "Kontrol ediliyor...";
-
             const markaInputVal = document.getElementById('markaAdi');
             const nihaiMarkaId = markaInputVal.dataset.secilenId || markaInputVal.value.toLocaleLowerCase('tr-TR').replace(/\s+/g, '');
             const secilenDuygu = document.querySelector('input[name="duyguSeviyesi"]:checked').value;
 
             try {
-                const otuzGunOnce = new Date();
-                otuzGunOnce.setDate(otuzGunOnce.getDate() - 30);
+                const otuzGunOnce = new Date(); otuzGunOnce.setDate(otuzGunOnce.getDate() - 30);
                 const q = query(collection(db, "tesekkurler"), where("uid", "==", islemYapanKullanici.uid), where("marka", "==", nihaiMarkaId));
                 const sorguSonucu = await getDocs(q);
                 let zatenYazmis = false;
-
-                sorguSonucu.forEach(doc => {
-                    if (doc.data().tarih) {
-                        const mesajTarihi = doc.data().tarih.toDate();
-                        if (mesajTarihi > otuzGunOnce) zatenYazmis = true;
-                    }
-                });
+                sorguSonucu.forEach(doc => { if (doc.data().tarih && doc.data().tarih.toDate() > otuzGunOnce) zatenYazmis = true; });
 
                 if (zatenYazmis) {
                     alert("Bu markaya son 30 gün içinde zaten bir teşekkür iletmişsiniz. İlginiz için teşekkürler!");
-                    gonderBtn.disabled = false;
-                    gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
-                    return; 
+                    gonderBtn.disabled = false; gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`; return; 
                 }
 
                 gonderBtn.innerText = "Gönderiliyor...";
-
                 const gercekIsim = islemYapanKullanici.displayName;
                 let gosterilecekIsim = gercekIsim;
                 const isimiGizle = document.getElementById('anonimYap').checked;
@@ -325,17 +288,9 @@
                 const secilenEtiketler = Array.from(document.querySelectorAll('.etiket.active')).map(el => el.dataset.val);
 
                 await addDoc(collection(db, "tesekkurler"), {
-                    marka: nihaiMarkaId,
-                    isim: gosterilecekIsim, 
-                    gercekIsim: gercekIsim, 
-                    anonimMi: isimiGizle,   
-                    uid: islemYapanKullanici.uid,
-                    mesaj: document.getElementById('mesaj').value,
-                    sehir: document.getElementById('sehir').value,
-                    etiketler: secilenEtiketler,
-                    seviye: secilenDuygu,
-                    durum: "bekliyor",
-                    tarih: serverTimestamp()
+                    marka: nihaiMarkaId, isim: gosterilecekIsim, gercekIsim: gercekIsim, anonimMi: isimiGizle,   
+                    uid: islemYapanKullanici.uid, mesaj: document.getElementById('mesaj').value, sehir: document.getElementById('sehir').value,
+                    etiketler: secilenEtiketler, seviye: secilenDuygu, durum: "bekliyor", tarih: serverTimestamp()
                 });
                 
                 document.getElementById('tesekkurFormu').style.display = 'none';
@@ -348,18 +303,11 @@
                 if(secilenDuygu === 'mutlu') renkler = ['#38a169', '#68d391']; 
                 if(secilenDuygu === 'vay_canina') renkler = ['#d69e2e', '#ecc94b', '#ffffff']; 
 
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: renkler
-                });
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: renkler });
 
             } catch (err) {
-                console.error(err);
-                alert("Bir hata oluştu.");
-                gonderBtn.disabled = false;
-                gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
+                console.error(err); alert("Bir hata oluştu.");
+                gonderBtn.disabled = false; gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
             }
         };
     </script>
