@@ -145,7 +145,8 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    // ÇIKIŞ YAP (signOut) EKLENDİ
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
@@ -161,7 +162,6 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // GİRİŞ SİMÜLASYONU VE YETKİLENDİRME
     let aktifMarka = sessionStorage.getItem('aktifMarkaB2B');
 
     if (aktifMarka) {
@@ -177,10 +177,7 @@
         }
 
         try {
-            // Firebase veritabanına yazabilmek için önce Google ile yetki alıyoruz
             await signInWithPopup(auth, provider);
-            
-            // Giriş başarılıysa markayı hafızaya al ve paneli aç
             sessionStorage.setItem('aktifMarkaB2B', inputVal);
             document.getElementById('loginOverlay').style.display = 'none';
             paneliBaslat(inputVal);
@@ -190,9 +187,16 @@
         }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        sessionStorage.removeItem('aktifMarkaB2B');
-        window.location.reload();
+    // TAM VE KUSURSUZ ÇIKIŞ YAPMA İŞLEMİ
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+        e.preventDefault(); // Sayfanın üste kaymasını engeller
+        try {
+            await signOut(auth); // Firebase hesabından çıkış yapar
+            sessionStorage.removeItem('aktifMarkaB2B'); // Tarayıcı hafızasını siler
+            window.location.reload(); // Sayfayı yenileyip giriş ekranına atar
+        } catch (error) {
+            alert("Çıkış yapılırken bir sorun oluştu.");
+        }
     });
 
     // PANEL VERİLERİNİ ÇEKME
@@ -209,6 +213,7 @@
             
             if (snap.empty) {
                 document.getElementById('statTotal').innerText = "0";
+                document.getElementById('statJest').innerText = "0";
                 tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px;">Henüz markanıza ait onaylanmış bir teşekkür bulunmuyor.</td></tr>`;
                 return;
             }
@@ -286,7 +291,6 @@
 
         try {
             const mesajRef = doc(db, "tesekkurler", docId);
-            // Artık yetkimiz olduğu için Firebase bu işleme izin verecek!
             await updateDoc(mesajRef, { jest: jestMetni });
             
             jestModal.style.display = 'none';
@@ -296,8 +300,9 @@
             paneliBaslat(sessionStorage.getItem('aktifMarkaB2B'));
             
         } catch (error) {
-            console.error(error);
-            alert("Hata oluştu! Lütfen konsolu kontrol edin.");
+            console.error("Güncelleme Hatası:", error);
+            // KURAL HATASINI NET GÖSTERECEK UYARI
+            alert("Hata oluştu: " + error.message + "\n\nNot: Firebase kurallarını 'Adım 1'deki gibi güncellediğinden emin ol.");
             btn.innerText = "Jesti Gönder";
             btn.disabled = false;
         }
