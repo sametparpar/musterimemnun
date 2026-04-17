@@ -6,10 +6,9 @@
     <title>Süper Admin Paneli | Müşteri Memnun</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
         :root { --admin-bg: #f0f2f5; }
-        body { background-color: var(--admin-bg); min-height: 100vh; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--admin-bg); min-height: 100vh; font-family: 'Poppins', sans-serif; margin: 0; }
         
         /* Navbar ve Sekmeler */
         .admin-nav { background: white; border-bottom: 1px solid #ddd; padding: 0 20px; display: flex; gap: 30px; justify-content: center; }
@@ -35,8 +34,6 @@
         .btn-sil { background: #ef4444; }
         .btn-ban { background: #1e293b; }
         .btn-vitrin { background: #F6E05E; color: #1A202C; } 
-        /* YENİ: Jest Butonu Stili */
-        .btn-jest { background: #8B5CF6; color: white; } 
 
         /* Form Alanı */
         .admin-form-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -44,8 +41,9 @@
         @media (max-width: 768px) { .grid-form { grid-template-columns: 1fr; } }
 
         /* Giriş Ekranı */
-        #loginOverlay { text-align: center; padding: 100px 20px; background: white; min-height: 100vh; }
+        #loginOverlay { text-align: center; padding: 100px 20px; background: white; min-height: 100vh; position: fixed; width: 100%; top: 0; left: 0; z-index: 1000; box-sizing: border-box;}
         .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; }
+        .header { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: white; border-bottom: 1px solid #ddd;}
     </style>
 </head>
 <body>
@@ -62,8 +60,8 @@
 
     <div id="adminPanel" style="display: none;">
         <header class="header">
-            <div class="logo"><i class="fa-solid fa-screwdriver-wrench"></i> Yönetici <b>Paneli</b></div>
-            <div id="kullaniciBilgisi" style="font-weight: 600; font-size: 14px;"></div>
+            <div class="logo" style="font-size: 20px;"><i class="fa-solid fa-screwdriver-wrench"></i> Yönetici <b>Paneli</b></div>
+            <div id="kullaniciBilgisi" style="font-weight: 600; font-size: 14px; color: #64748b;"></div>
         </header>
 
         <nav class="admin-nav">
@@ -101,7 +99,7 @@
                     <input type="text" id="m_ad" placeholder="Görünen Ad (örn: Trendyol)" required>
                     <input type="text" id="m_kategori" placeholder="Kategori (örn: E-Ticaret)">
                     <input type="text" id="m_yetkililer" placeholder="Yetkili E-postalar (virgül ile ayır)">
-                    <button type="submit" class="submit-btn" style="grid-column: span 2;">Markayı Kaydet</button>
+                    <button type="submit" class="submit-btn" style="grid-column: span 2; padding: 12px; background: #00C897; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Markayı Kaydet</button>
                 </form>
             </div>
             
@@ -152,6 +150,7 @@
             } else {
                 document.getElementById('loginOverlay').style.display = 'block';
                 document.getElementById('adminPanel').style.display = 'none';
+                if(user) { alert("Bu panele giriş yetkiniz bulunmamaktadır."); signOut(auth); }
             }
         });
 
@@ -169,10 +168,15 @@
             const markaFiltre = document.getElementById('filtreMarka').value.toLowerCase();
             const durumFiltre = document.getElementById('filtreDurum').value;
             
-            tbody.innerHTML = '<tr><td colspan="4">Yükleniyor...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px;">Yükleniyor <i class="fa-solid fa-spinner fa-spin"></i></td></tr>';
             const q = query(collection(db, "tesekkurler"), where("durum", "==", durumFiltre));
             const snap = await getDocs(q);
             tbody.innerHTML = "";
+
+            if (snap.empty) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px;">Kayıt bulunamadı.</td></tr>`;
+                return;
+            }
 
             snap.forEach(d => {
                 const data = d.data();
@@ -188,7 +192,7 @@
                         etiketlerHTML += '</div>';
                     }
 
-                    // YENİ: Varsa eklenmiş jesti ekranda göster
+                    // Varsa eklenmiş jesti ekranda göster
                     const jestBilgisi = data.jest ? `<div style="margin-top:8px; font-size:11px; color:#8B5CF6; background:#F3F0FF; padding:4px 8px; border-radius:4px; display:inline-block;"><i class="fa-solid fa-gift"></i> Jest: ${data.jest}</div>` : '';
 
                     tbody.innerHTML += `
@@ -206,7 +210,7 @@
                             <td class="action-btns">
                                 ${durumFiltre === 'bekliyor' ? `<button class="btn-s btn-onay" onclick="mesajOnayla('${d.id}')">Onayla</button>` : ''}
                                 ${durumFiltre === 'onaylandi' ? `<button class="btn-s btn-vitrin" onclick="vitrineTasi('${d.id}')"><i class="fa-solid fa-star"></i> Vitrine Taşı</button>` : ''} 
-                                ${durumFiltre === 'onaylandi' ? `<button class="btn-s btn-jest" onclick="jestEkle('${d.id}', '${data.marka}')"><i class="fa-solid fa-gift"></i> Jest Yap</button>` : ''} <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
+                                <button class="btn-s btn-sil" onclick="mesajSil('${d.id}')">Sil</button>
                                 <button class="btn-s btn-ban" onclick="kullaniciBanla('${data.uid}', '${data.gercekIsim}')">Banla</button>
                             </td>
                         </tr>
@@ -234,21 +238,6 @@
                     alert("✅ Harika! Mesaj vitrin için işaretlendi.");
                 } catch(error) {
                     alert("Bir hata oluştu.");
-                }
-            }
-        };
-
-        // YENİ: JEST YAPMA FONKSİYONU
-        window.jestEkle = async (id, markaAdi) => {
-            const jestMetni = prompt(`${markaAdi} markası bu müşteriye ne hediye etti? \n(Örn: 1 Fincan Kahve, %15 İndirim Kuponu, Sürpriz Kutu)`);
-            
-            if (jestMetni && jestMetni.trim() !== "") {
-                try {
-                    await updateDoc(doc(db, "tesekkurler", id), { jest: jestMetni });
-                    alert("🎁 Jest başarıyla eklendi! Artık ana sayfada görünecek.");
-                    mesajlariGetir(); // Tabloyu anında yenile
-                } catch (error) {
-                    alert("Hata oluştu.");
                 }
             }
         };
@@ -286,7 +275,7 @@
             await setDoc(doc(db, "markalar", id), { ad: ad, kategori: kat });
             await setDoc(doc(db, "markaYetkileri", id), { yetkililer: mailler });
 
-            alert("Marka güncellendi!");
+            alert("Marka başarıyla güncellendi!");
             markalariGetir();
             e.target.reset();
         };
@@ -297,18 +286,23 @@
             document.getElementById('m_kategori').value = kat;
             document.getElementById('m_yetkililer').value = mailler;
             showSection('markalarSec');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         // --- BAN VE DİĞER ---
         window.kullaniciBanla = async (uid, isim) => {
-            if(!uid) return;
-            if(confirm(`${isim} kişisini banlamak istiyor musunuz?`)) {
+            if(!uid) { alert("Kullanıcı ID'si bulunamadı."); return; }
+            if(confirm(`${isim} kişisini platformdan tamamen banlamak istiyor musunuz?`)) {
                 await setDoc(doc(db, "yasakliKullanicilar", uid), { isim: isim, tarih: new Date() });
-                alert("Kullanıcı banlandı.");
+                alert("Kullanıcı başarıyla banlandı.");
             }
         };
 
-        window.logoutAdmin = () => signOut(auth);
+        window.logoutAdmin = async () => {
+            await signOut(auth);
+            window.location.reload();
+        };
+        
         document.getElementById('googleLoginBtn').onclick = () => signInWithPopup(auth, provider);
     </script>
 </body>
