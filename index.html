@@ -4,92 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Müşteri Memnun | Şikayet Etme, Teşekkür Et!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        body { margin: 0; background-color: #f8fafc; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; background-color: #f8fafc; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
         
         /* KONTRAST HEADER / NAVBAR */
-        .dark-header { background-color: #1A202C; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00C897; position: sticky; top: 0; z-index: 1000; }
+        .dark-header { background-color: #0F172A; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00C897; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.1);}
         .dark-header .logo { color: white; text-decoration: none; font-size: 22px; display: flex; align-items: center; gap: 8px; font-weight: 400; }
         .dark-header .logo b { color: white; font-weight: 800;}
         .header-search { position: relative; flex-grow: 1; max-width: 500px; margin: 0 30px; }
-        .header-search input { width: 100%; padding: 12px 20px; border-radius: 50px; border: none; outline: none; font-family: 'Poppins'; background: #2D3748; color: white; transition: 0.3s; }
-        .header-search input:focus { background: #fff; color: #1A202C; box-shadow: 0 0 0 4px rgba(0,200,151,0.2); }
-        .header-search input::placeholder { color: #A0AEC0; }
-        .header-search input:focus::placeholder { color: #cbd5e1; }
-        .header-search button { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #A0AEC0; cursor: pointer; font-size: 16px; }
+        .header-search input { width: 100%; padding: 12px 20px; border-radius: 50px; border: 1px solid #334155; outline: none; font-family: 'Poppins'; background: #1E293B; color: white; transition: 0.3s; box-sizing: border-box;}
+        .header-search input:focus { background: #fff; color: #1A202C; box-shadow: 0 0 0 4px rgba(0,200,151,0.2); border-color: #00C897;}
+        .header-search input::placeholder { color: #94A3B8; }
+        .header-search button { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 16px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
-        .btn-outline { background: transparent; border: 1px solid #4A5568; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; }
-        .btn-outline:hover { background: #2D3748; border-color: #00C897; color: #00C897; }
-        .btn-solid { background: #00C897; color: white; border: none; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,200,151,0.3); }
-        .btn-solid:hover { background: #00b386; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,200,151,0.4); }
+        .btn-outline { background: transparent; border: 1px solid #475569; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-outline:hover { background: #1E293B; border-color: #00C897; color: #00C897; }
+        .btn-solid { background: linear-gradient(135deg, #00C897, #059669); color: white; border: none; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,200,151,0.3); display: flex; align-items: center; gap: 8px;}
+        .btn-solid:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,200,151,0.4); }
 
-        .oneri-kutusu { border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; background: white; position: absolute; width: calc(100% - 30px); z-index: 10; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); display: none; }
-        .oneri-item { padding: 12px 15px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; color: #4A5568; }
-        .oneri-item:hover { background: #f8fafc; color: #00C897; }
+        .oneri-kutusu { border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 16px 16px; max-height: 250px; overflow-y: auto; background: white; position: absolute; width: 100%; z-index: 10; box-shadow: 0 15px 30px rgba(0,0,0,0.1); display: none; }
+        .oneri-item { padding: 15px 20px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; color: #4A5568; font-weight: 500; border-bottom: 1px solid #f1f5f9;}
+        .oneri-item:last-child { border-bottom: none; }
+        .oneri-item:hover { background: #F0FDF4; color: #00C897; padding-left: 25px; }
 
-        /* HERO ALANI */
-        .hero { position: relative; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); padding: 80px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; overflow: hidden; }
-        .hero h1 { font-weight: 800; font-size: 48px; color: #1A202C; margin-bottom: 15px; letter-spacing: -1px; }
-        .hero p { font-size: 18px; color: #64748b; max-width: 650px; margin: 0 auto 30px auto; line-height: 1.6; }
-        .brand-strip { margin-top: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; }
-        .brand-strip span { font-size: 14px; color: #94a3b8; font-weight: 600; }
-        .brand-strip b { background: white; padding: 8px 16px; border-radius: 50px; font-size: 14px; color: #475569; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s; }
-        .brand-strip b:hover { border-color: #00C897; color: #00C897; transform: translateY(-2px); }
-
-        /* KART MİMARİSİ (Taşmayı Önleyen Grid) */
-        .cards-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .section-title { text-align: left; color: #1A202C; margin-bottom: 30px; font-weight: 800; font-size: 24px; display: flex; align-items: center; gap: 10px; }
-        .cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; align-items: start; }
+        /* YENİ PREMIUM HERO ALANI */
+        .hero { position: relative; background-color: #ffffff; background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 30px 30px; padding: 100px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; overflow: hidden; }
+        .hero::before { content: ""; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 80%; height: 100%; background: radial-gradient(circle, rgba(0,200,151,0.05) 0%, rgba(255,255,255,0) 70%); z-index: 0; pointer-events: none;}
+        .hero-content { position: relative; z-index: 1; }
+        .hero h1 { font-weight: 800; font-size: 56px; color: #0F172A; margin-bottom: 20px; letter-spacing: -1.5px; line-height: 1.2;}
+        .text-gradient { background: linear-gradient(135deg, #00C897, #0284c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 19px; color: #475569; max-width: 700px; margin: 0 auto 40px auto; line-height: 1.7; font-weight: 400;}
         
-        .card { background: white; border-radius: 16px; padding: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.3s; position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: #00C897; }
-        .card::after { content: "\f164"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; bottom: 10px; right: 15px; font-size: 60px; color: rgba(0, 0, 0, 0.02); z-index: -1; transition: 0.3s; }
-        .card:hover::after { color: rgba(0, 200, 151, 0.05); transform: scale(1.1); }
-        .card-text { font-size: 15px; color: #4A5568; line-height: 1.7; flex-grow: 1; word-break: break-word; margin: 15px 0; }
+        .brand-strip { margin-top: 40px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; align-items: center; }
+        .brand-strip span { font-size: 14px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-right: 10px;}
+        .brand-strip b { background: white; padding: 10px 20px; border-radius: 50px; font-size: 14px; color: #334155; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.02);}
+        .brand-strip b:hover { border-color: #00C897; color: #00C897; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,200,151,0.1); }
+
+        /* YENİ: NASIL ÇALIŞIR BÖLÜMÜ */
+        .how-it-works { max-width: 1000px; margin: -40px auto 40px auto; background: white; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.04); padding: 40px; position: relative; z-index: 2; border: 1px solid #f1f5f9; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: center;}
+        .hiw-step { padding: 10px; }
+        .hiw-icon { width: 60px; height: 60px; background: #F0FDF4; color: #00C897; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 24px; margin: 0 auto 20px auto; transform: rotate(-5deg); transition: 0.3s;}
+        .hiw-step:hover .hiw-icon { transform: rotate(0deg) scale(1.1); background: #00C897; color: white;}
+        .hiw-step h4 { margin: 0 0 10px 0; color: #0F172A; font-size: 18px; font-weight: 700;}
+        .hiw-step p { margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;}
+
+        /* KART MİMARİSİ & ANİMASYONLAR */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animated-card { animation: fadeInUp 0.6s ease-out forwards; }
+
+        .cards-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .section-title { text-align: left; color: #0F172A; margin-bottom: 40px; font-weight: 800; font-size: 28px; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px;}
+        .cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; align-items: start; }
+        
+        .card { background: white; border-radius: 24px; padding: 35px; border: 1px solid #f1f5f9; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 25px 40px rgba(0, 0, 0, 0.08); border-color: #cbd5e1; }
+        .card::after { content: "\f164"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; bottom: -10px; right: 10px; font-size: 100px; color: rgba(0, 0, 0, 0.02); z-index: -1; transition: 0.5s; transform: rotate(-15deg); }
+        .card:hover::after { color: rgba(0, 200, 151, 0.04); transform: scale(1.1) rotate(0deg); }
+        .card-text { font-size: 16px; color: #334155; line-height: 1.8; flex-grow: 1; word-break: break-word; margin: 20px 0; font-weight: 400;}
         
         /* KIYMETLİ TEŞEKKÜRLER ÖZEL TASARIMI */
-        .premium-card { border: 2px solid #E9D8FD; background: linear-gradient(to bottom right, #ffffff, #FAF5FF); }
-        .premium-card:hover { border-color: #8B5CF6; box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.1); }
-        .premium-card::after { content: "\f3a5"; color: rgba(139, 92, 246, 0.03); } /* Gem Icon */
-        .premium-card:hover::after { color: rgba(139, 92, 246, 0.06); }
+        .premium-card { border: 2px solid #E9D8FD; background: linear-gradient(135deg, #ffffff 0%, #FAF5FF 100%); }
+        .premium-card:hover { border-color: #8B5CF6; box-shadow: 0 25px 40px rgba(139, 92, 246, 0.15); }
+        .premium-card::after { content: "\f3a5"; color: rgba(139, 92, 246, 0.03); font-size: 120px; right: -10px;} 
+        .premium-card:hover::after { color: rgba(139, 92, 246, 0.06); transform: scale(1.1) rotate(10deg);}
 
-        .brand-logo-img { width: 45px; height: 45px; border-radius: 10px; object-fit: contain; background: white; border: 1px solid #edf2f7; padding: 4px; flex-shrink: 0; }
-        .jest-kutusu { margin-top: auto; padding: 12px 15px; background: linear-gradient(to right, #FAF5FF, #ffffff); border-left: 4px solid #8B5CF6; border-radius: 8px; font-size: 13px; color: #553C9A; border: 1px solid #E9D8FD; }
+        .brand-logo-img { width: 50px; height: 50px; border-radius: 14px; object-fit: contain; background: white; border: 1px solid #e2e8f0; padding: 5px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .jest-kutusu { margin-top: auto; padding: 15px 20px; background: linear-gradient(to right, #F5F3FF, #ffffff); border-left: 4px solid #8B5CF6; border-radius: 12px; font-size: 14px; color: #4C1D95; border: 1px solid #EDE9FE; font-weight: 500;}
 
-        /* VİTRİN KARTI */
-        .showcase-container { max-width: 900px; margin: 40px auto; position: relative; z-index: 10; padding: 0 20px; }
-        .showcase-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); border: 2px solid #F6E05E; position: relative; overflow: hidden; }
-        .showcase-badge { display: inline-block; background: #1A202C; color: #F6E05E; padding: 6px 16px; border-radius: 50px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
-        .showcase-title { font-size: 24px; color: #1A202C; margin-bottom: 20px; font-weight: 800; line-height: 1.3; text-transform: capitalize;}
-        .showcase-text { font-size: 18px; color: #4A5568; line-height: 1.8; font-style: italic; margin-bottom: 25px; }
-        .showcase-card::after { content: "\f521"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; bottom: -10px; right: 10px; font-size: 120px; color: rgba(246, 224, 94, 0.1); z-index: 0; }
+        /* VİTRİN KARTI (Premium) */
+        .showcase-container { max-width: 1000px; margin: 60px auto; position: relative; z-index: 10; padding: 0 20px; }
+        .showcase-card { background: linear-gradient(135deg, #ffffff 0%, #FEFCBF 200%); border-radius: 30px; padding: 50px; box-shadow: 0 30px 60px rgba(214, 158, 46, 0.1); border: 1px solid #FAF089; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center;}
+        .showcase-badge { display: inline-block; background: #1A202C; color: #F6E05E; padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 700; margin-bottom: 25px; letter-spacing: 1px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);}
+        .showcase-title { font-size: 32px; color: #1A202C; margin-bottom: 25px; font-weight: 800; line-height: 1.3; text-transform: capitalize;}
+        .showcase-text { font-size: 20px; color: #4A5568; line-height: 1.8; font-style: italic; margin-bottom: 35px; max-width: 800px; font-weight: 300;}
+        .showcase-card::after { content: "\f521"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 300px; color: rgba(246, 224, 94, 0.15); z-index: 0; pointer-events: none;}
+        .showcase-content { position: relative; z-index: 1; width: 100%;}
 
-        /* İSTATİSTİK BÖLÜMÜ (Footer Üstü) */
-        .stats-section { background: #ffffff; padding: 60px 20px; border-top: 1px solid #e2e8f0; margin-top: 40px; }
-        .stats-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-        .stat-box { background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; min-width: 250px; text-align: center; transition: 0.3s; flex: 1; }
-        .stat-box:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(0,200,151,0.1); border-color: #00C897; }
-        .stat-icon-wrapper { width: 60px; height: 60px; border-radius: 50%; background: #E6FFFA; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px auto; }
-        .stat-icon { font-size: 26px; color: #00C897; }
-        .stat-number { font-size: 48px; font-weight: 800; color: #1A202C; line-height: 1; margin-bottom: 10px; }
+        /* İSTATİSTİK BÖLÜMÜ */
+        .stats-section { background: linear-gradient(to bottom, #ffffff, #f8fafc); padding: 80px 20px; border-top: 1px solid #f1f5f9; margin-top: 60px; }
+        .stats-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .stat-box { background: white; padding: 50px 40px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; min-width: 280px; text-align: center; transition: 0.4s; flex: 1; position: relative; overflow: hidden;}
+        .stat-box::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #00C897; transform: scaleX(0); transition: 0.4s; transform-origin: left;}
+        .stat-box:hover::before { transform: scaleX(1); }
+        .stat-box:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,200,151,0.08); }
+        .stat-icon-wrapper { width: 70px; height: 70px; border-radius: 20px; background: #F0FDF4; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px auto; transition: 0.4s;}
+        .stat-box:hover .stat-icon-wrapper { background: #00C897; color: white;}
+        .stat-icon { font-size: 30px; color: inherit; transition: 0.4s; color: #00C897;}
+        .stat-box:hover .stat-icon { color: white; }
+        .stat-number { font-size: 56px; font-weight: 800; color: #0F172A; line-height: 1; margin-bottom: 15px; font-family: 'Poppins';}
         .stat-label { font-size: 15px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
         /* YENİ PROFESYONEL FOOTER */
-        .site-footer { background-color: #0F172A; color: #cbd5e1; padding: 70px 20px 30px; font-size: 14px; }
-        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .footer-col h4 { color: white; font-size: 16px; margin-bottom: 20px; font-weight: 600; letter-spacing: 0.5px; }
+        .site-footer { background-color: #0F172A; color: #cbd5e1; padding: 80px 20px 30px; font-size: 15px; border-top: 4px solid #00C897;}
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin-bottom: 60px; }
+        .footer-col h4 { color: white; font-size: 18px; margin-bottom: 25px; font-weight: 700; letter-spacing: 0.5px; }
         .footer-col ul { list-style: none; padding: 0; margin: 0; }
-        .footer-col ul li { margin-bottom: 12px; }
-        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 8px;}
-        .footer-col ul li a:hover { color: #00C897; padding-left: 5px; }
-        .footer-bottom { max-width: 1200px; margin: 0 auto; text-align: center; padding-top: 30px; border-top: 1px solid #1e293b; color: #64748b; font-size: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-        .social-icons a { color: #94a3b8; font-size: 18px; margin-left: 15px; transition: 0.3s; }
-        .social-icons a:hover { color: white; }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 10px;}
+        .footer-col ul li a:hover { color: #00C897; padding-left: 8px; }
+        .footer-bottom { max-width: 1200px; margin: 0 auto; text-align: center; padding-top: 30px; border-top: 1px solid #1e293b; color: #64748b; font-size: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .social-icons a { color: #94a3b8; font-size: 20px; margin-left: 20px; transition: 0.3s; background: #1E293B; width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%;}
+        .social-icons a:hover { color: white; background: #00C897; transform: translateY(-3px);}
 
-        @media (max-width: 768px) { .dark-header { flex-direction: column; padding: 15px; } .header-search { margin: 15px 0; max-width: 100%; } .stats-container { gap: 15px; } .stat-box { min-width: 100%; padding: 30px; } .footer-bottom { flex-direction: column; justify-content: center; } }
+        @media (max-width: 900px) { .how-it-works { grid-template-columns: 1fr; max-width: 400px;} }
+        @media (max-width: 768px) { .dark-header { flex-direction: column; padding: 15px; gap: 15px;} .header-search { margin: 0; max-width: 100%; width: 100%;} .hero h1 { font-size: 38px;} .stats-container { gap: 20px; } .stat-box { min-width: 100%; padding: 30px; } .footer-bottom { flex-direction: column; justify-content: center; } }
     </style>
 </head>
 <body>
@@ -112,17 +132,39 @@
     </header>
 
     <section class="hero">
-        <h1>Mükemmel Hizmeti <span style="color: #00C897;">Alkışlıyoruz.</span></h1>
-        <p>Türkiye'nin ilk pozitif müşteri platformu. Markaların iyi niyetini ve müşterilerin takdirini aynı çatı altında buluşturuyoruz.</p>
-        
-        <div class="brand-strip">
-            <span>En Çok Teşekkür Alanlar:</span>
-            <b onclick="markayaGoreFiltrele('trendyol')">Trendyol</b>
-            <b onclick="markayaGoreFiltrele('getir')">Getir</b>
-            <b onclick="markayaGoreFiltrele('hepsiburada')">Hepsiburada</b>
-            <b onclick="markayaGoreFiltrele('arçelik')">Arçelik</b>
+        <div class="hero-content">
+            <h1>Mükemmel Hizmeti <span class="text-gradient">Alkışlıyoruz.</span></h1>
+            <p>Türkiye'nin ilk pozitif müşteri platformu. Markaların iyi niyetini ve müşterilerin takdirini güvenli bir çatı altında buluşturuyoruz.</p>
+            
+            <div class="brand-strip">
+                <span><i class="fa-solid fa-fire" style="color: #f97316;"></i> Popüler Markalar:</span>
+                <b onclick="markayaGoreFiltrele('trendyol')">Trendyol</b>
+                <b onclick="markayaGoreFiltrele('getir')">Getir</b>
+                <b onclick="markayaGoreFiltrele('hepsiburada')">Hepsiburada</b>
+                <b onclick="markayaGoreFiltrele('arçelik')">Arçelik</b>
+            </div>
         </div>
     </section>
+
+    <section class="how-it-works">
+        <div class="hiw-step">
+            <div class="hiw-icon"><i class="fa-solid fa-pen-nib"></i></div>
+            <h4>1. Deneyimini Paylaş</h4>
+            <p>Aldığın güzel bir hizmeti, markayı ve çalışanları motive etmek için yaz.</p>
+        </div>
+        <div class="hiw-step">
+            <div class="hiw-icon"><i class="fa-solid fa-shield-check"></i></div>
+            <h4>2. Güvenli Onay</h4>
+            <p>Yapay zeka ve moderatörlerimiz içeriği doğrulayıp vitrine taşır.</p>
+        </div>
+        <div class="hiw-step">
+            <div class="hiw-icon"><i class="fa-solid fa-gift"></i></div>
+            <h4>3. Markadan Jest</h4>
+            <p>Marka yetkilileri bu nezaketi görür ve sana özel bir jest tanımlar.</p>
+        </div>
+    </section>
+
+    <div id="dinamikVitrinAlani"></div>
 
     <div class="cards-wrapper" id="kiymetliBolumu" style="display: none;">
         <h3 class="section-title">
@@ -131,15 +173,14 @@
         <section class="cards-container" id="kiymetliKartlarAlani"></section>
     </div>
 
-    <div id="dinamikVitrinAlani"></div>
-
     <div class="cards-wrapper">
         <h3 class="section-title">
             <i class="fa-solid fa-bolt" style="color: #F6E05E;"></i> En Son Eklenen Teşekkürler
         </h3>
         <section class="cards-container" id="kartlarAlani">
-            <p style="text-align: center; width: 100%; color: #94a3b8; font-size: 16px; padding: 40px 0;">
-                Teşekkürler yükleniyor... <i class="fa-solid fa-spinner fa-spin"></i>
+            <p style="text-align: center; width: 100%; color: #94a3b8; font-size: 18px; padding: 60px 0; font-weight: 500;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px; margin-bottom: 15px; color: #00C897; display: block;"></i>
+                Teşekkürler yükleniyor...
             </p>
         </section>
     </div>
@@ -157,9 +198,9 @@
                 <div class="stat-label">Mutlu Müşteri</div>
             </div>
             <div class="stat-box">
-                <div class="stat-icon-wrapper" style="background: #FAF5FF;"><i class="fa-solid fa-building-circle-check stat-icon" style="color: #8B5CF6;"></i></div>
+                <div class="stat-icon-wrapper"><i class="fa-solid fa-building-circle-check stat-icon"></i></div>
                 <div class="stat-number" id="statMarka">...</div> 
-                <div class="stat-label">Teşekkür Edilen Marka</div>
+                <div class="stat-label">Takdir Edilen Marka</div>
             </div>
         </div>
     </section>
@@ -167,42 +208,42 @@
     <footer class="site-footer">
         <div class="footer-grid">
             <div class="footer-col">
-                <a href="index.html" class="logo" style="text-decoration: none; color: white; font-size: 22px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+                <a href="index.html" class="logo" style="text-decoration: none; color: white; font-size: 26px; display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
                     <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
                 </a>
-                <p style="color: #94a3b8; line-height: 1.6;">İyiliği paylaşmanın ve pozitif hizmeti takdir etmenin en güvenilir adresi. Markanızı bir adım öne taşıyın.</p>
+                <p style="color: #94a3b8; line-height: 1.8; max-width: 300px;">İyiliği paylaşmanın ve pozitif hizmeti takdir etmenin en güvenilir adresi. Markanızı bir adım öne taşıyın.</p>
             </div>
             <div class="footer-col">
-                <h4>Kurumsal</h4>
+                <h4>Kurumsal Çözümler</h4>
                 <ul>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Hakkımızda</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Marka Çözümleri</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Sıkça Sorulan Sorular</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> İletişim</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> Hakkımızda</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> B2B Marka Paneli</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> API Desteği</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> İletişim</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Hızlı Bağlantılar</h4>
+                <h4>Müşteri Bağlantıları</h4>
                 <ul>
-                    <li><a href="tesekkur-yaz.html"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Teşekkür Yaz</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Giriş Yap</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Platform Kuralları</a></li>
+                    <li><a href="tesekkur-yaz.html"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> Teşekkür Yaz</a></li>
+                    <li><a href="profilim.html"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> Hesabım</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> Sıkça Sorulan Sorular</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Yasal</h4>
+                <h4>Yasal Süreçler</h4>
                 <ul>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Kullanıcı Sözleşmesi</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Gizlilik Politikası</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Çerez Politikası</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> Kullanıcı Sözleşmesi</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> KVKK ve Gizlilik</a></li>
+                    <li><a href="#"><i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #00C897;"></i> Çerez Politikası</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <div>&copy; 2026 Müşteri Memnun. Tüm hakları saklıdır.</div>
+            <div>&copy; 2026 Müşteri Memnun Platformu. Tüm hakları saklıdır.</div>
             <div class="social-icons">
-                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
                 <a href="#"><i class="fa-brands fa-instagram"></i></a>
             </div>
         </div>
@@ -245,7 +286,7 @@
             eslesenler.forEach(marka => {
                 const div = document.createElement('div');
                 div.className = 'oneri-item';
-                div.innerHTML = `<img src="${getLogoUrl(marka.id)}" style="width:20px; height:20px; object-fit:contain; border-radius:4px;" onerror="this.style.display='none'"> ${marka.ad}`;
+                div.innerHTML = `<img src="${getLogoUrl(marka.id)}" style="width:24px; height:24px; object-fit:contain; border-radius:6px; border:1px solid #e2e8f0;" onerror="this.style.display='none'"> ${marka.ad}`;
                 div.onclick = () => { mainSearchInput.value = marka.ad; mainOneriKutusu.style.display = 'none'; veriYukle(marka.id); };
                 mainOneriKutusu.appendChild(div);
             });
@@ -254,7 +295,7 @@
     });
     document.addEventListener('click', (e) => { if (e.target !== mainSearchInput) mainOneriKutusu.style.display = 'none'; });
 
-    // Veri Yükleme ve Dağıtma Motoru (Tek Sorgu, Yüksek Performans)
+    // Veri Yükleme Motoru
     async function veriYukle(markaFiltre = null) {
         const vitrinAlani = document.getElementById('dinamikVitrinAlani');
         const kiymetliAlani = document.getElementById('kiymetliKartlarAlani');
@@ -269,7 +310,7 @@
         const snap = await getDocs(q);
         
         if (snap.empty) {
-            kartlarAlani.innerHTML = `<p style="text-align:center; width:100%; color:#94a3b8;">${markaFiltre ? 'Bu markaya ait' : 'Henüz'} onaylanmış bir teşekkür bulunmuyor.</p>`;
+            kartlarAlani.innerHTML = `<p style="text-align:center; width:100%; color:#94a3b8; font-size:16px;">${markaFiltre ? 'Bu markaya ait' : 'Henüz'} onaylanmış bir teşekkür bulunmuyor.</p>`;
             kiymetliBolumu.style.display = 'none';
             if(!markaFiltre) guncelleIstatistik(0, 0, 0);
             return;
@@ -286,29 +327,24 @@
             if(data.marka) essizMarkalar.add(data.marka);
         });
 
-        // İstatistikleri Güncelle (Gerçek Veri)
         if(!markaFiltre) guncelleIstatistik(tumMesajlar.length, essizMusteriler.size, essizMarkalar.size);
 
-        // Tarihe göre sırala (en yeni en üstte)
         tumMesajlar.sort((a, b) => (b.tarih?.toMillis() || 0) - (a.tarih?.toMillis() || 0));
 
-        // 1. Vitrin Mesajını Bul (Sadece ana sayfadaysa)
         let vitrinMesaji = null;
         if (!markaFiltre) {
             const vitrinIndex = tumMesajlar.findIndex(m => m.vitrin === true);
             if (vitrinIndex > -1) {
-                vitrinMesaji = tumMesajlar.splice(vitrinIndex, 1)[0]; // Listeden al ve çıkar
+                vitrinMesaji = tumMesajlar.splice(vitrinIndex, 1)[0];
                 renderVitrin(vitrinMesaji, vitrinAlani);
             }
         }
 
-        // 2. Kıymetli Teşekkürleri Bul (Karakter > 150)
-        let kiymetliMesajlar = tumMesajlar.filter(m => m.mesaj && m.mesaj.length > 150).slice(0, 3); // En yeni 3 tanesini al
+        let kiymetliMesajlar = tumMesajlar.filter(m => m.mesaj && m.mesaj.length > 150).slice(0, 3);
         if (kiymetliMesajlar.length > 0 && !markaFiltre) {
             kiymetliBolumu.style.display = 'block';
             kiymetliMesajlar.forEach(m => {
                 renderKart(m, kiymetliAlani, true);
-                // Eklenenleri ana listeden çıkar ki tekrar "En Son" kısmında çıkmasın
                 const index = tumMesajlar.findIndex(tm => tm.id === m.id);
                 if (index > -1) tumMesajlar.splice(index, 1);
             });
@@ -316,7 +352,6 @@
             kiymetliBolumu.style.display = 'none';
         }
 
-        // 3. Kalanları En Son Eklenenlere Bas
         if (tumMesajlar.length === 0) {
              kartlarAlani.innerHTML = `<p style="text-align:center; width:100%; color:#94a3b8;">Başka teşekkür bulunmuyor.</p>`;
         } else {
@@ -331,19 +366,21 @@
     }
 
     function renderVitrin(data, container) {
-        const jestHTML = data.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> <b>${data.marka}</b> bu güzel deneyim için müşterimize <b>${data.jest}</b> tanımladı!</div>` : '';
+        const jestHTML = data.jest ? `<div class="jest-kutusu" style="margin:0 auto 30px auto; max-width:600px; text-align:left;"><i class="fa-solid fa-gift"></i> <b>${data.marka}</b> bu güzel deneyim için müşterimize <b>${data.jest}</b> tanımladı!</div>` : '';
         container.innerHTML = `
-            <section class="showcase-container">
+            <section class="showcase-container animated-card">
                 <div class="showcase-card">
-                    <div class="showcase-badge"><i class="fa-solid fa-crown"></i> HAFTANIN TEŞEKKÜRÜ</div>
-                    <h3 class="showcase-title">${data.marka} ekibine kalpten bir teşekkür!</h3>
-                    <p class="showcase-text">"${data.mesaj}"</p>
-                    ${jestHTML}
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px; margin-top: 20px;">
-                        <div style="font-size: 11px; color: #A0AEC0; max-width: 60%;"><i class="fa-solid fa-shield-halved"></i> Bu içerik şeffaflık ilkelerimiz gereği doğrulanmış bir müşteri deneyimidir.</div>
-                        <div style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1A202C;">
-                            <img src="${getLogoUrl(data.marka)}" class="brand-logo-img" onerror="this.src='https://ui-avatars.com/api/?name=${data.marka}&background=random'">
-                            <span>${data.isim} <br><small style="color:#A0AEC0; font-weight:400;">${data.sehir || ''}</small></span>
+                    <div class="showcase-content">
+                        <div class="showcase-badge"><i class="fa-solid fa-crown"></i> HAFTANIN TEŞEKKÜRÜ</div>
+                        <h3 class="showcase-title"><span style="color:#D69E2E;">${data.marka}</span> ekibine kalpten bir teşekkür!</h3>
+                        <p class="showcase-text">"${data.mesaj}"</p>
+                        ${jestHTML}
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(214, 158, 46, 0.3); padding-top: 30px; margin-top: 10px; width:100%;">
+                            <div style="font-size: 13px; color: #718096; max-width: 60%; text-align:left;"><i class="fa-solid fa-shield-halved"></i> Şeffaflık ilkelerimiz gereği doğrulanmış müşteri deneyimi.</div>
+                            <div style="display: flex; align-items: center; gap: 15px; font-weight: 700; color: #1A202C; text-align:left;">
+                                <img src="${getLogoUrl(data.marka)}" class="brand-logo-img" onerror="this.src='https://ui-avatars.com/api/?name=${data.marka}&background=random'">
+                                <span>${data.isim} <br><small style="color:#718096; font-weight:400;">${data.sehir || 'Şehir Belirtilmedi'}</small></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -352,43 +389,42 @@
     }
 
     function renderKart(data, container, isPremium) {
-        const jestHTML = data.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> <b>Jest:</b> ${data.jest}</div>` : '';
+        const jestHTML = data.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> <b>Marka Jesti:</b> ${data.jest}</div>` : '';
         let etiketlerHTML = '';
         if (data.etiketler && data.etiketler.length > 0) {
-            etiketlerHTML = '<div style="margin-top: 15px; display: flex; gap: 6px; flex-wrap: wrap;">';
-            data.etiketler.forEach(etiket => { etiketlerHTML += `<span style="background-color: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">${etiket}</span>`; });
+            etiketlerHTML = '<div style="margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap;">';
+            data.etiketler.forEach(etiket => { etiketlerHTML += `<span style="background-color: #f1f5f9; color: #475569; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0;">${etiket}</span>`; });
             etiketlerHTML += '</div>';
         }
         
-        let duyguBadge = '<div style="color:#F6E05E; font-size:11px; margin-top:2px;">★★★★★</div>';
-        if(data.seviye === 'standart') duyguBadge = '<div style="color:#3182ce; font-size:11px; font-weight:600; margin-top:2px;"><i class="fa-solid fa-thumbs-up"></i> Teşekkürler</div>';
-        if(data.seviye === 'mutlu') duyguBadge = '<div style="color:#38a169; font-size:11px; font-weight:600; margin-top:2px;"><i class="fa-solid fa-face-smile"></i> Mutlu Oldum</div>';
-        if(data.seviye === 'vay_canina') duyguBadge = '<div style="color:#d69e2e; font-size:11px; font-weight:600; margin-top:2px;"><i class="fa-solid fa-star"></i> Vay Canına!</div>';
+        let duyguBadge = '<div style="color:#F6E05E; font-size:12px; margin-top:4px;">★★★★★</div>';
+        if(data.seviye === 'standart') duyguBadge = '<div style="color:#3182ce; font-size:12px; font-weight:600; margin-top:4px;"><i class="fa-solid fa-thumbs-up"></i> Teşekkürler</div>';
+        if(data.seviye === 'mutlu') duyguBadge = '<div style="color:#059669; font-size:12px; font-weight:600; margin-top:4px;"><i class="fa-solid fa-face-smile"></i> Harika Hizmet</div>';
+        if(data.seviye === 'vay_canina') duyguBadge = '<div style="color:#d69e2e; font-size:12px; font-weight:600; margin-top:4px;"><i class="fa-solid fa-star"></i> Kusursuz!</div>';
 
         container.innerHTML += `
-            <div class="card ${isPremium ? 'premium-card' : ''}">
+            <div class="card animated-card ${isPremium ? 'premium-card' : ''}">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
-                    <div style="display:flex; gap:12px; align-items:center;">
+                    <div style="display:flex; gap:15px; align-items:center;">
                         <img src="${getLogoUrl(data.marka)}" class="brand-logo-img" onerror="this.src='https://ui-avatars.com/api/?name=${data.marka}&background=random'">
                         <div>
-                            <h4 style="margin:0; text-transform:capitalize; font-size:16px; color:#1A202C;">${data.marka}</h4>
+                            <h4 style="margin:0; text-transform:capitalize; font-size:18px; color:#0F172A; font-weight:700;">${data.marka}</h4>
                             ${duyguBadge}
                         </div>
                     </div>
-                    <div style="font-size:10px; color:#00C897; font-weight:700; background:#E6FFFA; padding:4px 8px; border-radius:6px; border: 1px solid #b2f5ea;"><i class="fa-solid fa-check"></i> ONAYLI</div>
+                    <div style="font-size:11px; color:#00C897; font-weight:700; background:#E6FFFA; padding:6px 10px; border-radius:8px; border: 1px solid #b2f5ea;"><i class="fa-solid fa-shield-check"></i> ONAYLI</div>
                 </div>
                 <p class="card-text">${data.mesaj}</p>
                 ${etiketlerHTML}
                 ${jestHTML}
-                <div style="margin-top:25px; padding-top: 15px; border-top: 1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:13px; font-weight:600; color:#475569;"><i class="fa-regular fa-user" style="margin-right:5px; color:#94a3b8;"></i> ${data.isim}</span>
-                    <span style="font-size:11px; color:#A0AEC0;"><i class="fa-solid fa-location-dot"></i> ${data.sehir || 'Belirtilmedi'}</span>
+                <div style="margin-top:30px; padding-top: 20px; border-top: 1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:14px; font-weight:600; color:#334155;"><i class="fa-solid fa-circle-user" style="margin-right:6px; color:#cbd5e1; font-size:16px;"></i> ${data.isim}</span>
+                    <span style="font-size:12px; color:#94a3b8; font-weight:500;"><i class="fa-solid fa-location-dot" style="margin-right:4px;"></i> ${data.sehir || 'Belirtilmedi'}</span>
                 </div>
             </div>
         `;
     }
 
-    // Global erişim için window'a ekle
     window.markayaGoreFiltrele = function(markaAdi) {
         document.getElementById('mainSearchInput').value = markaAdi;
         veriYukle(markaAdi);
