@@ -1,0 +1,17 @@
+{
+  "name": "Müşteri Memnun",
+  "short_name": "Memnun",
+  "description": "Şikayet etme, teşekkür et! Türkiye'nin ilk pozitif müşteri platformu.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#00C897",
+  "icons": [
+    {
+      "src": "logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
