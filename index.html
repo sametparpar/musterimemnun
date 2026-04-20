@@ -110,8 +110,19 @@
         .social-icons a { color: #94a3b8; font-size: 20px; margin-left: 20px; transition: 0.3s; background: #1E293B; width: 40px; height: 40px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%;}
         .social-icons a:hover { color: white; background: #00C897; transform: translateY(-3px);}
 
+
+        /* PAYLAŞ BUTONU STİLİ */
+        .btn-share { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-family: 'Poppins'; font-weight: 600; font-size: 12px; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-share:hover { background: #E6FFFA; color: #00C897; border-color: #00C897; }
+
+
+        
         @media (max-width: 900px) { .how-it-works { grid-template-columns: 1fr; max-width: 400px;} }
         @media (max-width: 768px) { .dark-header { flex-direction: column; padding: 15px; gap: 15px;} .header-search { margin: 0; max-width: 100%; width: 100%;} .hero h1 { font-size: 38px;} .stats-container { gap: 20px; } .stat-box { min-width: 100%; padding: 30px; } .footer-bottom { flex-direction: column; justify-content: center; } }
+   
+    
+    
+    
     </style>
 </head>
 <body>
@@ -420,8 +431,11 @@
                 ${etiketlerHTML}
                 ${jestHTML}
                 <div style="margin-top:30px; padding-top: 20px; border-top: 1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-size:14px; font-weight:600; color:#334155;"><i class="fa-solid fa-circle-user" style="margin-right:6px; color:#cbd5e1; font-size:16px;"></i> ${data.isim}</span>
-                    <span style="font-size:12px; color:#94a3b8; font-weight:500;"><i class="fa-solid fa-location-dot" style="margin-right:4px;"></i> ${data.sehir || 'Belirtilmedi'}</span>
+                    <div>
+                        <span style="font-size:14px; font-weight:600; color:#334155; display:block;"><i class="fa-solid fa-circle-user" style="margin-right:6px; color:#cbd5e1;"></i> ${data.isim}</span>
+                        <span style="font-size:12px; color:#94a3b8; font-weight:500;"><i class="fa-solid fa-location-dot" style="margin-right:4px;"></i> ${data.sehir || 'Belirtilmedi'}</span>
+                    </div>
+                    <button class="btn-share" onclick="kartPaylas(this, '${data.marka}')"><i class="fa-solid fa-share-nodes"></i> Paylaş</button>
                 </div>
             </div>
         `;
@@ -435,6 +449,78 @@
 
     sistemdekiMarkalariYukle(); 
     veriYukle();
+
+
+
+
+// KARTI GÖRSELE ÇEVİRİP PAYLAŞMA FONKSİYONU
+    window.kartPaylas = async function(btn, markaAdi) {
+        // Hangi kartın içindeki butona tıklandıysa o kartı bul
+        const card = btn.closest('.card');
+        const originalBtnText = btn.innerHTML;
+        
+        // Fotoğraf çekilirken butonun kendisi resimde çıkmasın diye gizliyoruz/değiştiriyoruz
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Hazırlanıyor...';
+        btn.style.pointerEvents = 'none';
+
+        try {
+            // Kartın fotoğrafını çek
+            const canvas = await html2canvas(card, {
+                scale: 2, // Instagram için yüksek kalite (Retina)
+                backgroundColor: '#ffffff',
+                useCORS: true // Marka logolarını sorunsuz çekebilmek için
+            });
+            
+            // Canvas'ı resim dosyasına (Data URL) çevir
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Butonu eski haline getir
+            btn.innerHTML = originalBtnText;
+            btn.style.pointerEvents = 'auto';
+
+            // MOBİL PAYLAŞIM (NATIVE YÖNTEM)
+            if (navigator.share) {
+                try {
+                    // Data URL'yi Blob (dosya) formatına çevir
+                    const blob = await (await fetch(imgData)).blob();
+                    const file = new File([blob], `tesekkur-${markaAdi}.png`, { type: 'image/png' });
+                    
+                    // Telefon bu dosyayı paylaşmayı destekliyor mu kontrol et
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Müşteri Memnun',
+                            text: `${markaAdi} ekibine harika bir teşekkür! 👏`,
+                        });
+                        return; // Paylaşım başarılıysa burada işlemi bitir
+                    }
+                } catch (shareError) {
+                    console.log("Mobil paylaşım iptal edildi veya desteklenmiyor.", shareError);
+                }
+            }
+
+            // BİLGİSAYAR / YEDEK YÖNTEM (Resmi İndirme)
+            const link = document.createElement('a');
+            link.download = `tesekkur-${markaAdi}.png`;
+            link.href = imgData;
+            link.click();
+            alert("Görsel cihazınıza indirildi! Artık dilediğiniz platformda paylaşabilirsiniz.");
+
+        } catch (error) {
+            console.error("Görsel oluşturma hatası:", error);
+            btn.innerHTML = originalBtnText;
+            btn.style.pointerEvents = 'auto';
+            alert("Görsel hazırlanırken bir sorun oluştu.");
+        }
+    };
+
+
+
+
+
+
+
+    
 </script>
 
 
@@ -454,6 +540,10 @@
     </script>
 
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    
     
 </body>
 </html>
