@@ -4,312 +4,299 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teşekkür Yaz | Müşteri Memnun</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <meta name="description" content="Aldığınız mükemmel hizmeti ve güler yüzlü çalışanları takdir edin.">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00C897">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        /* YENİ: KONTRAST HEADER TASARIMI */
-        .dark-header { background-color: #1A202C; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2D3748; }
-        .dark-header .logo { color: white; text-decoration: none; font-size: 20px; display: flex; align-items: center; gap: 8px; }
-        .dark-header .logo b { color: white; }
-        .dark-header .btn-profil { background: transparent; border: 1px solid #4A5568; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .dark-header .btn-profil:hover { background: #2D3748; border-color: #A0AEC0; }
-        @media (max-width: 768px) { .dark-header { padding: 15px 20px; flex-direction: column; gap: 15px; } }
+        /* Sadece bu sayfaya özgü form stilleri */
+        .container { max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #1A202C; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; box-sizing: border-box; }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .submit-btn { width: 100%; background-color: #00C897; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .submit-btn:hover { background-color: #00a87d; }
+        #successMessage { display: none; background-color: #D1FAE5; color: #065F46; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #A7F3D0; text-align: center; }
+        
+        .duygu-btn { padding: 10px 15px; border: 1px solid #E2E8F0; border-radius: 8px; background: white; cursor: pointer; transition: 0.2s; font-weight: 600; color: #4A5568; display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; }
+        .duygu-btn[data-val="standart"]:hover, .duygu-btn.active[data-val="standart"] { background: #EBF8FF; border-color: #3182CE; color: #3182CE; }
+        .duygu-btn[data-val="mutlu"]:hover, .duygu-btn.active[data-val="mutlu"] { background: #F0FDF4; border-color: #38A169; color: #38A169; }
+        .duygu-btn[data-val="vay_canina"]:hover, .duygu-btn.active[data-val="vay_canina"] { background: #FFFFF0; border-color: #D69E2E; color: #D69E2E; }
+        
+        .tag-btn { padding: 6px 12px; border: 1px solid #E2E8F0; border-radius: 50px; background: white; cursor: pointer; font-size: 12px; transition: 0.2s; color: #4A5568; }
+        .tag-btn.active { background: #00C897; color: white; border-color: #00C897; }
 
-        .form-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 700px; margin: 40px auto; }
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #2d3748; }
-        .form-control { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 15px; transition: 0.3s; box-sizing: border-box; outline: none; background: white;}
-        .form-control:focus { border-color: #00C897; box-shadow: 0 0 0 3px rgba(0,200,151,0.1); }
-        
-        .oneri-kutusu { border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; background: white; position: absolute; width: calc(100% - 30px); z-index: 10; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); display: none; }
-        .oneri-item { padding: 12px 15px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-        .oneri-item:hover { background: #f8fafc; color: #00C897; }
-        
-        /* 3'LÜ DUYGU SEVİYESİ TASARIMI */
-        .seviye-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px; }
-        .seviye-kart { border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8fafc; position: relative; overflow: hidden; }
-        .seviye-kart input { display: none; }
-        .seviye-kart i { font-size: 24px; margin-bottom: 8px; display: block; transition: 0.3s; }
-        .seviye-kart span { font-weight: 600; font-size: 14px; display: block; }
-        .seviye-kart small { font-size: 11px; color: #718096; display: block; margin-top: 5px; }
-        
-        .seviye-kart:has(input[value="standart"]):hover { border-color: #3182ce; background: #ebf8ff; }
-        .seviye-kart:has(input[value="standart"]:checked) { border-color: #3182ce; background: #ebf8ff; box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15); }
-        .seviye-kart:has(input[value="standart"]:checked) i { color: #3182ce; transform: scale(1.1); }
-        
-        .seviye-kart:has(input[value="mutlu"]):hover { border-color: #38a169; background: #f0fff4; }
-        .seviye-kart:has(input[value="mutlu"]:checked) { border-color: #38a169; background: #f0fff4; box-shadow: 0 4px 12px rgba(56, 161, 105, 0.15); }
-        .seviye-kart:has(input[value="mutlu"]:checked) i { color: #38a169; transform: scale(1.1); }
-        
-        .seviye-kart:has(input[value="vay_canina"]):hover { border-color: #d69e2e; background: #fffff0; }
-        .seviye-kart:has(input[value="vay_canina"]:checked) { border-color: #d69e2e; background: #fffff0; box-shadow: 0 4px 12px rgba(214, 158, 46, 0.15); }
-        .seviye-kart:has(input[value="vay_canina"]:checked) i { color: #d69e2e; transform: scale(1.2); }
-
-        .etiket-alani { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .etiket { padding: 8px 15px; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 13px; cursor: pointer; color: #475569; transition: 0.2s; user-select: none; }
-        .etiket:hover { background: #f1f5f9; }
-        .etiket.active { background: #00C897; color: white; border-color: #00C897; font-weight: 600; box-shadow: 0 4px 10px rgba(0,200,151,0.2); }
-
-        .btn-submit { background: #00C897; color: white; border: none; width: 100%; padding: 18px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 20px; box-shadow: 0 4px 15px rgba(0,200,151,0.2); display: flex; justify-content: center; align-items: center; gap: 10px;}
-        .btn-submit:hover { background: #00b386; transform: translateY(-2px); }
-        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        #loginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .btn-google { background-color: #4285F4; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-content: center; margin-top: 20px;}
-        .btn-google:hover { background-color: #3367D6; }
-
-        .success-message { display: none; background: #C6F6D5; border: 1px solid #9AE6B4; color: #22543D; padding: 25px; border-radius: 12px; margin-top: 25px; text-align: center; animation: fadeIn 0.5s; }
-        .success-message h3 { margin-top: 0; color: #276749; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        @media (max-width: 768px) { .seviye-grid { grid-template-columns: 1fr; } }
+        .search-results { position: absolute; background: white; border: 1px solid #E2E8F0; width: 100%; max-height: 200px; overflow-y: auto; z-index: 10; border-radius: 8px; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 5px; }
+        .search-item { padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #EDF2F7; }
+        .search-item:hover { background: #F7FAFC; }
     </style>
 </head>
-<body style="background-color: #f8fafc; margin: 0;">
+<body>
 
-    <header class="dark-header">
-        <a href="index.html" class="logo">
-            <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
-        </a>
-        <a href="profilim.html" class="btn-profil">
-            <i class="fa-solid fa-user"></i> Profilim
-        </a>
-    </header>
+    <div id="header-holder"></div>
 
-    <div class="form-container">
-        <h2 style="text-align: center; margin-bottom: 10px; font-size: 28px; color: #1A202C;">İyiliği Paylaş ✨</h2>
-        <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Hangi marka bugün yüzünü güldürdü?</p>
+    <div style="text-align: center; margin-top: 40px; padding: 0 20px;">
+        <h2 style="font-weight: 800; font-size: 32px; color: #1A202C; margin-bottom: 10px;">Birini Mutlu Et! 🌟</h2>
+        <p style="color: #718096; max-width: 500px; margin: 0 auto;">Aldığın hizmeti, o güler yüzlü kuryeyi veya sana yardımcı olan müşteri temsilcisini takdir et. Markalar bu iyiliği karşılıksız bırakmıyor!</p>
+    </div>
 
-        <form id="tesekkurFormu">
+    <div class="container" id="formContainer">
+        <div id="loginWarning" style="display:none; text-align:center; padding: 40px 20px;">
+            <i class="fa-solid fa-lock" style="font-size: 40px; color: #CBD5E0; margin-bottom: 20px;"></i>
+            <h3>Teşekkür Yazmak İçin Giriş Yapmalısın</h3>
+            <p style="color: #718096; margin-bottom: 25px;">Gerçek deneyimleri korumak için güvenliğe önem veriyoruz.</p>
+            <button id="googleLoginBtn" class="submit-btn" style="background-color: #4285F4; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fa-brands fa-google"></i> Google ile Güvenli Giriş Yap
+            </button>
+        </div>
+
+        <div id="successMessage">
+            <i class="fa-solid fa-circle-check" style="font-size: 50px; margin-bottom: 15px;"></i>
+            <h3 style="margin:0 0 10px 0;">Harikasın! 🎉</h3>
+            <p style="margin:0;">Teşekkürün moderasyon ekibimize ulaştı. Onaylandığında vitrinde yerini alacak ve markaya bildirilecek.</p>
+            <button onclick="window.location.href='index.html'" class="submit-btn" style="margin-top:20px; padding: 10px;">Ana Sayfaya Dön</button>
+        </div>
+
+        <form id="tesekkurFormu" style="display:none;">
             <div class="form-group" style="position: relative;">
-                <label>Kime Teşekkür Ediyorsun?</label>
-                <div style="position: relative;">
-                    <i class="fa-solid fa-building" style="position: absolute; left: 15px; top: 18px; color: #a0aec0;"></i>
-                    <input type="text" id="markaAdi" class="form-control" style="padding-left: 45px;" placeholder="Marka ara veya yaz... (Örn: Trendyol)" required autocomplete="off">
-                </div>
-                <div id="oneriKutusu" class="oneri-kutusu"></div>
+                <label>Hangi Markaya Teşekkür Ediyorsun?</label>
+                <input type="text" id="markaArama" placeholder="Örn: Trendyol, Getir..." autocomplete="off" required>
+                <input type="hidden" id="secilenMarkaId">
+                <div id="searchResults" class="search-results"></div>
             </div>
 
             <div class="form-group">
-                <label for="sehir">Hangi Şehirde Hizmet Aldın?</label>
-                <select id="sehir" class="form-control" required>
-                    <option value="">Lütfen Bir Şehir Seçin</option>
-                </select>
+                <label>Hizmeti Nereden Aldın? (İsteğe Bağlı)</label>
+                <input type="text" id="sehir" placeholder="Örn: İstanbul / Kadıköy Şubesi">
             </div>
 
             <div class="form-group">
-                <label>Nasıl Bir Deneyimdi?</label>
-                <div class="seviye-grid">
-                    <label class="seviye-kart">
-                        <input type="radio" name="duyguSeviyesi" value="standart" required>
-                        <i class="fa-solid fa-thumbs-up" style="color: #a0aec0;"></i>
-                        <span>Teşekkürler</span>
-                        <small>Görevini eksiksiz yaptı.</small>
-                    </label>
-                    <label class="seviye-kart">
-                        <input type="radio" name="duyguSeviyesi" value="mutlu">
-                        <i class="fa-solid fa-face-smile" style="color: #a0aec0;"></i>
-                        <span>Mutlu Oldum</span>
-                        <small>Süreci güzelleştirdi.</small>
-                    </label>
-                    <label class="seviye-kart">
-                        <input type="radio" name="duyguSeviyesi" value="vay_canina">
-                        <i class="fa-solid fa-star" style="color: #a0aec0;"></i>
-                        <span>Vay Canına!</span>
-                        <small>Beni çok şaşırttı.</small>
-                    </label>
+                <label>Nasıl Hissettin?</label>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="duygu-btn active" data-val="standart"><i class="fa-solid fa-thumbs-up"></i> Teşekkürler</button>
+                    <button type="button" class="duygu-btn" data-val="mutlu"><i class="fa-solid fa-face-smile"></i> Çok Mutlu</button>
+                    <button type="button" class="duygu-btn" data-val="vay_canina"><i class="fa-solid fa-star"></i> Vay Canına!</button>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Neyi Özellikle Beğendin? (Çoklu seçebilirsin)</label>
-                <div class="etiket-alani">
-                    <div class="etiket" data-val="Güleryüz">😊 Güleryüz</div>
-                    <div class="etiket" data-val="Hız">⚡ Hız</div>
-                    <div class="etiket" data-val="Dürüstlük">🛡️ Dürüstlük</div>
-                    <div class="etiket" data-val="Çözüm Odaklılık">🛠️ Çözüm Odaklılık</div>
-                    <div class="etiket" data-val="Fiyat/Performans">💰 İyi Fiyat</div>
-                    <div class="etiket" data-val="İlgi ve Alaka">🤝 İlgi ve Alaka</div>
+                <label>Öne Çıkan Özellikler (En fazla 3 seçin)</label>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="etiketAlani">
+                    <button type="button" class="tag-btn">Hızlı Teslimat</button>
+                    <button type="button" class="tag-btn">Güler Yüzlü Personel</button>
+                    <button type="button" class="tag-btn">Kaliteli Paketleme</button>
+                    <button type="button" class="tag-btn">Sorunsuz İade</button>
+                    <button type="button" class="tag-btn">Hızlı Çözüm</button>
+                    <button type="button" class="tag-btn">Harika İletişim</button>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Hikayeni Anlat</label>
-                <textarea id="mesaj" class="form-control" rows="4" placeholder="Seni mutlu eden detayları paylaş ki diğer müşterilere ilham olsun..." required></textarea>
+                <label>Teşekkür Mesajın</label>
+                <textarea id="mesaj" placeholder="Deneyimini detaylıca anlat. Kuryenin veya çalışanın adını biliyorsan mutlaka yaz, onları çok mutlu eder! 😊" required></textarea>
             </div>
 
-            <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 15px; border-radius: 10px;">
-                <input type="checkbox" id="anonimYap" style="width: 20px; height: 20px; cursor: pointer;">
-                <label for="anonimYap" style="margin: 0; font-weight: normal; cursor: pointer;">İsmimi Gizle (Örn: S**** P****)</label>
+            <div class="form-group" style="display:flex; align-items:center; gap:10px; background:#F7FAFC; padding:15px; border-radius:8px;">
+                <input type="checkbox" id="gizliProfil" style="width:auto; transform: scale(1.2);">
+                <label for="gizliProfil" style="margin:0; font-weight:500; font-size:14px; color:#4A5568;">İsmim markadan gizlensin (Anonim olarak paylaşılsın)</label>
             </div>
 
-            <button type="submit" id="gonderBtn" class="btn-submit">
-                <i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla
-            </button>
+            <button type="submit" class="submit-btn" id="gonderBtn">Teşekkürü Gönder 🚀</button>
         </form>
-
-        <div id="successMessage" class="success-message">
-            <h3>🎉 Teşekkürün Uçuşa Geçti!</h3>
-            <p>Harika hikayeni markaya iletiyoruz. Onaylandıktan sonra İyilik Vitrini'nde veya markanın özel sayfasında yayınlanacak.</p>
-            <p style="font-size: 13px; color: #38a169; margin-top: 10px;"><b>İpucu:</b> Marka bu güzel mesaja karşılık sana bir jest/hediye yapabilir. Durumu profilinden takip edebilirsin!</p>
-            <a href="index.html" class="btn-submit" style="text-decoration: none; display: inline-block; width: auto; padding: 10px 20px; margin-top: 15px;">Ana Sayfaya Dön</a>
-        </div>
     </div>
 
-    <div id="loginModal">
-        <div class="modal-content">
-            <i class="fa-solid fa-gift" style="font-size: 50px; color: #8B5CF6; margin-bottom: 15px;"></i>
-            <h3 style="margin-top: 0;">Harika Bir Teşekkür!</h3>
-            <p style="color: #64748b; font-size: 14px;">Bu iyiliği markaya ulaştırmak ve olası sürprizleri profiline kaydetmek için tek tıkla giriş yap.</p>
-            <button id="googleLoginBtn" class="btn-google">
-                <i class="fa-brands fa-google"></i> Google ile Giriş Yap & Gönder
-            </button>
-            <button id="iptalBtn" style="background: none; border: none; color: #a0aec0; margin-top: 15px; cursor: pointer; text-decoration: underline;">Vazgeç</button>
-        </div>
-    </div>
+    <div id="footer-holder"></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
-            authDomain: "musterimemnun-cb039.firebaseapp.com",
-            projectId: "musterimemnun-cb039",
-            storageBucket: "musterimemnun-cb039.firebasestorage.app",
-            messagingSenderId: "800433057522",
-            appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
+        authDomain: "musterimemnun-cb039.firebaseapp.com",
+        projectId: "musterimemnun-cb039",
+        storageBucket: "musterimemnun-cb039.firebasestorage.app",
+        messagingSenderId: "800433057522",
+        appId: "1:800433057522:web:8357de2e3f74f250fd2a6b"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    const db = getFirestore(app);
 
-        let currentUser = null;
-        let tumMarkalar = [];
+    let islemYapanKullanici = null;
+    let tumMarkalar = [];
 
-        onAuthStateChanged(auth, (user) => { currentUser = user; });
+    // Header ve Footer'ı Dinamik Yükle
+    async function loadLayout() {
+        try {
+            document.getElementById('header-holder').innerHTML = await (await fetch('header.html')).text();
+            document.getElementById('footer-holder').innerHTML = await (await fetch('footer.html')).text();
+        } catch (e) { console.log("Header/Footer yüklenemedi", e); }
+    }
+    loadLayout();
 
-        // Şehir Listesi
-        const sehirler = [
-            "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
-        ];
-        const sehirSelect = document.getElementById('sehir');
-        sehirler.sort((a, b) => a.localeCompare(b, 'tr')).forEach(sehir => {
-            let option = document.createElement('option');
-            option.value = sehir; option.textContent = sehir;
-            sehirSelect.appendChild(option);
+    // Markaları Firebase'den Çek (Arama için)
+    async function markalariGetir() {
+        const snap = await getDocs(collection(db, "markalar"));
+        snap.forEach(doc => {
+            tumMarkalar.push({ id: doc.id, ad: doc.data().ad });
         });
+    }
+    markalariGetir();
 
-        const markaInput = document.getElementById('markaAdi');
-        const oneriKutusu = document.getElementById('oneriKutusu');
-        const getLogoUrl = (marka) => `https://logo.clearbit.com/${marka.toLowerCase()}.com`;
-
-        async function markalariYukle() {
-            const snap = await getDocs(collection(db, "markalar"));
-            snap.forEach(doc => { tumMarkalar.push({ id: doc.id, ad: doc.data().ad }); });
+    // Oturum Kontrolü
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            islemYapanKullanici = user;
+            document.getElementById('loginWarning').style.display = 'none';
+            document.getElementById('tesekkurFormu').style.display = 'block';
+        } else {
+            document.getElementById('tesekkurFormu').style.display = 'none';
+            document.getElementById('loginWarning').style.display = 'block';
         }
-        markalariYukle();
+    });
 
-        markaInput.addEventListener('input', function() {
-            const kelime = this.value.toLocaleLowerCase('tr-TR');
-            oneriKutusu.innerHTML = '';
-            if (!kelime) { oneriKutusu.style.display = 'none'; return; }
-            const eslesenler = tumMarkalar.filter(m => m.ad.toLocaleLowerCase('tr-TR').includes(kelime));
-            if (eslesenler.length > 0) {
-                eslesenler.forEach(marka => {
-                    const div = document.createElement('div'); div.className = 'oneri-item';
-                    div.innerHTML = `<img src="${getLogoUrl(marka.id)}" style="width:20px; height:20px; object-fit:contain;" onerror="this.style.display='none'"> ${marka.ad}`;
-                    div.onclick = () => { markaInput.value = marka.ad; markaInput.dataset.secilenId = marka.id; oneriKutusu.style.display = 'none'; };
-                    oneriKutusu.appendChild(div);
-                });
-                oneriKutusu.style.display = 'block';
-            } else { oneriKutusu.style.display = 'none'; }
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+        signInWithPopup(auth, provider).catch(error => { console.error("Giriş Hatası:", error); });
+    });
+
+    // Marka Arama Mantığı
+    const markaInput = document.getElementById('markaArama');
+    const searchResults = document.getElementById('searchResults');
+    const secilenMarkaIdInput = document.getElementById('secilenMarkaId');
+
+    markaInput.addEventListener('input', function() {
+        const val = this.value.toLocaleLowerCase('tr-TR');
+        searchResults.innerHTML = '';
+        if(!val) { searchResults.style.display = 'none'; return; }
+        
+        const filtered = tumMarkalar.filter(m => m.ad.toLocaleLowerCase('tr-TR').includes(val));
+        
+        if(filtered.length > 0) {
+            filtered.forEach(m => {
+                const div = document.createElement('div');
+                div.className = 'search-item';
+                div.textContent = m.ad;
+                div.onclick = () => {
+                    markaInput.value = m.ad;
+                    secilenMarkaIdInput.value = m.id;
+                    searchResults.style.display = 'none';
+                };
+                searchResults.appendChild(div);
+            });
+        } else {
+            const div = document.createElement('div');
+            div.className = 'search-item';
+            div.innerHTML = `<b>"${this.value}"</b> sisteme eklenecek. Seçmek için tıkla.`;
+            div.onclick = () => {
+                secilenMarkaIdInput.value = "yeni";
+                searchResults.style.display = 'none';
+            };
+            searchResults.appendChild(div);
+        }
+        searchResults.style.display = 'block';
+    });
+
+    // Buton Seçimleri (Duygu)
+    const duyguButonlari = document.querySelectorAll('.duygu-btn');
+    duyguButonlari.forEach(btn => {
+        btn.addEventListener('click', () => {
+            duyguButonlari.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         });
-        document.addEventListener('click', (e) => { if (e.target !== markaInput) oneriKutusu.style.display = 'none'; });
+    });
 
-        document.querySelectorAll('.etiket').forEach(etiket => { etiket.addEventListener('click', function() { this.classList.toggle('active'); }); });
+    // Buton Seçimleri (Etiketler)
+    const etiketButonlari = document.querySelectorAll('.tag-btn');
+    etiketButonlari.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const seciliSayisi = document.querySelectorAll('.tag-btn.active').length;
+            if(btn.classList.contains('active')) {
+                btn.classList.remove('active');
+            } else {
+                if(seciliSayisi < 3) btn.classList.add('active');
+                else alert("En fazla 3 özellik seçebilirsiniz.");
+            }
+        });
+    });
 
-        document.getElementById('iptalBtn').onclick = () => {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('gonderBtn').disabled = false;
-            document.getElementById('gonderBtn').innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
-        };
+    // Form Gönderimi
+    document.getElementById('tesekkurFormu').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const gonderBtn = document.getElementById('gonderBtn');
+        gonderBtn.disabled = true;
+        gonderBtn.innerText = "Gönderiliyor...";
 
-        document.getElementById('tesekkurFormu').onsubmit = async (e) => {
-            e.preventDefault();
-            const gonderBtn = document.getElementById('gonderBtn');
-            gonderBtn.disabled = true; gonderBtn.innerText = "İşleminiz Başlıyor...";
+        try {
+            let nihaiMarkaId = secilenMarkaIdInput.value;
+            const yazilanMarka = markaInput.value.trim();
 
-            let islemYapanKullanici = currentUser;
-            if (!islemYapanKullanici) {
-                document.getElementById('loginModal').style.display = 'flex';
-                try {
-                    const result = await new Promise((resolve, reject) => {
-                        document.getElementById('googleLoginBtn').onclick = async () => {
-                            try { const cred = await signInWithPopup(auth, provider); resolve(cred.user); } catch (error) { reject(error); }
-                        };
-                    });
-                    islemYapanKullanici = result; document.getElementById('loginModal').style.display = 'none';
-                } catch (error) {
-                    gonderBtn.disabled = false; gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`; return; 
-                }
+            if (!nihaiMarkaId || nihaiMarkaId === "yeni") {
+                nihaiMarkaId = yazilanMarka.toLowerCase().replace(/[^a-z0-9]/g, '');
+                await setDoc(doc(db, "markalar", nihaiMarkaId), { ad: yazilanMarka });
             }
 
-            gonderBtn.innerText = "Kontrol ediliyor...";
-            const markaInputVal = document.getElementById('markaAdi');
-            const nihaiMarkaId = markaInputVal.dataset.secilenId || markaInputVal.value.toLocaleLowerCase('tr-TR').replace(/\s+/g, '');
-            const secilenDuygu = document.querySelector('input[name="duyguSeviyesi"]:checked').value;
+            const gercekIsim = islemYapanKullanici.displayName;
+            const isimiGizle = document.getElementById('gizliProfil').checked;
+            const gosterilecekIsim = isimiGizle ? "Gizli Müşteri" : gercekIsim;
 
-            try {
-                const otuzGunOnce = new Date(); otuzGunOnce.setDate(otuzGunOnce.getDate() - 30);
-                const q = query(collection(db, "tesekkurler"), where("uid", "==", islemYapanKullanici.uid), where("marka", "==", nihaiMarkaId));
-                const sorguSonucu = await getDocs(q);
-                let zatenYazmis = false;
-                sorguSonucu.forEach(doc => { if (doc.data().tarih && doc.data().tarih.toDate() > otuzGunOnce) zatenYazmis = true; });
+            const secilenDuygu = document.querySelector('.duygu-btn.active').dataset.val;
+            const secilenEtiketler = Array.from(document.querySelectorAll('.tag-btn.active')).map(el => el.textContent);
 
-                if (zatenYazmis) {
-                    alert("Bu markaya son 30 gün içinde zaten bir teşekkür iletmişsiniz. İlginiz için teşekkürler!");
-                    gonderBtn.disabled = false; gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`; return; 
-                }
+            await addDoc(collection(db, "tesekkurler"), {
+                marka: nihaiMarkaId, isim: gosterilecekIsim, gercekIsim: gercekIsim, anonimMi: isimiGizle,   
+                uid: islemYapanKullanici.uid, mesaj: document.getElementById('mesaj').value, sehir: document.getElementById('sehir').value,
+                etiketler: secilenEtiketler, seviye: secilenDuygu, durum: "bekliyor", tarih: serverTimestamp()
+            });
+            
+            document.getElementById('tesekkurFormu').style.display = 'none';
+            document.querySelector('h2').style.display = 'none';
+            document.querySelector('p').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            let renkler = ['#bb0000', '#ffffff']; 
+            if(secilenDuygu === 'standart') renkler = ['#3182ce', '#63b3ed']; 
+            if(secilenDuygu === 'mutlu') renkler = ['#38a169', '#68d391']; 
+            if(secilenDuygu === 'vay_canina') renkler = ['#d69e2e', '#ecc94b', '#ffffff']; 
 
-                gonderBtn.innerText = "Gönderiliyor...";
-                const gercekIsim = islemYapanKullanici.displayName;
-                let gosterilecekIsim = gercekIsim;
-                const isimiGizle = document.getElementById('anonimYap').checked;
-                if (isimiGizle) gosterilecekIsim = gercekIsim.split(' ').map(k => k.charAt(0) + '***').join(' ');
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: renkler });
 
-                const secilenEtiketler = Array.from(document.querySelectorAll('.etiket.active')).map(el => el.dataset.val);
+        } catch (err) {
+            console.error(err); 
+            alert("Bir hata oluştu. Lütfen tekrar deneyin.");
+            gonderBtn.disabled = false;
+            gonderBtn.innerText = "Teşekkürü Gönder 🚀";
+        }
+    });
+</script>
 
-                await addDoc(collection(db, "tesekkurler"), {
-                    marka: nihaiMarkaId, isim: gosterilecekIsim, gercekIsim: gercekIsim, anonimMi: isimiGizle,   
-                    uid: islemYapanKullanici.uid, mesaj: document.getElementById('mesaj').value, sehir: document.getElementById('sehir').value,
-                    etiketler: secilenEtiketler, seviye: secilenDuygu, durum: "bekliyor", tarih: serverTimestamp()
-                });
-                
-                document.getElementById('tesekkurFormu').style.display = 'none';
-                document.querySelector('h2').style.display = 'none';
-                document.querySelector('p').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-                
-                let renkler = ['#bb0000', '#ffffff']; 
-                if(secilenDuygu === 'standart') renkler = ['#3182ce', '#63b3ed']; 
-                if(secilenDuygu === 'mutlu') renkler = ['#38a169', '#68d391']; 
-                if(secilenDuygu === 'vay_canina') renkler = ['#d69e2e', '#ecc94b', '#ffffff']; 
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(e => console.log('PWA Hata:', e));
+        });
+    }
+</script>
 
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: renkler });
-
-            } catch (err) {
-                console.error(err); alert("Bir hata oluştu.");
-                gonderBtn.disabled = false; gonderBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Gönder ve Alkışla`;
-            }
-        };
-    </script>
 </body>
 </html>
