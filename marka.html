@@ -4,126 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marka Profili | Müşteri Memnun</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { margin: 0; background-color: #f8fafc; font-family: 'Poppins', sans-serif; }
-        
-        /* KONTRAST HEADER / NAVBAR */
-        .dark-header { background-color: #1A202C; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00C897; position: sticky; top: 0; z-index: 1000; }
-        .dark-header .logo { color: white; text-decoration: none; font-size: 22px; display: flex; align-items: center; gap: 8px; font-weight: 400; }
-        .dark-header .logo b { color: white; font-weight: 800;}
-        .header-actions { display: flex; gap: 12px; align-items: center; }
-        .btn-outline { background: transparent; border: 1px solid #4A5568; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
-        .btn-outline:hover { background: #2D3748; border-color: #00C897; color: #00C897; }
-
-        /* MARKA KİMLİK KARTI (HERO) */
-        .brand-hero { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); padding: 60px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
-        .brand-profile-container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); border: 1px solid #f1f5f9; position: relative; margin-top: -20px; }
-        .brand-large-logo { width: 100px; height: 100px; border-radius: 20px; object-fit: contain; background: white; border: 2px solid #e2e8f0; padding: 10px; margin: 0 auto 20px auto; display: block; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .brand-name { font-weight: 800; font-size: 36px; color: #1A202C; margin: 0 0 10px 0; text-transform: capitalize; }
-        .brand-badge { display: inline-block; background: #E6FFFA; color: #00C897; padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: 700; border: 1px solid #b2f5ea; margin-bottom: 25px; }
-        
-        .brand-stats { display: flex; justify-content: center; gap: 40px; border-top: 1px solid #f1f5f9; padding-top: 25px; }
-        .brand-stat-item h3 { font-size: 32px; font-weight: 800; color: #1A202C; margin: 0; }
-        .brand-stat-item p { font-size: 13px; color: #64748b; margin: 5px 0 0 0; font-weight: 600; text-transform: uppercase; }
-
-        /* KART MİMARİSİ (Taşmayı Önleyen Grid) */
-        .cards-wrapper { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
-        .section-title { text-align: left; color: #1A202C; margin-bottom: 30px; font-weight: 800; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
-        .cards-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; align-items: start; }
-        
-        .card { background: white; border-radius: 16px; padding: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.3s; position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: #00C897; }
-        .card-text { font-size: 15px; color: #4A5568; line-height: 1.7; flex-grow: 1; word-break: break-word; margin: 15px 0; }
-        
-        .jest-kutusu { margin-top: auto; padding: 12px 15px; background: linear-gradient(to right, #FAF5FF, #ffffff); border-left: 4px solid #8B5CF6; border-radius: 8px; font-size: 13px; color: #553C9A; border: 1px solid #E9D8FD; }
-        .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 1px solid #e2e8f0; color: #64748b; grid-column: 1 / -1; }
-
-        /* YENİ PROFESYONEL FOOTER */
-        .site-footer { background-color: #0F172A; color: #cbd5e1; padding: 70px 20px 30px; font-size: 14px; margin-top: auto; }
-        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px; }
-        .footer-col h4 { color: white; font-size: 16px; margin-bottom: 20px; font-weight: 600; letter-spacing: 0.5px; }
-        .footer-col ul { list-style: none; padding: 0; margin: 0; }
-        .footer-col ul li { margin-bottom: 12px; }
-        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.2s; display: flex; align-items: center; gap: 8px;}
-        .footer-col ul li a:hover { color: #00C897; padding-left: 5px; }
-        .footer-bottom { max-width: 1200px; margin: 0 auto; text-align: center; padding-top: 30px; border-top: 1px solid #1e293b; color: #64748b; font-size: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-        .social-icons a { color: #94a3b8; font-size: 18px; margin-left: 15px; transition: 0.3s; }
-        .social-icons a:hover { color: white; }
-
-        @media (max-width: 768px) { .dark-header { flex-direction: column; padding: 15px; gap: 15px; } .brand-stats { flex-direction: column; gap: 20px; } }
+        .brand-hero { background: white; padding: 80px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .brand-logo-large { width: 120px; height: 120px; border-radius: 20px; border: 1px solid #e2e8f0; padding: 10px; background: white; margin-bottom: 20px; }
     </style>
 </head>
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
+<body>
 
-    <header class="dark-header">
-        <a href="index.html" class="logo">
-            <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
-        </a>
-        <div class="header-actions">
-            <a href="index.html" class="btn-outline"><i class="fa-solid fa-house"></i> Ana Sayfa</a>
-            <a href="tesekkur-yaz.html" class="btn-outline" style="background: #00C897; color: white; border-color: #00C897;"><i class="fa-solid fa-plus"></i> Teşekkür Yaz</a>
-        </div>
-    </header>
+    <div id="header-holder"></div>
 
-    <section class="brand-hero" id="brandHeroContainer" style="display: none;">
-        <div class="brand-profile-container">
-            <img src="" id="brandLogo" class="brand-large-logo" alt="Marka Logo">
-            <h1 class="brand-name" id="brandName">Marka Adı</h1>
-            <div class="brand-badge"><i class="fa-solid fa-circle-check"></i> Onaylı İtibar Profili</div>
-            
-            <div class="brand-stats">
-                <div class="brand-stat-item">
-                    <h3 id="statTotal">0</h3>
-                    <p>Müşteri Teşekkürü</p>
-                </div>
-                <div class="brand-stat-item">
-                    <h3 style="color: #F6E05E;">5.0</h3>
-                    <p>Müşteri Puanı</p>
-                </div>
-                <div class="brand-stat-item">
-                    <h3 id="statJest" style="color: #8B5CF6;">0</h3>
-                    <p>Yapılan Jest</p>
-                </div>
-            </div>
-        </div>
+    <section class="brand-hero">
+        <img id="markaLogo" src="" class="brand-logo-large" onerror="this.style.display='none'">
+        <h1 id="markaAdi" style="margin:0; font-weight:800; text-transform:capitalize; color:#0F172A;">...</h1>
+        <p id="markaSlogan" style="color:#64748b; margin-top:10px;">Marka profili yükleniyor...</p>
     </section>
 
     <div class="cards-wrapper">
-        <h3 class="section-title" id="cardsTitle">Markaya Gelen Teşekkürler</h3>
-        <section class="cards-container" id="kartlarAlani">
-            <div style="text-align: center; width: 100%; color: #94a3b8; font-size: 16px; padding: 40px 0; grid-column: 1 / -1;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px; margin-bottom: 10px; color:#00C897;"></i><br>
-                Marka profili yükleniyor...
-            </div>
-        </section>
+        <h3 class="section-title"><i class="fa-solid fa-comments" style="color:#00C897;"></i> Marka Hakkındaki Teşekkürler</h3>
+        <section class="cards-container" id="markaTesekkurleri"></section>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <a href="index.html" class="logo" style="text-decoration: none; color: white; font-size: 22px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
-                    <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
-                </a>
-                <p style="color: #94a3b8; line-height: 1.6;">İyiliği paylaşmanın ve pozitif hizmeti takdir etmenin en güvenilir adresi. Markanızı bir adım öne taşıyın.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Kurumsal</h4>
-                <ul>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Hakkımızda</a></li>
-                    <li><a href="#"><i class="fa-solid fa-angle-right" style="font-size: 10px;"></i> Marka Çözümleri</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div>&copy; 2026 Müşteri Memnun. Tüm hakları saklıdır.</div>
-        </div>
-    </footer>
+    <div id="footer-holder"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAK7JEp06fVKaDrSggv9c7AkoPBzMubcZA",
@@ -137,93 +48,60 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const getLogoUrl = (marka) => `https://logo.clearbit.com/${marka.toLowerCase()}.com`;
-
-    // 1. URL'den Marka ID'sini Al
+    // URL'den Marka ID'sini al
     const urlParams = new URLSearchParams(window.location.search);
-    const markaId = urlParams.get('id');
+    const markaId = urlParams.get('m');
 
-    const kartlarAlani = document.getElementById('kartlarAlani');
+    async function initPage() {
+        document.getElementById('header-holder').innerHTML = await (await fetch('header.html')).text();
+        document.getElementById('footer-holder').innerHTML = await (await fetch('footer.html')).text();
+        
+        if(markaId) {
+            markaBilgisiGetir();
+            tesekkurleriGetir();
+        } else {
+            window.location.href = 'index.html';
+        }
+    }
+    initPage();
 
-    if (!markaId) {
-        kartlarAlani.innerHTML = `<div class="empty-state"><h3>Marka Bulunamadı</h3><p>Görüntülemek istediğiniz markaya ulaşılamıyor. Lütfen ana sayfaya dönün.</p></div>`;
-    } else {
-        markaVerileriniGetir(markaId);
+    async function markaBilgisiGetir() {
+        const docSnap = await getDoc(doc(db, "markalar", markaId));
+        if (docSnap.exists()) {
+            const data = docSnap.exists() ? docSnap.data() : { ad: markaId };
+            document.getElementById('markaAdi').innerText = data.ad;
+            document.title = `${data.ad} Profili | Müşteri Memnun`;
+            document.getElementById('markaSlogan').innerText = "Bu marka müşterileri tarafından takdir ediliyor.";
+            
+            const logo = data.logo_url || `https://ui-avatars.com/api/?name=${data.ad.substring(0,2)}&background=00C897&color=fff&bold=true`;
+            document.getElementById('markaLogo').src = logo;
+            document.getElementById('markaLogo').style.display = 'inline-block';
+        }
     }
 
-    async function markaVerileriniGetir(marka) {
-        try {
-            // Arayüzü güncelle (İsim ve Logo)
-            document.getElementById('brandName').innerText = marka;
-            document.getElementById('brandLogo').src = getLogoUrl(marka);
-            document.getElementById('brandLogo').onerror = function() { this.src='https://ui-avatars.com/api/?name='+marka+'&background=random'; };
-            document.getElementById('brandHeroContainer').style.display = 'block';
-
-            // Mesajları Çek (Sadece ONAYLI olanlar)
-            const q = query(collection(db, "tesekkurler"), where("marka", "==", marka), where("durum", "==", "onaylandi"));
-            const snap = await getDocs(q);
-
-            kartlarAlani.innerHTML = '';
-            
-            if (snap.empty) {
-                document.getElementById('statTotal').innerText = "0";
-                kartlarAlani.innerHTML = `<div class="empty-state"><h3>Henüz Teşekkür Yok</h3><p>Bu marka için henüz onaylanmış bir teşekkür mesajı bulunmuyor.</p><br><a href="tesekkur-yaz.html" class="btn-outline" style="background:#00C897; color:white; display:inline-block;">İlk Teşekkürü Sen Yaz!</a></div>`;
-                return;
-            }
-
-            let mesajlar = [];
-            let jestSayisi = 0;
-
-            snap.forEach(doc => { 
-                const data = doc.data();
-                mesajlar.push(data); 
-                if(data.jest) jestSayisi++;
-            });
-
-            // İstatistikleri Güncelle
-            document.getElementById('statTotal').innerText = mesajlar.length;
-            document.getElementById('statJest').innerText = jestSayisi;
-
-            // Tarihe göre sırala
-            mesajlar.sort((a, b) => (b.tarih?.toMillis() || 0) - (a.tarih?.toMillis() || 0));
-
-            // Kartları Render Et
-            mesajlar.forEach(data => {
-                const jestHTML = data.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> <b>Marka Jesti:</b> ${data.jest}</div>` : '';
-                
-                let etiketlerHTML = '';
-                if (data.etiketler && data.etiketler.length > 0) {
-                    etiketlerHTML = '<div style="margin-top: 15px; display: flex; gap: 6px; flex-wrap: wrap;">';
-                    data.etiketler.forEach(etiket => { etiketlerHTML += `<span style="background-color: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">${etiket}</span>`; });
-                    etiketlerHTML += '</div>';
-                }
-                
-                let duyguBadge = '<div style="color:#F6E05E; font-size:11px; margin-top:2px;">★★★★★</div>';
-                if(data.seviye === 'standart') duyguBadge = '<div style="color:#3182ce; font-size:11px; font-weight:600; margin-top:2px;"><i class="fa-solid fa-thumbs-up"></i> Teşekkürler</div>';
-                if(data.seviye === 'mutlu') duyguBadge = '<div style="color:#38a169; font-size:11px; font-weight:600; margin-top:2px;"><i class="fa-solid fa-face-smile"></i> Mutlu Oldum</div>';
-                if(data.seviye === 'vay_canina') duyguBadge = '<div style="color:#d69e2e; font-size:11px; font-weight:600; margin-top:2px;"><i class="fa-solid fa-star"></i> Vay Canına!</div>';
-
-                kartlarAlani.innerHTML += `
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
-                            <div>${duyguBadge}</div>
-                            <div style="font-size:10px; color:#00C897; font-weight:700; background:#E6FFFA; padding:4px 8px; border-radius:6px; border: 1px solid #b2f5ea;"><i class="fa-solid fa-check"></i> ONAYLI MÜŞTERİ</div>
-                        </div>
-                        <p class="card-text">"${data.mesaj}"</p>
-                        ${etiketlerHTML}
-                        ${jestHTML}
-                        <div style="margin-top:25px; padding-top: 15px; border-top: 1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:13px; font-weight:600; color:#475569;"><i class="fa-regular fa-user" style="margin-right:5px; color:#94a3b8;"></i> ${data.isim}</span>
-                            <span style="font-size:11px; color:#A0AEC0;"><i class="fa-solid fa-location-dot"></i> ${data.sehir || 'Belirtilmedi'}</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-        } catch (error) {
-            console.error(error);
-            kartlarAlani.innerHTML = `<div class="empty-state">Sistem hatası oluştu. Lütfen tekrar deneyin.</div>`;
+    async function tesekkurleriGetir() {
+        const container = document.getElementById('markaTesekkurleri');
+        const q = query(collection(db, "tesekkurler"), where("marka", "==", markaId), where("durum", "==", "onaylandi"));
+        const snap = await getDocs(q);
+        
+        if(snap.empty) {
+            container.innerHTML = `<p style="color:#94a3b8; text-align:center; width:100%;">Henüz onaylanmış bir teşekkür bulunmuyor.</p>`;
+            return;
         }
+
+        container.innerHTML = '';
+        snap.forEach(doc => {
+            const data = doc.data();
+            container.innerHTML += `
+                <div class="card animated-card">
+                    <p class="card-text">"${data.mesaj}"</p>
+                    <div style="margin-top:20px; padding-top:15px; border-top:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; font-weight:600; color:#334155;">${data.isim}</span>
+                        <span style="font-size:12px; color:#94a3b8;"><i class="fa-solid fa-location-dot"></i> ${data.sehir || 'Belirtilmedi'}</span>
+                    </div>
+                </div>
+            `;
+        });
     }
 </script>
 </body>
