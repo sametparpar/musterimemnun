@@ -4,73 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profilim | Müşteri Memnun</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00C897">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
     <style>
-        body { margin: 0; background-color: #f8fafc; font-family: 'Poppins', sans-serif; }
-        
-        /* KONTRAST HEADER / NAVBAR */
-        .dark-header { background-color: #1A202C; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #00C897; position: sticky; top: 0; z-index: 1000; }
-        .dark-header .logo { color: white; text-decoration: none; font-size: 22px; display: flex; align-items: center; gap: 8px; font-weight: 400; }
-        .dark-header .logo b { color: white; font-weight: 800;}
-        .header-actions { display: flex; gap: 12px; align-items: center; }
-        .btn-outline { background: transparent; border: 1px solid #4A5568; color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
-        .btn-outline:hover { background: #2D3748; border-color: #00C897; color: #00C897; }
-
-        /* PROFİL VE İÇERİK ALANI */
-        .profile-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        
-        .profile-header-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;}
-        .profile-info { display: flex; align-items: center; gap: 20px; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: #E6FFFA; color: #00C897; display: flex; justify-content: center; align-items: center; font-size: 30px; border: 2px solid #00C897; }
-        .profile-details h2 { margin: 0 0 5px 0; color: #1A202C; font-size: 24px; }
-        .profile-details p { margin: 0; color: #64748b; font-size: 15px; }
-        
-        .btn-logout { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-family: 'Poppins'; font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .btn-logout:hover { background: #ef4444; color: white; }
-
-        .section-title { text-align: left; color: #1A202C; margin-bottom: 20px; font-weight: 800; font-size: 22px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
-        
-        /* KART MİMARİSİ */
-        .cards-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .card { background: white; border-radius: 16px; padding: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .brand-info { display: flex; gap: 12px; align-items: center; }
-        .brand-logo-img { width: 45px; height: 45px; border-radius: 10px; object-fit: contain; background: white; border: 1px solid #edf2f7; padding: 4px; }
-        .card-text { font-size: 15px; color: #4A5568; line-height: 1.7; margin: 10px 0; }
-        
-        /* DURUM BADGELERİ */
-        .badge-bekliyor { font-size: 11px; color: #d97706; font-weight: 700; background: #fef3c7; padding: 6px 10px; border-radius: 6px; border: 1px solid #fde68a; }
-        .badge-onaylandi { font-size: 11px; color: #00C897; font-weight: 700; background: #E6FFFA; padding: 6px 10px; border-radius: 6px; border: 1px solid #b2f5ea; }
-        
-        .jest-kutusu { margin-top: 15px; padding: 12px 15px; background: linear-gradient(to right, #FAF5FF, #ffffff); border-left: 4px solid #8B5CF6; border-radius: 8px; font-size: 13px; color: #553C9A; border: 1px solid #E9D8FD; }
-
-        .loading-state, .error-state, .empty-state { text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 1px solid #e2e8f0; color: #64748b; }
-        
-        @media (max-width: 768px) { .dark-header { flex-direction: column; padding: 15px; gap: 15px; } .profile-header-card { flex-direction: column; text-align: center; } .profile-info { flex-direction: column; } }
+        /* Sadece profile özel düzenlemeler */
+        .profile-hero { background: white; padding: 60px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .user-avatar { width: 100px; height: 100px; border-radius: 50%; border: 4px solid #00C897; margin-bottom: 15px; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
     </style>
 </head>
 <body>
 
-    <header class="dark-header">
-        <a href="index.html" class="logo">
-            <i class="fa-solid fa-circle-check" style="color: #00C897;"></i> Müşteri <b>Memnun</b>
-        </a>
-        <div class="header-actions">
-            <a href="index.html" class="btn-outline"><i class="fa-solid fa-house"></i> Ana Sayfa</a>
-        </div>
-    </header>
+    <div id="header-holder"></div>
 
-    <div class="profile-container" id="mainContainer">
-        <div class="loading-state" id="loadingDiv">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 40px; color: #00C897; margin-bottom: 15px;"></i>
-            <h2>Bilgileriniz Kontrol Ediliyor...</h2>
-        </div>
+    <section class="profile-hero" id="userInfo" style="display:none;">
+        <img id="userImg" src="" class="user-avatar" onerror="this.src='https://ui-avatars.com/api/?background=random'">
+        <h2 id="userName" style="margin:0; font-weight:800; color:#0F172A;">...</h2>
+        <p id="userMail" style="color:#64748b; margin-top:5px;">...</p>
+        <button id="logoutBtn" style="margin-top:20px; background:none; border:1px solid #e2e8f0; padding:8px 20px; border-radius:50px; cursor:pointer; font-family:'Poppins'; font-weight:600; color:#ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</button>
+    </section>
+
+    <div class="cards-wrapper">
+        <h3 class="section-title"><i class="fa-solid fa-heart" style="color:#00C897;"></i> Yazdığın Teşekkürler</h3>
+        <section class="cards-container" id="yazdigimTesekkurler">
+            <div class="empty-state">Yükleniyor...</div>
+        </section>
     </div>
+
+    <div id="footer-holder"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -85,126 +57,63 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
 
-    const mainContainer = document.getElementById('mainContainer');
-    const getLogoUrl = (marka) => `https://logo.clearbit.com/${marka.toLowerCase()}.com`;
+    // Modüler Yapı Yükleme
+    async function initPage() {
+        document.getElementById('header-holder').innerHTML = await (await fetch('header.html')).text();
+        document.getElementById('footer-holder').innerHTML = await (await fetch('footer.html')).text();
+        
+        // Header'daki arama motoru işlevlerini bağla (Eğer gerekirse)
+        const searchInput = document.getElementById('mainSearchInput');
+        if(searchInput) {
+            searchInput.placeholder = "Hangi markaya teşekkür etmiştin?";
+        }
+    }
+    initPage();
 
-    // KULLANICI GİRİŞ KONTROLÜ
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            arayuzuOlustur(user);
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('userName').innerText = user.displayName;
+            document.getElementById('userMail').innerText = user.email;
+            document.getElementById('userImg').src = user.photoURL;
+            listele(user.uid);
         } else {
-            // Kullanıcı giriş yapmamışsa, doğrudan Google butonu göster
-            mainContainer.innerHTML = `
-                <div class="error-state">
-                    <i class="fa-solid fa-lock" style="font-size: 50px; color: #cbd5e1; margin-bottom: 15px;"></i>
-                    <h2>Giriş Yapmadınız</h2>
-                    <p>Profilinizi ve geçmiş teşekkürlerinizi görmek için lütfen giriş yapın.</p>
-                    <button id="profilLoginBtn" style="background: #00C897; color: white; padding: 12px 25px; border: none; border-radius: 10px; font-family: 'Poppins'; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fa-brands fa-google"></i> Google ile Giriş Yap
-                    </button>
-                </div>
-            `;
-
-            document.getElementById('profilLoginBtn').addEventListener('click', () => {
-                signInWithPopup(auth, provider).catch((error) => {
-                    console.error("Giriş Hatası:", error);
-                });
-            });
+            window.location.href = 'index.html';
         }
     });
 
-    async function arayuzuOlustur(user) {
-        mainContainer.innerHTML = `
-            <div class="profile-header-card">
-                <div class="profile-info">
-                    <div class="profile-avatar"><i class="fa-regular fa-user"></i></div>
-                    <div class="profile-details">
-                        <h2>${user.displayName || "Değerli Müşterimiz"}</h2>
-                        <p>${user.email}</p>
-                    </div>
-                </div>
-                <button id="logoutBtn" class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Çıkış Yap</button>
-            </div>
-            
-            <h3 class="section-title">Gönderdiğim Teşekkürler</h3>
-            <div id="tesekkurlerListesi" class="cards-container">
-                <div style="text-align:center; padding: 40px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Teşekkürleriniz getiriliyor...</div>
-            </div>
-        `;
+    document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => window.location.href='index.html');
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.reload();
-            }).catch((error) => {
-                alert("Çıkış yapılırken bir hata oluştu.");
-            });
-        });
-
-        kullaniciTesekkurleriniGetir(user.uid);
-    }
-
-    async function kullaniciTesekkurleriniGetir(uid) {
-        const listeAlani = document.getElementById('tesekkurlerListesi');
-        
+    async function listele(uid) {
+        const listeAlani = document.getElementById('yazdigimTesekkurler');
         try {
-            const q = query(collection(db, "tesekkurler"), where("uid", "==", uid));
+            const q = query(collection(db, "tesekkurler"), where("uid", "==", uid), orderBy("tarih", "desc"));
             const snap = await getDocs(q);
             
-            if (snap.empty) {
-                listeAlani.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fa-regular fa-paper-plane" style="font-size: 40px; color: #cbd5e1; margin-bottom: 15px;"></i>
-                        <h3>Henüz Bir Teşekkür Yazmadınız</h3>
-                        <p>Harika bir hizmet aldığınızda bunu markayla paylaşmak için hemen bir tane yazın!</p>
-                        <a href="tesekkur-yaz.html" style="display: inline-block; background: #1A202C; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px;">İlk Teşekkürünü Yaz</a>
-                    </div>
-                `;
+            if(snap.empty) {
+                listeAlani.innerHTML = `<div class="empty-state">Henüz bir teşekkür yazmamışsın. İyiliği başlatmak için ilk teşekkürünü yazabilirsin!</div>`;
                 return;
             }
 
-            let mesajlar = [];
-            snap.forEach(doc => { mesajlar.push({ id: doc.id, ...doc.data() }); });
-            mesajlar.sort((a, b) => (b.tarih?.toMillis() || 0) - (a.tarih?.toMillis() || 0));
-
-            listeAlani.innerHTML = ''; 
-
-            mesajlar.forEach(data => {
-                const durumBadge = data.durum === "onaylandi" 
-                    ? `<div class="badge-onaylandi"><i class="fa-solid fa-check"></i> Yayında</div>` 
-                    : `<div class="badge-bekliyor"><i class="fa-solid fa-clock"></i> Onay Bekliyor</div>`;
-
-                const jestHTML = data.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> <b>Markadan Sana Jest:</b> ${data.jest}</div>` : '';
-
-                let tarihStr = "Tarih Belirsiz";
-                if(data.tarih) {
-                    const dateObj = data.tarih.toDate();
-                    tarihStr = dateObj.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
-                }
-
+            listeAlani.innerHTML = '';
+            snap.forEach(doc => {
+                const data = doc.data();
+                const durumText = data.durum === 'onaylandi' ? '✅ Onaylandı' : '⏳ Beklemede';
+                const durumColor = data.durum === 'onaylandi' ? '#059669' : '#d97706';
+                
                 listeAlani.innerHTML += `
-                    <div class="card">
-                        <div class="card-top">
-                            <div class="brand-info">
-                                <img src="${getLogoUrl(data.marka)}" class="brand-logo-img" onerror="this.src='https://ui-avatars.com/api/?name=${data.marka}&background=random'">
-                                <div>
-                                    <h4 style="margin:0; text-transform:capitalize; font-size:16px; color:#1A202C;">${data.marka}</h4>
-                                    <div style="font-size:12px; color:#94a3b8; margin-top:2px;">${tarihStr}</div>
-                                </div>
-                            </div>
-                            ${durumBadge}
+                    <div class="card animated-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                            <h4 style="margin:0; text-transform:capitalize; color:#0F172A;">${data.marka}</h4>
+                            <span style="font-size:11px; font-weight:700; color:${durumColor};">${durumText}</span>
                         </div>
                         <p class="card-text">"${data.mesaj}"</p>
-                        ${jestHTML}
+                        ${data.jest ? `<div class="jest-kutusu"><i class="fa-solid fa-gift"></i> Marka Jesti: ${data.jest}</div>` : ''}
                     </div>
                 `;
             });
-
-        } catch (error) {
-            console.error("Veri çekme hatası:", error);
-            listeAlani.innerHTML = `<div class="error-state">Verileriniz getirilirken bir bağlantı sorunu oluştu. Lütfen sayfayı yenileyin.</div>`;
-        }
+        } catch (e) { console.error(e); }
     }
 </script>
 </body>
